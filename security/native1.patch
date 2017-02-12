@@ -1,0 +1,28 @@
+From b0099763020e6bb1aaabe5e85bc31b76f9dc559f Mon Sep 17 00:00:00 2001
+From: Fabien Sanglard <sanglardf@google.com>
+Date: Mon, 5 Dec 2016 15:06:29 -0800
+Subject: [PATCH] Fix security vulneratibly 31960359
+
+BufferQueueCore features a variable mLastQueuedSlot which is not
+initialized in its constructor resulting in security vulnerability
+
+Bug: 31960359
+Change-Id: If892f59f6288d8b81b1e312995832a20c8341494
+Tests: Manually on Angler
+(cherry picked from commit dffa078205f6b6c17e24214928f642393423e081)
+---
+ libs/gui/BufferQueueCore.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libs/gui/BufferQueueCore.cpp b/libs/gui/BufferQueueCore.cpp
+index 6f48716..b61e851 100644
+--- a/libs/gui/BufferQueueCore.cpp
++++ b/libs/gui/BufferQueueCore.cpp
+@@ -89,6 +89,7 @@ BufferQueueCore::BufferQueueCore(const sp<IGraphicBufferAlloc>& allocator) :
+     mSharedBufferSlot(INVALID_BUFFER_SLOT),
+     mSharedBufferCache(Rect::INVALID_RECT, 0, NATIVE_WINDOW_SCALING_MODE_FREEZE,
+             HAL_DATASPACE_UNKNOWN),
++    mLastQueuedSlot(INVALID_BUFFER_SLOT),
+     mUniqueId(getUniqueId())
+ {
+     if (allocator == NULL) {
