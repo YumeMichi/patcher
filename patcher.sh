@@ -56,7 +56,6 @@ patch -d frameworks/base              -p1 -s -N --no-backup-if-mismatch < $SECUR
 patch -d frameworks/native            -p1 -s -N --no-backup-if-mismatch < $SECURITY/native0.patch
 patch -d frameworks/native            -p1 -s -N --no-backup-if-mismatch < $SECURITY/native1.patch
 patch -d frameworks/native            -p1 -s -N --no-backup-if-mismatch < $SECURITY/native2.patch
-patch -d frameworks/native            -p1 -s -N --no-backup-if-mismatch < $SECURITY/native3.patch
 patch -d hardware/libhardware         -p1 -s -N --no-backup-if-mismatch < $SECURITY/libhardware0.patch
 patch -d packages/apps/Bluetooth      -p1 -s -N --no-backup-if-mismatch < $SECURITY/Bluetooth0.patch
 patch -d packages/apps/Messaging      -p1 -s -N --no-backup-if-mismatch < $SECURITY/Messaging0.patch
