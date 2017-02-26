@@ -33,6 +33,7 @@ cd $ROM_TREE
 
 patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OMS/Contacts0.patch
 patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon0.patch
+patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon1.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OMS/Dialer0.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OMS/Dialer1.patch
 patch -d packages/apps/ExactCalculator    -p1 -s -N --no-backup-if-mismatch < $OMS/ExactCalculator0.patch
