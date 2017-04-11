@@ -18,6 +18,8 @@ cd $ROM_TREE/packages/apps/Dialer
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/ExactCalculator
 git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/PackageInstaller
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
 git clean -f -d && git reset --hard
 
@@ -38,6 +40,7 @@ patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OMS/Dialer1.patch
 patch -d packages/apps/ExactCalculator    -p1 -s -N --no-backup-if-mismatch < $OMS/ExactCalculator0.patch
 patch -d packages/apps/ExactCalculator    -p1 -s -N --no-backup-if-mismatch < $OMS/ExactCalculator1.patch
+patch -d packages/apps/PackageInstaller   -p1 -s -N --no-backup-if-mismatch < $OMS/PackageInstaller0.patch
 patch -d packages/apps/PhoneCommon        -p1 -s -N --no-backup-if-mismatch < $OMS/PhoneCommon0.patch
 
 cd $ROM_TREE
