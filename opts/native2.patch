@@ -1,0 +1,55 @@
+From dcd18f4b874a8153990ff58d2fb16324b813c500 Mon Sep 17 00:00:00 2001
+From: Alex Naidis <alex.naidis@linux.com>
+Date: Thu, 5 Jan 2017 01:31:29 +0100
+Subject: [PATCH] libs: enable SDCLANG LTO
+
+Enabling SDCLANG LTO in the libs where
+it is benefitial and applicable.
+
+Change-Id: Ia449fb5a85330d69e5259364f291097b022c2f46
+Signed-off-by: Alex Naidis <alex.naidis@linux.com>
+---
+ libs/gui/Android.mk   | 2 ++
+ libs/input/Android.mk | 2 ++
+ libs/ui/Android.mk    | 2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/libs/gui/Android.mk b/libs/gui/Android.mk
+index dff6a37..209f932 100644
+--- a/libs/gui/Android.mk
++++ b/libs/gui/Android.mk
+@@ -18,6 +18,8 @@ include $(CLEAR_VARS)
+ LOCAL_CLANG := true
+ LOCAL_CPPFLAGS := -std=c++1y -Weverything -Werror
+ 
++LOCAL_SDCLANG_LTO := true
++
+ # The static constructors and destructors in this library have not been noted to
+ # introduce significant overheads
+ LOCAL_CPPFLAGS += -Wno-exit-time-destructors
+diff --git a/libs/input/Android.mk b/libs/input/Android.mk
+index 746de66..3a087d6 100644
+--- a/libs/input/Android.mk
++++ b/libs/input/Android.mk
+@@ -59,6 +59,8 @@ LOCAL_SRC_FILES:= $(deviceSources)
+ LOCAL_CLANG := true
+ LOCAL_SANITIZE := integer
+ 
++LOCAL_SDCLANG_LTO := true
++
+ LOCAL_SHARED_LIBRARIES := \
+ 	liblog \
+ 	libcutils \
+diff --git a/libs/ui/Android.mk b/libs/ui/Android.mk
+index 2b16365..6353413 100644
+--- a/libs/ui/Android.mk
++++ b/libs/ui/Android.mk
+@@ -19,6 +19,8 @@ LOCAL_CLANG := true
+ LOCAL_CPPFLAGS := -std=c++1y -Weverything -Werror
+ # LOCAL_SANITIZE := integer
+ 
++LOCAL_SDCLANG_LTO := true
++
+ # The static constructors and destructors in this library have not been noted to
+ # introduce significant overheads
+ LOCAL_CPPFLAGS += -Wno-exit-time-destructors

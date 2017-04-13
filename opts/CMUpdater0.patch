@@ -1,0 +1,24 @@
+From 427427e9af7cbad82729aecbec2d2aa0dd503dec Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Fri, 10 Feb 2017 12:46:42 +0800
+Subject: [PATCH] UpdateCheckService: Don't append "/v1/*" to updateUri
+
+---
+ src/com/cyanogenmod/updater/service/UpdateCheckService.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/com/cyanogenmod/updater/service/UpdateCheckService.java b/src/com/cyanogenmod/updater/service/UpdateCheckService.java
+index d4e6fca..08f168a 100644
+--- a/src/com/cyanogenmod/updater/service/UpdateCheckService.java
++++ b/src/com/cyanogenmod/updater/service/UpdateCheckService.java
+@@ -230,8 +230,8 @@ private URI getServerURI() {
+             updateUri = getString(R.string.conf_update_server_url_def);
+         }
+ 
+-        String incrementalVersion = SystemProperties.get("ro.build.version.incremental");
+-        updateUri += "/v1/" + Utils.getDeviceType() + "/" + getRomType() + "/" + incrementalVersion;
++        // String incrementalVersion = SystemProperties.get("ro.build.version.incremental");
++        // updateUri += "/v1/" + Utils.getDeviceType() + "/" + getRomType() + "/" + incrementalVersion;
+ 
+         return URI.create(updateUri);
+     }

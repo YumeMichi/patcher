@@ -7,9 +7,22 @@ PATCHER_PATH=$ROM_TREE/patcher
 
 SECURITY=$PATCHER_PATH/security
 OMS=$PATCHER_PATH/oms
+OPTS=$PATCHER_PATH/opts
 
 ### Clean up first
 
+cd $ROM_TREE/bionic
+git clean -f -d && git reset --hard
+cd $ROM_TREE/frameworks/av
+git clean -f -d && git reset --hard
+cd $ROM_TREE/frameworks/base
+git clean -f -d && git reset --hard
+cd $ROM_TREE/frameworks/native
+git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/AmazeFileManager
+git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/CMUpdater
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Contacts
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/ContactsCommon
@@ -28,11 +41,21 @@ cd $ROM_TREE
 ### Security patches
 
 
+### Opts patches
 
-cd $ROM_TREE
+patch -d bionic                           -p1 -s -N --no-backup-if-mismatch < $OPTS/bionic0.patch
+patch -d frameworks/av                    -p1 -s -N --no-backup-if-mismatch < $OPTS/av0.patch
+patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $OPTS/base0.patch
+patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native0.patch
+patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native1.patch
+patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native2.patch
+patch -d packages/apps/AmazeFileManager   -p1 -s -N --no-backup-if-mismatch < $OPTS/AmazeFileManager0.patch
+patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
+patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch
 
 ### OMS patches
 
+patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OMS/native5.patch
 patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OMS/Contacts0.patch
 patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon0.patch
 patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon1.patch
