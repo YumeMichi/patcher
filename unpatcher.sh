@@ -16,6 +16,8 @@ cd $ROM_TREE/frameworks/native
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/AmazeFileManager
 git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/CMParts
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMUpdater
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Contacts
@@ -29,6 +31,8 @@ git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PackageInstaller
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
+git clean -f -d && git reset --hard
+cd $ROM_TREE/vendor/cmsdk
 git clean -f -d && git reset --hard
 
 cd $ROM_TREE
