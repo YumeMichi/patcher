@@ -1,0 +1,24 @@
+From aec9a03b619edd65cc0b99e4589c02623f262341 Mon Sep 17 00:00:00 2001
+From: Sultanxda <sultanxda@gmail.com>
+Date: Sun, 20 Mar 2016 16:45:14 -0700
+Subject: [PATCH] Snap: Always enable denoise in camcorder mode
+
+---
+ src/com/android/camera/VideoModule.java | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/src/com/android/camera/VideoModule.java b/src/com/android/camera/VideoModule.java
+index e8e871b..b1a3907 100644
+--- a/src/com/android/camera/VideoModule.java
++++ b/src/com/android/camera/VideoModule.java
+@@ -950,9 +950,7 @@ private void qcomReadVideoPreferences() {
+ 
+         // Set wavelet denoise mode
+         if (mParameters.getSupportedDenoiseModes() != null) {
+-            String denoise = mPreferences.getString(CameraSettings.KEY_DENOISE,
+-                    mActivity.getString(R.string.pref_camera_denoise_default));
+-            mParameters.setDenoise(denoise);
++            mParameters.setDenoise("denoise-on");
+         }
+     }
+ 

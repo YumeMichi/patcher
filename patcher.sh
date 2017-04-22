@@ -37,6 +37,8 @@ cd $ROM_TREE/packages/apps/PackageInstaller
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
 git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/Snap
+git clean -f -d && git reset --hard
 cd $ROM_TREE/vendor/cmsdk
 git clean -f -d && git reset --hard
 
@@ -58,6 +60,8 @@ patch -d packages/apps/AmazeFileManager   -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch
+patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap0.patch
+patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap1.patch
 patch -d vendor/cmsdk                     -p1 -s -N --no-backup-if-mismatch < $OPTS/cmsdk0.patch
 
 ### OMS patches
