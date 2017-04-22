@@ -8,6 +8,8 @@ cd $ROM_TREE
 
 cd $ROM_TREE/bionic
 git clean -f -d && git reset --hard
+cd $ROM_TREE/device/oppo/common
+git clean -f -d && git reset --hard
 cd $ROM_TREE/frameworks/av
 git clean -f -d && git reset --hard
 cd $ROM_TREE/frameworks/base

@@ -50,6 +50,7 @@ cd $ROM_TREE
 ### Opts patches
 
 patch -d bionic                           -p1 -s -N --no-backup-if-mismatch < $OPTS/bionic0.patch
+patch -d device/oppo/common               -p1 -s -N --no-backup-if-mismatch < $OPTS/oppo-common0.patch
 patch -d frameworks/av                    -p1 -s -N --no-backup-if-mismatch < $OPTS/av0.patch
 patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $OPTS/base0.patch
 patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $OPTS/base1.patch
@@ -58,6 +59,7 @@ patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $O
 patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native2.patch
 patch -d packages/apps/AmazeFileManager   -p1 -s -N --no-backup-if-mismatch < $OPTS/AmazeFileManager0.patch
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts0.patch
+patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts1.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch
 patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap0.patch
