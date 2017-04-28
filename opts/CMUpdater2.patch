@@ -1,0 +1,36 @@
+From dab9665e224b3423cf06cc19667f234d706d7326 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Fri, 28 Apr 2017 17:05:46 +0800
+Subject: [PATCH] CMUpdater: Fix parsing date after changing the OTA filename
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ src/com/cyanogenmod/updater/utils/Utils.java | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/com/cyanogenmod/updater/utils/Utils.java b/src/com/cyanogenmod/updater/utils/Utils.java
+index 72f12bd..4499050 100644
+--- a/src/com/cyanogenmod/updater/utils/Utils.java
++++ b/src/com/cyanogenmod/updater/utils/Utils.java
+@@ -92,14 +92,14 @@ public class Utils {
+ 
+     public static long getTimestampFromFileName(String fileName) {
+         String[] subStrings = fileName.split("-");
+-        if (subStrings.length < 3 || subStrings[2].length() < 8) {
++        if (subStrings.length < 3 || subStrings[3].length() < 8) {
+             Log.e(TAG, "The given filename is not valid: " + fileName);
+             return 0;
+         }
+         try {
+-            int year = Integer.parseInt(subStrings[2].substring(0, 4));
+-            int month = Integer.parseInt(subStrings[2].substring(4, 6)) - 1;
+-            int day = Integer.parseInt(subStrings[2].substring(6, 8));
++            int year = Integer.parseInt(subStrings[3].substring(0, 4));
++            int month = Integer.parseInt(subStrings[3].substring(4, 6)) - 1;
++            int day = Integer.parseInt(subStrings[3].substring(6, 8));
+             Calendar cal = Calendar.getInstance();
+             cal.set(year, month, day);
+             return cal.getTimeInMillis() / 1000;
+-- 
+2.12.2
+

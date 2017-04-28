@@ -1,0 +1,26 @@
+From c38ce8fae878293298c1fcf449b7008d5a5cc2c0 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Fri, 28 Apr 2017 18:23:37 +0800
+Subject: [PATCH] CMUpdater: The filename is too long
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ src/com/cyanogenmod/updater/UpdatePreference.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/com/cyanogenmod/updater/UpdatePreference.java b/src/com/cyanogenmod/updater/UpdatePreference.java
+index 4e2afb6..8d14911 100644
+--- a/src/com/cyanogenmod/updater/UpdatePreference.java
++++ b/src/com/cyanogenmod/updater/UpdatePreference.java
+@@ -105,7 +105,7 @@ public class UpdatePreference extends Preference implements OnClickListener, OnL
+         super.onBindViewHolder(view);
+ 
+         // We only show updates of type Utils.getUpdateType(), so just use that here
+-        mBuildType = mUpdateInfo.getFileName().substring(0, 25);
++        mBuildType = mUpdateInfo.getFileName().substring(12, 25);
+         mBuildVersionName = Utils.getInstalledVersionName();
+         mBuildDateString = Utils.getDateLocalizedFromFileName(mContext, mUpdateInfo.getFileName());
+ 
+-- 
+2.12.2
+
