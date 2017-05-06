@@ -43,7 +43,7 @@ cd $ROM_TREE/packages/apps/PhoneCommon
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Snap
 git clean -f -d && git reset --hard
-cd $ROM_TREE/vendor/cmsdk
+cd $ROM_TREE/vendor/cm
 git clean -f -d && git reset --hard
 
 cd $ROM_TREE
@@ -72,6 +72,7 @@ patch -d packages/apps/Gallery2           -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/LockClock          -p1 -s -N --no-backup-if-mismatch < $OPTS/LockClock0.patch
 patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap0.patch
 patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap1.patch
+patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm0.patch
 
 ### OMS patches
 
