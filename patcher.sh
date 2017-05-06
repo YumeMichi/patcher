@@ -64,7 +64,6 @@ patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater4.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
 patch -d packages/apps/Eleven             -p1 -s -N --no-backup-if-mismatch < $OPTS/Eleven0.patch
-patch -d packages/apps/Eleven             -p1 -s -N --no-backup-if-mismatch < $OPTS/Eleven1.patch
 patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap0.patch
 patch -d packages/apps/Snap               -p1 -s -N --no-backup-if-mismatch < $OPTS/Snap1.patch
 
