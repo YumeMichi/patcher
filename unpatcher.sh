@@ -36,7 +36,5 @@ cd $ROM_TREE/packages/apps/PhoneCommon
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Snap
 git clean -f -d && git reset --hard
-cd $ROM_TREE/vendor/cmsdk
-git clean -f -d && git reset --hard
 
 cd $ROM_TREE
