@@ -15,6 +15,8 @@ cd $ROM_TREE/device/oppo/common
 git clean -f -d && git reset --hard
 cd $ROM_TREE/hardware/interfaces
 git clean -f -d && git reset --hard
+cd $ROM_TREE/hardware/qcom/display-caf/msm8974
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Settings
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Updater
@@ -32,6 +34,7 @@ patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $P
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-04.patch
 patch -d device/oppo/common               -p1 -s -N --no-backup-if-mismatch < $PATCHES/oppo-common-01.patch
 patch -d hardware/interfaces              -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-01.patch
+patch -d hardware/qcom/display-caf/msm8974 -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-qcom-display-01.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-01.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-02.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-03.patch
