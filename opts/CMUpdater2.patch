@@ -1,18 +1,19 @@
-From dab9665e224b3423cf06cc19667f234d706d7326 Mon Sep 17 00:00:00 2001
+From 438b0b90a271a6a2057ea4685ed55d25883ef8bc Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Fri, 28 Apr 2017 17:05:46 +0800
-Subject: [PATCH] CMUpdater: Fix parsing date after changing the OTA filename
+Subject: [PATCH 3/3] CMUpdater: Fix parsing date after changing the OTA
+ filename
 
 Signed-off-by: YumeMichi <do4suki@gmail.com>
 ---
- src/com/cyanogenmod/updater/utils/Utils.java | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ src/com/cyanogenmod/updater/utils/Utils.java | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/src/com/cyanogenmod/updater/utils/Utils.java b/src/com/cyanogenmod/updater/utils/Utils.java
-index 72f12bd..4499050 100644
+index 3deb8cd..a8e9106 100644
 --- a/src/com/cyanogenmod/updater/utils/Utils.java
 +++ b/src/com/cyanogenmod/updater/utils/Utils.java
-@@ -92,14 +92,14 @@ public class Utils {
+@@ -106,13 +106,13 @@ public class Utils {
  
      public static long getTimestampFromFileName(String fileName) {
          String[] subStrings = fileName.split("-");
@@ -21,16 +22,18 @@ index 72f12bd..4499050 100644
              Log.e(TAG, "The given filename is not valid: " + fileName);
              return 0;
          }
+         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
          try {
--            int year = Integer.parseInt(subStrings[2].substring(0, 4));
--            int month = Integer.parseInt(subStrings[2].substring(4, 6)) - 1;
--            int day = Integer.parseInt(subStrings[2].substring(6, 8));
-+            int year = Integer.parseInt(subStrings[3].substring(0, 4));
-+            int month = Integer.parseInt(subStrings[3].substring(4, 6)) - 1;
-+            int day = Integer.parseInt(subStrings[3].substring(6, 8));
-             Calendar cal = Calendar.getInstance();
-             cal.set(year, month, day);
-             return cal.getTimeInMillis() / 1000;
+-            return (dateFormat.parse(subStrings[2]).getTime() / 1000);
++            return (dateFormat.parse(subStrings[3]).getTime() / 1000);
+         } catch (ParseException e) {
+             Log.e(TAG, "The given filename is not valid: " + fileName);
+             return 0;
+@@ -209,3 +209,4 @@ public class Utils {
+     }
+ 
+ }
++
 -- 
-2.12.2
+2.13.1
 

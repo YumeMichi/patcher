@@ -63,8 +63,6 @@ patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater2.patch
-patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater3.patch
-patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater4.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
 patch -d packages/apps/Eleven             -p1 -s -N --no-backup-if-mismatch < $OPTS/Eleven0.patch
 patch -d packages/apps/LockClock          -p1 -s -N --no-backup-if-mismatch < $OPTS/LockClock0.patch

@@ -1,7 +1,7 @@
-From 92381aa6ab8ed2f95faa22af8f9f14c9a7a0fd81 Mon Sep 17 00:00:00 2001
+From a4332055a315d70dfbf30e189222f974a9450c2a Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Sun, 19 Jun 2016 15:14:15 -0700
-Subject: [PATCH] CMUpdater: Specify request method
+Subject: [PATCH 2/3] CMUpdater: Specify request method
 
 Fixes 400 error when attempting to check for updates.
 ---
@@ -20,7 +20,7 @@ index 13d22b7..10975df 100644
  import com.android.volley.Response;
  import com.android.volley.toolbox.JsonObjectRequest;
  import org.json.JSONObject;
-@@ -23,7 +24,7 @@
+@@ -23,7 +24,7 @@ public class UpdatesJsonObjectRequest extends JsonObjectRequest {
  
      public UpdatesJsonObjectRequest(String url, String userAgent, JSONObject jsonRequest,
              Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
@@ -29,3 +29,6 @@ index 13d22b7..10975df 100644
          mUserAgent = userAgent;
      }
  
+-- 
+2.13.1
+
