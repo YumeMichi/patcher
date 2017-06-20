@@ -19,6 +19,8 @@ cd $ROM_TREE/frameworks/base
 git clean -f -d && git reset --hard
 cd $ROM_TREE/frameworks/native
 git clean -f -d && git reset --hard
+cd $ROM_TREE/libcore
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMParts
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMUpdater
@@ -56,6 +58,7 @@ patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $O
 patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native0.patch
 patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native1.patch
 patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native2.patch
+patch -d libcore                          -p1 -s -N --no-backup-if-mismatch < $OPTS/libcore0.patch
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch

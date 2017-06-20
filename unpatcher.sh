@@ -16,6 +16,8 @@ cd $ROM_TREE/frameworks/base
 git clean -f -d && git reset --hard
 cd $ROM_TREE/frameworks/native
 git clean -f -d && git reset --hard
+cd $ROM_TREE/libcore
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMParts
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMUpdater
