@@ -35,8 +35,6 @@ cd $ROM_TREE/packages/apps/Eleven
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/ExactCalculator
 git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/LockClock
-git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PackageInstaller
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
@@ -66,7 +64,6 @@ patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater3.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
 patch -d packages/apps/Eleven             -p1 -s -N --no-backup-if-mismatch < $OPTS/Eleven0.patch
-patch -d packages/apps/LockClock          -p1 -s -N --no-backup-if-mismatch < $OPTS/LockClock0.patch
 patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm0.patch
 
 ### OMS patches
