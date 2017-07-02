@@ -1,39 +1,30 @@
-From 438b0b90a271a6a2057ea4685ed55d25883ef8bc Mon Sep 17 00:00:00 2001
+From 78010799d49601558ccde66677c5cc9f9044d6a6 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
-Date: Fri, 28 Apr 2017 17:05:46 +0800
-Subject: [PATCH 3/3] CMUpdater: Fix parsing date after changing the OTA
- filename
+Date: Wed, 21 Jun 2017 16:40:47 +0800
+Subject: [PATCH] CMUpdater: New google pixel colors
 
 Signed-off-by: YumeMichi <do4suki@gmail.com>
 ---
- src/com/cyanogenmod/updater/utils/Utils.java | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ res/values/colors.xml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/src/com/cyanogenmod/updater/utils/Utils.java b/src/com/cyanogenmod/updater/utils/Utils.java
-index 3deb8cd..a8e9106 100644
---- a/src/com/cyanogenmod/updater/utils/Utils.java
-+++ b/src/com/cyanogenmod/updater/utils/Utils.java
-@@ -106,13 +106,13 @@ public class Utils {
+diff --git a/res/values/colors.xml b/res/values/colors.xml
+index 2bc8260..a7805a5 100644
+--- a/res/values/colors.xml
++++ b/res/values/colors.xml
+@@ -10,9 +10,9 @@
+ -->
+ <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+     <!-- Palette colors referenced by top-level themes. -->
+-    <color name="theme_primary">#ff212121</color>
+-    <color name="theme_primary_dark">#ff000000</color>
+-    <color name="theme_accent">#ff009688</color>
++    <color name="theme_primary">#ff3e4147</color>
++    <color name="theme_primary_dark">#ff2a2c31</color>
++    <color name="theme_accent">#ff4285f4</color>
  
-     public static long getTimestampFromFileName(String fileName) {
-         String[] subStrings = fileName.split("-");
--        if (subStrings.length < 3 || subStrings[2].length() < 8) {
-+        if (subStrings.length < 3 || subStrings[3].length() < 8) {
-             Log.e(TAG, "The given filename is not valid: " + fileName);
-             return 0;
-         }
-         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-         try {
--            return (dateFormat.parse(subStrings[2]).getTime() / 1000);
-+            return (dateFormat.parse(subStrings[3]).getTime() / 1000);
-         } catch (ParseException e) {
-             Log.e(TAG, "The given filename is not valid: " + fileName);
-             return 0;
-@@ -209,3 +209,4 @@ public class Utils {
-     }
- 
- }
-+
+     <color name="refresh_icon_color">@android:color/white</color>
+     <color name="notification_icon_color">@android:color/white</color>
 -- 
 2.13.1
 
