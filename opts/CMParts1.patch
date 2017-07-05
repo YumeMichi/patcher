@@ -1,4 +1,4 @@
-From 2f1d69afde0cafbd359acf9b2837d41c9ed18814 Mon Sep 17 00:00:00 2001
+From aaf225a0e78bf42a190ffd8417d84d85805b3daa Mon Sep 17 00:00:00 2001
 From: ghbhaha <ghbhaha@gmail.com>
 Date: Thu, 6 Oct 2016 21:33:28 +0800
 Subject: [PATCH 1/2] CMParts: Status Bar Carriers [2/2]
@@ -6,11 +6,11 @@ Subject: [PATCH 1/2] CMParts: Status Bar Carriers [2/2]
 Change-Id: Ibc7877173932c99785f87c04ccbc812e96268768
 ---
  res/values-zh-rCN/sm_strings.xml                   |  10 ++
- res/values/sm_arrays.xml                           |  12 +++
+ res/values/sm_arrays.xml                           |  12 ++
  res/values/sm_strings.xml                          |  10 ++
  res/xml/status_bar_settings.xml                    |  22 ++++
- .../cmparts/statusbar/StatusBarSettings.java       | 120 +++++++++++++++++++++
- 5 files changed, 174 insertions(+)
+ .../cmparts/statusbar/StatusBarSettings.java       | 131 ++++++++++++++++++++-
+ 5 files changed, 181 insertions(+), 4 deletions(-)
 
 diff --git a/res/values-zh-rCN/sm_strings.xml b/res/values-zh-rCN/sm_strings.xml
 index 945b40c..5793090 100644
@@ -108,7 +108,7 @@ index 0c902a2..c2a5053 100644
          android:title="@string/status_bar_icons_title">
  
 diff --git a/src/org/cyanogenmod/cmparts/statusbar/StatusBarSettings.java b/src/org/cyanogenmod/cmparts/statusbar/StatusBarSettings.java
-index 2d468c7..1a65dbc 100644
+index 2d468c7..50acc93 100644
 --- a/src/org/cyanogenmod/cmparts/statusbar/StatusBarSettings.java
 +++ b/src/org/cyanogenmod/cmparts/statusbar/StatusBarSettings.java
 @@ -16,9 +16,15 @@
@@ -166,10 +166,12 @@ index 2d468c7..1a65dbc 100644
      @Override
      public void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
-@@ -72,6 +96,28 @@ public class StatusBarSettings extends SettingsPreferenceFragment
+@@ -72,6 +96,30 @@ public class StatusBarSettings extends SettingsPreferenceFragment
                  (CMSystemSettingListPreference) findPreference(STATUS_BAR_QUICK_QS_PULLDOWN);
          mQuickPulldown.setOnPreferenceChangeListener(this);
          updateQuickPulldownSummary(mQuickPulldown.getIntValue(0));
++
++        ContentResolver resolver = getActivity().getContentResolver();
 +
 +        mCarrierSize = (ListPreference) findPreference(CARRIER_SIZE_STYLE);
 +        int CarrierSize = Settings.System.getInt(resolver,
@@ -195,10 +197,21 @@ index 2d468c7..1a65dbc 100644
      }
  
      @Override
-@@ -92,10 +138,84 @@ public class StatusBarSettings extends SettingsPreferenceFragment
-             updateQuickPulldownSummary(value);
+@@ -86,16 +134,91 @@ public class StatusBarSettings extends SettingsPreferenceFragment
+     }
+ 
+     @Override
+-    public boolean onPreferenceChange(Preference preference, Object newValue) {
+-        int value = Integer.parseInt((String) newValue);
++    public boolean onPreferenceChange(Preference preference, Object objValue) {
+         if (preference == mQuickPulldown) {
+-            updateQuickPulldownSummary(value);
++            int quickpulldown = Integer.parseInt((String) objValue);
++            updateQuickPulldownSummary(quickpulldown);
          } else if (preference == mStatusBarBattery) {
-             enableStatusBarBatteryDependents(value);
+-            enableStatusBarBatteryDependents(value);
++            int batteryStyle = Integer.parseInt((String) objValue);
++            enableStatusBarBatteryDependents(batteryStyle);
 +        } else if (preference == mStatusBarCarrier) {
 +            boolean value = (Boolean) objValue;
 +            Settings.System.putInt(getContentResolver(),
