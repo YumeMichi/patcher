@@ -1,0 +1,37 @@
+From 7dda973d6c01d5a191deae252dfd9364376ff101 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Sun, 25 Jun 2017 02:46:24 +0200
+Subject: [PATCH] [2/3] Telecomm: config to disable dnd on call
+
+Change-Id: I8b28492aae76a9fbce79cd89d7fe6623e6890b39
+---
+ src/com/android/server/telecom/CallAudioRouteStateMachine.java | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/server/telecom/CallAudioRouteStateMachine.java b/src/com/android/server/telecom/CallAudioRouteStateMachine.java
+index 7f6b82b0..1fff299c 100644
+--- a/src/com/android/server/telecom/CallAudioRouteStateMachine.java
++++ b/src/com/android/server/telecom/CallAudioRouteStateMachine.java
+@@ -31,6 +31,7 @@ import android.os.Message;
+ import android.os.RemoteException;
+ import android.os.SystemProperties;
+ import android.os.UserHandle;
++import android.provider.Settings;
+ import android.telecom.CallAudioState;
+ import android.util.SparseArray;
+ 
+@@ -1330,7 +1331,10 @@ public class CallAudioRouteStateMachine extends StateMachine {
+         Log.i(this, "setNotificationsSuppressed: on=%s; suppressed=%s", (on ? "yes" : "no"),
+                 (mAreNotificationSuppressed ? "yes" : "no"));
+         if (on) {
+-            if (!mAreNotificationSuppressed) {
++            boolean dndModeEnabled = Settings.System.getInt(mContext.getContentResolver(),
++                    Settings.System.CALL_DND_ENABLED, 1) == 1;
++
++            if (dndModeEnabled && !mAreNotificationSuppressed) {
+                 // Enabling suppression of notifications.
+                 int interruptionFilter = mInterruptionFilterProxy.getCurrentInterruptionFilter();
+                 if (interruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALL) {
+-- 
+2.13.2
+
