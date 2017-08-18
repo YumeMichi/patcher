@@ -63,6 +63,7 @@ patch -d libcore                          -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts0.patch
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts1.patch
 patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts2.patch
+patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts3.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater0.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater1.patch
 patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $OPTS/CMUpdater2.patch
