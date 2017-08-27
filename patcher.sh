@@ -31,8 +31,6 @@ cd $ROM_TREE/packages/apps/ContactsCommon
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Dialer
 git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/Eleven
-git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/ExactCalculator
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PackageInstaller
@@ -72,7 +70,6 @@ patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OPTS/Contacts1.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer3.patch
-patch -d packages/apps/Eleven             -p1 -s -N --no-backup-if-mismatch < $OPTS/Eleven0.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $OPTS/Settings0.patch
 patch -d packages/services/Telecomm       -p1 -s -N --no-backup-if-mismatch < $OPTS/Telecomm0.patch
 patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm0.patch
