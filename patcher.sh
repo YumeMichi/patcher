@@ -37,8 +37,6 @@ cd $ROM_TREE/packages/apps/PackageInstaller
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
 git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/Settings
-git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/services/Telecomm
 git clean -f -d && git reset --hard
 cd $ROM_TREE/vendor/cm
@@ -70,10 +68,8 @@ patch -d packages/apps/CMUpdater          -p1 -s -N --no-backup-if-mismatch < $O
 patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OPTS/Contacts1.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
 patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer3.patch
-patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $OPTS/Settings0.patch
 patch -d packages/services/Telecomm       -p1 -s -N --no-backup-if-mismatch < $OPTS/Telecomm0.patch
 patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm0.patch
-patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm1.patch
 
 ### OMS patches
 
