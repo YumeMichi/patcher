@@ -20,8 +20,6 @@ cd $ROM_TREE/libcore
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/CMParts
 git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/CMUpdater
-git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Contacts
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/ContactsCommon
@@ -33,6 +31,8 @@ git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PackageInstaller
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/PhoneCommon
+git clean -f -d && git reset --hard
+cd $ROM_TREE/packages/apps/Updater
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/services/Telecomm
 git clean -f -d && git reset --hard
