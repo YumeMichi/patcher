@@ -11,6 +11,8 @@ PATCHES=$PATCHER_PATH/patches
 
 cd $ROM_TREE/build/make
 git clean -f -d && git reset --hard
+cd $ROM_TREE/device/qcom/sepolicy
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Settings
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Updater
@@ -28,6 +30,7 @@ patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $P
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-02.patch
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-03.patch
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-04.patch
+patch -d device/qcom/sepolicy             -p1 -s -N --no-backup-if-mismatch < $PATCHES/qcom-sepolicy-01.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-01.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-02.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-03.patch

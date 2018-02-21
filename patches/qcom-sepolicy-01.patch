@@ -1,0 +1,24 @@
+From 5fa996fd183ee6439a479226ccc15fbe843780ac Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Thu, 8 Feb 2018 17:32:55 +0800
+Subject: [PATCH] sepolicy: Label mpctl_socket as data_file_type
+
+Change-Id: I2b1aa10646e455899d4e25162510fe9298408c44
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ common/file.te | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/file.te b/common/file.te
+index a7932c1a..fe60ca0c 100644
+--- a/common/file.te
++++ b/common/file.te
+@@ -86,7 +86,7 @@ type sysfs_spmi_dev, sysfs_type, fs_type;
+ type sysfs_mpdecision, fs_type, sysfs_type;
+ type sysfs_rqstats, fs_type, sysfs_type;
+ type sysfs_cpu_online, fs_type, sysfs_type;
+-type mpctl_socket, file_type, mlstrustedobject;
++type mpctl_socket, file_type, data_file_type, mlstrustedobject;
+ type mpctl_data_file, file_type, data_file_type;
+ 
+ #Define the files used by lm
