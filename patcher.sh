@@ -11,6 +11,8 @@ PATCHES=$PATCHER_PATH/patches
 
 cd $ROM_TREE/build/make
 git clean -f -d && git reset --hard
+cd $ROM_TREE/device/oppo/common
+git clean -f -d && git reset --hard
 cd $ROM_TREE/device/qcom/sepolicy
 git clean -f -d && git reset --hard
 cd $ROM_TREE/external/littlemock
@@ -34,6 +36,7 @@ patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $P
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-02.patch
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-03.patch
 patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-04.patch
+patch -d device/oppo/common               -p1 -s -N --no-backup-if-mismatch < $PATCHES/oppo-common-01.patch
 patch -d device/qcom/sepolicy             -p1 -s -N --no-backup-if-mismatch < $PATCHES/qcom-sepolicy-01.patch
 patch -d external/littlemock              -p1 -s -N --no-backup-if-mismatch < $PATCHES/external-littlemock-01.patch
 patch -d hardware/interfaces              -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-01.patch
