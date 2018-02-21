@@ -1,0 +1,43 @@
+From de2c1b7a62f02eb037c8666f0771c64ee102ae75 Mon Sep 17 00:00:00 2001
+From: beanstown106 <nbenis106@gmail.com>
+Date: Sun, 25 Dec 2016 13:40:14 -0500
+Subject: [PATCH 3/4] GoogleAudio: Set new pixel sounds as defaults [2/2]
+
+---
+ target/product/core_base.mk | 4 ++--
+ target/product/full_base.mk | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/target/product/core_base.mk b/target/product/core_base.mk
+index 66e336fbd..ea08cd2e2 100644
+--- a/target/product/core_base.mk
++++ b/target/product/core_base.mk
+@@ -17,8 +17,8 @@
+ # that should not be in PDK should be added in lower level like core.mk.
+ 
+ PRODUCT_PROPERTY_OVERRIDES := \
+-    ro.config.notification_sound=Tethys.ogg \
+-    ro.config.alarm_alert=Oxygen.ogg
++    ro.config.notification_sound=Chime.ogg \
++    ro.config.alarm_alert=Flow.ogg
+ 
+ PRODUCT_PACKAGES += \
+     ContactsProvider \
+diff --git a/target/product/full_base.mk b/target/product/full_base.mk
+index bf93a02dd..b9b2c50d6 100644
+--- a/target/product/full_base.mk
++++ b/target/product/full_base.mk
+@@ -29,8 +29,8 @@ PRODUCT_PACKAGES := \
+ 
+ # Additional settings used in all AOSP builds
+ PRODUCT_PROPERTY_OVERRIDES := \
+-    ro.config.ringtone=Titania.ogg \
+-    ro.config.notification_sound=Tethys.ogg
++    ro.config.ringtone=Zen.ogg \
++    ro.config.notification_sound=Chime.ogg
+ 
+ # Put en_US first in the list, so make it default.
+ PRODUCT_LOCALES := en_US
+-- 
+2.11.0.windows.1
+

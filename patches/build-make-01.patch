@@ -1,0 +1,45 @@
+From b459aad1be301a073c0676177c6447e6d3559752 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Sat, 3 Feb 2018 17:13:10 +0000
+Subject: [PATCH 1/4] Add back AOSP audio props
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ target/product/core_base.mk | 4 ++++
+ target/product/full_base.mk | 5 +++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/target/product/core_base.mk b/target/product/core_base.mk
+index ba2aacaa2..151e8de45 100644
+--- a/target/product/core_base.mk
++++ b/target/product/core_base.mk
+@@ -16,6 +16,10 @@
+ # Note that components added here will be also shared in PDK. Components
+ # that should not be in PDK should be added in lower level like core.mk.
+ 
++PRODUCT_PROPERTY_OVERRIDES := \
++    ro.config.notification_sound=OnTheHunt.ogg \
++    ro.config.alarm_alert=Alarm_Classic.ogg
++
+ PRODUCT_PACKAGES += \
+     ContactsProvider \
+     DefaultContainerService \
+diff --git a/target/product/full_base.mk b/target/product/full_base.mk
+index d0c6ca1d0..7d19685f1 100644
+--- a/target/product/full_base.mk
++++ b/target/product/full_base.mk
+@@ -27,6 +27,11 @@ PRODUCT_PACKAGES := \
+     libwnndict \
+     WAPPushManager
+ 
++# Additional settings used in all AOSP builds
++PRODUCT_PROPERTY_OVERRIDES := \
++    ro.config.ringtone=Ring_Synth_04.ogg \
++    ro.config.notification_sound=pixiedust.ogg
++
+ # Put en_US first in the list, so make it default.
+ PRODUCT_LOCALES := en_US
+ 
+-- 
+2.11.0.windows.1
+
