@@ -1,0 +1,35 @@
+From 44269b4258949cb3d7309f80c25da9463d1afddf Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Thu, 31 Aug 2017 00:01:37 +0000
+Subject: [PATCH 1/2] Updater: Don't append "/v1/*" to serverUrl
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ src/org/lineageos/updater/misc/Utils.java | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/src/org/lineageos/updater/misc/Utils.java b/src/org/lineageos/updater/misc/Utils.java
+index 5a6b42b..ec556b1 100644
+--- a/src/org/lineageos/updater/misc/Utils.java
++++ b/src/org/lineageos/updater/misc/Utils.java
+@@ -148,11 +148,12 @@ public class Utils {
+         if (serverUrl.trim().isEmpty()) {
+             serverUrl = context.getString(R.string.conf_update_server_url_def);
+         }
+-        String incrementalVersion = SystemProperties.get(Constants.PROP_BUILD_VERSION_INCREMENTAL);
+-        String device = SystemProperties.get(Constants.PROP_NEXT_DEVICE,
+-                SystemProperties.get(Constants.PROP_DEVICE));
+-        String type = SystemProperties.get(Constants.PROP_RELEASE_TYPE).toLowerCase(Locale.ROOT);
+-        return serverUrl + "/v1/" + device + "/" + type + "/" + incrementalVersion;
++        // String incrementalVersion = SystemProperties.get(Constants.PROP_BUILD_VERSION_INCREMENTAL);
++        // String device = SystemProperties.get(Constants.PROP_NEXT_DEVICE,
++        //         SystemProperties.get(Constants.PROP_DEVICE));
++        // String type = SystemProperties.get(Constants.PROP_RELEASE_TYPE).toLowerCase(Locale.ROOT);
++        // return serverUrl + "/v1/" + device + "/" + type + "/" + incrementalVersion;
++        return serverUrl;
+     }
+ 
+     public static String getChangelogURL(Context context) {
+-- 
+2.11.0.windows.1
+

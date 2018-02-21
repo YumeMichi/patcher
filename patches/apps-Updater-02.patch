@@ -1,0 +1,88 @@
+From e03a130551319e1dd5b4d9dd66e9b9592f93ae2b Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Wed, 21 Feb 2018 13:47:30 +0800
+Subject: [PATCH 2/2] Revert "Updater: add changelog button"
+
+* No need for unofficial build.
+
+This reverts commit 76b9f49684fdba71d29cacf1eaed7f78a9ea8b44.
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ res/menu/menu_toolbar.xml                      | 4 ----
+ res/values/strings.xml                         | 2 --
+ src/org/lineageos/updater/UpdatesActivity.java | 7 -------
+ src/org/lineageos/updater/misc/Utils.java      | 6 ------
+ 4 files changed, 19 deletions(-)
+
+diff --git a/res/menu/menu_toolbar.xml b/res/menu/menu_toolbar.xml
+index 56839b4..6190914 100644
+--- a/res/menu/menu_toolbar.xml
++++ b/res/menu/menu_toolbar.xml
+@@ -22,8 +22,4 @@
+         android:checkable="true"
+         android:title="@string/menu_mobile_data_warning"
+         app:showAsAction="never" />
+-    <item
+-        android:id="@+id/menu_show_changelog"
+-        android:title="@string/menu_show_changelog"
+-        app:showAsAction="never" />
+ </menu>
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 07f9673..6716ea4 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -58,8 +58,6 @@
+     <string name="menu_delete_update">Delete</string>
+     <string name="menu_copy_url">Copy URL</string>
+     <string name="menu_export_update">Export update</string>
+-    <string name="menu_show_changelog">Show changelog</string>
+-    <string name="menu_changelog_url" translatable="false">https://download.lineageos.org/<xliff:g id="device_name">%1$s</xliff:g>/changes</string>
+ 
+     <string name="dialog_checking_for_updates">Checking for updates</string>
+     <string name="snack_updates_found">New updates found</string>
+diff --git a/src/org/lineageos/updater/UpdatesActivity.java b/src/org/lineageos/updater/UpdatesActivity.java
+index a3c7b7d..1e0e3c4 100644
+--- a/src/org/lineageos/updater/UpdatesActivity.java
++++ b/src/org/lineageos/updater/UpdatesActivity.java
+@@ -25,7 +25,6 @@ import android.content.IntentFilter;
+ import android.content.ServiceConnection;
+ import android.content.SharedPreferences;
+ import android.icu.text.DateFormat;
+-import android.net.Uri;
+ import android.os.Build;
+ import android.os.Bundle;
+ import android.os.IBinder;
+@@ -227,12 +226,6 @@ public class UpdatesActivity extends UpdatesListActivity {
+                         .apply();
+                 return true;
+             }
+-            case R.id.menu_show_changelog: {
+-                Intent openUrl = new Intent(Intent.ACTION_VIEW,
+-                        Uri.parse(Utils.getChangelogURL(this)));
+-                startActivity(openUrl);
+-                return true;
+-            }
+         }
+         return super.onOptionsItemSelected(item);
+     }
+diff --git a/src/org/lineageos/updater/misc/Utils.java b/src/org/lineageos/updater/misc/Utils.java
+index ec556b1..cde1594 100644
+--- a/src/org/lineageos/updater/misc/Utils.java
++++ b/src/org/lineageos/updater/misc/Utils.java
+@@ -156,12 +156,6 @@ public class Utils {
+         return serverUrl;
+     }
+ 
+-    public static String getChangelogURL(Context context) {
+-        String device = SystemProperties.get(Constants.PROP_NEXT_DEVICE,
+-                SystemProperties.get(Constants.PROP_DEVICE));
+-        return context.getString(R.string.menu_changelog_url, device);
+-    }
+-
+     public static void triggerUpdate(Context context, String downloadId) {
+         final Intent intent = new Intent(context, UpdaterService.class);
+         intent.setAction(UpdaterService.ACTION_INSTALL_UPDATE);
+-- 
+2.11.0.windows.1
+
