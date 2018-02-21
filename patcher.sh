@@ -11,6 +11,8 @@ PATCHES=$PATCHER_PATH/patches
 
 cd $ROM_TREE/packages/apps/Updater
 git clean -f -d && git reset --hard
+cd $ROM_TREE/system/core
+git clean -f -d && git reset --hard
 cd $ROM_TREE/vendor/lineage
 git clean -f -d && git reset --hard
 
@@ -20,6 +22,8 @@ cd $ROM_TREE
 
 patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-01.patch
 patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-02.patch
+patch -d system/core                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-01.patch
+patch -d system/core                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-02.patch
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-01.patch
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-02.patch
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-03.patch
