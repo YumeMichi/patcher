@@ -1,0 +1,50 @@
+From 46bb44a70000828825044a059bfb0b9504993312 Mon Sep 17 00:00:00 2001
+From: Adrian DC <radian.dc@gmail.com>
+Date: Mon, 24 Jul 2017 14:05:30 +0200
+Subject: [PATCH 2/6] soong_config: Add TARGET_USES_MEDIA_EXTENSIONS variable
+
+* Soong product variable 'uses_media_extensions'
+
+Change-Id: Icf36c7e4a90ace7a4c603c63ab1126c1554ffab8
+Signed-off-by: Adrian DC <radian.dc@gmail.com>
+---
+ build/soong/android/variable.go | 4 ++++
+ build/soong/soong_config.mk     | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/build/soong/android/variable.go b/build/soong/android/variable.go
+index 69895d19..bf7992de 100644
+--- a/build/soong/android/variable.go
++++ b/build/soong/android/variable.go
+@@ -12,6 +12,9 @@ type Product_variables struct {
+ 	Uses_generic_camera_parameter_library struct {
+ 		Srcs []string
+ 	}
++	Uses_media_extensions struct {
++		Cflags []string
++	}
+ 	Uses_qcom_bsp_legacy struct {
+ 		Cppflags []string
+ 	}
+@@ -23,5 +26,6 @@ type ProductVariables struct {
+ 	Specific_camera_parameter_library  *string `json:",omitempty"`
+ 	Target_shim_libs  *string `json:",omitempty"`
+ 	Uses_generic_camera_parameter_library  *bool `json:",omitempty"`
++	Uses_media_extensions  *bool `json:",omitempty"`
+ 	Uses_qcom_bsp_legacy  *bool `json:",omitempty"`
+ }
+diff --git a/build/soong/soong_config.mk b/build/soong/soong_config.mk
+index 2e80bd7f..d9af7ab0 100644
+--- a/build/soong/soong_config.mk
++++ b/build/soong/soong_config.mk
+@@ -9,6 +9,7 @@ lineage_soong:
+ 	echo '    "Specific_camera_parameter_library": "$(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY)",'; \
+ 	echo '    "Target_shim_libs": "$(subst $(space),:,$(TARGET_LD_SHIM_LIBS))",'; \
+ 	echo '    "Uses_generic_camera_parameter_library": $(if $(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY),false,true),'; \
++	echo '    "Uses_media_extensions": $(if $(filter true,$(TARGET_USES_MEDIA_EXTENSIONS)),true,false),'; \
+ 	echo '    "Uses_qcom_bsp_legacy": $(if $(filter true,$(TARGET_USES_QCOM_BSP_LEGACY)),true,false)'; \
+ 	echo '},'; \
+ 	echo '') > $(SOONG_VARIABLES_TMP)
+-- 
+2.11.0.windows.1
+

@@ -1,0 +1,47 @@
+From db42032bc3d9044c24924391ab41a5abe0987a36 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Sat, 3 Feb 2018 16:39:22 +0000
+Subject: [PATCH 3/6] prebuilt: Add PA Gapps config
+
+* We want to always keep some of our stock apps installed when the user
+installs gapps. This configuration keeps SnapdragonCamera,
+SnapdragonGallery, PABrowser, and Launcher3 installed when gapps are installed
+
+* Addresses NOUGAT-45
+
+Change-Id: I82bc05ad761a8cc0a9ca7c49bf7698f32eefbdf8
+Signed-off-by: Evan Anderson <evananderson@aospa.co>
+---
+ config/common.mk                         | 4 ++++
+ prebuilt/common/install/gapps-config.txt | 4 ++++
+ 2 files changed, 8 insertions(+)
+ create mode 100644 prebuilt/common/install/gapps-config.txt
+
+diff --git a/config/common.mk b/config/common.mk
+index 10c6ec77..44617ca5 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -126,6 +126,10 @@ PRODUCT_PACKAGES += \
+     libprotobuf-cpp-full \
+     librsjni
+ 
++# Include PA GApps config
++PRODUCT_COPY_FILES += \
++    vendor/lineage/prebuilt/common/install/gapps-config.txt:install/gapps-config.txt
++
+ # Custom Lineage packages
+ PRODUCT_PACKAGES += \
+     AudioFX \
+diff --git a/prebuilt/common/install/gapps-config.txt b/prebuilt/common/install/gapps-config.txt
+new file mode 100644
+index 00000000..4f2c1d99
+--- /dev/null
++++ b/prebuilt/common/install/gapps-config.txt
+@@ -0,0 +1,4 @@
++# don't remove these stock packages on gapps install
+++CameraStock
+++Gallery
+++Launcher
+-- 
+2.11.0.windows.1
+

@@ -1,0 +1,50 @@
+From 1079f337d11cd25a74489aae02113dfb62e5aa9b Mon Sep 17 00:00:00 2001
+From: Adrian DC <radian.dc@gmail.com>
+Date: Mon, 24 Jul 2017 14:04:34 +0200
+Subject: [PATCH 1/6] soong_config: Add TARGET_HAS_LEGACY_CAMERA_HAL1 variable
+
+* Soong product variable 'has_legacy_camera_hal1'
+
+Change-Id: I10800cba0c431297b5d7aad6e97d57a01232d73e
+Signed-off-by: Adrian DC <radian.dc@gmail.com>
+---
+ build/soong/android/variable.go | 4 ++++
+ build/soong/soong_config.mk     | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/build/soong/android/variable.go b/build/soong/android/variable.go
+index 781f3bf8..69895d19 100644
+--- a/build/soong/android/variable.go
++++ b/build/soong/android/variable.go
+@@ -1,5 +1,8 @@
+ package android
+ type Product_variables struct {
++	Has_legacy_camera_hal1 struct {
++		Cflags []string
++	}
+ 	Needs_text_relocations struct {
+ 		Cppflags []string
+ 	}
+@@ -15,6 +18,7 @@ type Product_variables struct {
+ }
+ 
+ type ProductVariables struct {
++	Has_legacy_camera_hal1  *bool `json:",omitempty"`
+ 	Needs_text_relocations  *bool `json:",omitempty"`
+ 	Specific_camera_parameter_library  *string `json:",omitempty"`
+ 	Target_shim_libs  *string `json:",omitempty"`
+diff --git a/build/soong/soong_config.mk b/build/soong/soong_config.mk
+index 27f1eb8d..2e80bd7f 100644
+--- a/build/soong/soong_config.mk
++++ b/build/soong/soong_config.mk
+@@ -4,6 +4,7 @@ lineage_soong:
+ 	$(hide) (\
+ 	echo '{'; \
+ 	echo '"Lineage": {'; \
++	echo '    "Has_legacy_camera_hal1": $(if $(filter true,$(TARGET_HAS_LEGACY_CAMERA_HAL1)),true,false),'; \
+ 	echo '    "Needs_text_relocations": $(if $(filter true,$(TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS)),true,false),'; \
+ 	echo '    "Specific_camera_parameter_library": "$(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY)",'; \
+ 	echo '    "Target_shim_libs": "$(subst $(space),:,$(TARGET_LD_SHIM_LIBS))",'; \
+-- 
+2.11.0.windows.1
+
