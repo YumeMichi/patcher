@@ -5,82 +5,12 @@
 ROM_TREE=$PWD
 PATCHER_PATH=$ROM_TREE/patcher
 
-SECURITY=$PATCHER_PATH/security
-OMS=$PATCHER_PATH/oms
-OPTS=$PATCHER_PATH/opts
+PATCHES=$PATCHER_PATH/patches
 
 ### Clean up first
 
-cd $ROM_TREE/bionic
-git clean -f -d && git reset --hard
-cd $ROM_TREE/frameworks/av
-git clean -f -d && git reset --hard
-cd $ROM_TREE/frameworks/base
-git clean -f -d && git reset --hard
-cd $ROM_TREE/frameworks/native
-git clean -f -d && git reset --hard
-cd $ROM_TREE/libcore
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/CMParts
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/Contacts
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/ContactsCommon
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/Dialer
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/ExactCalculator
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/PackageInstaller
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/PhoneCommon
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/apps/Updater
-git clean -f -d && git reset --hard
-cd $ROM_TREE/packages/services/Telecomm
-git clean -f -d && git reset --hard
-cd $ROM_TREE/vendor/cm
-git clean -f -d && git reset --hard
-
 cd $ROM_TREE
 
-### Security patches
-
-
-### Opts patches
-
-patch -d bionic                           -p1 -s -N --no-backup-if-mismatch < $OPTS/bionic0.patch
-patch -d device/oppo/common               -p1 -s -N --no-backup-if-mismatch < $OPTS/oppo-common0.patch
-patch -d frameworks/av                    -p1 -s -N --no-backup-if-mismatch < $OPTS/av0.patch
-patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $OPTS/base0.patch
-patch -d frameworks/base                  -p1 -s -N --no-backup-if-mismatch < $OPTS/base1.patch
-patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native0.patch
-patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native1.patch
-patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OPTS/native2.patch
-patch -d libcore                          -p1 -s -N --no-backup-if-mismatch < $OPTS/libcore0.patch
-patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts0.patch
-patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts1.patch
-patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts2.patch
-patch -d packages/apps/CMParts            -p1 -s -N --no-backup-if-mismatch < $OPTS/CMParts3.patch
-patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OPTS/Contacts1.patch
-patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer2.patch
-patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OPTS/Dialer3.patch
-patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $OPTS/Updater0.patch
-patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $OPTS/Updater1.patch
-patch -d packages/services/Telecomm       -p1 -s -N --no-backup-if-mismatch < $OPTS/Telecomm0.patch
-patch -d vendor/cm                        -p1 -s -N --no-backup-if-mismatch < $OPTS/vendor-cm0.patch
-
-### OMS patches
-
-patch -d frameworks/native                -p1 -s -N --no-backup-if-mismatch < $OMS/native5.patch
-patch -d packages/apps/Contacts           -p1 -s -N --no-backup-if-mismatch < $OMS/Contacts0.patch
-patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon0.patch
-patch -d packages/apps/ContactsCommon     -p1 -s -N --no-backup-if-mismatch < $OMS/ContactsCommon1.patch
-patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OMS/Dialer0.patch
-patch -d packages/apps/Dialer             -p1 -s -N --no-backup-if-mismatch < $OMS/Dialer1.patch
-patch -d packages/apps/ExactCalculator    -p1 -s -N --no-backup-if-mismatch < $OMS/ExactCalculator0.patch
-patch -d packages/apps/ExactCalculator    -p1 -s -N --no-backup-if-mismatch < $OMS/ExactCalculator1.patch
-patch -d packages/apps/PackageInstaller   -p1 -s -N --no-backup-if-mismatch < $OMS/PackageInstaller0.patch
-patch -d packages/apps/PhoneCommon        -p1 -s -N --no-backup-if-mismatch < $OMS/PhoneCommon0.patch
+### Patches
 
 cd $ROM_TREE
