@@ -9,6 +9,8 @@ PATCHES=$PATCHER_PATH/patches
 
 ### Clean up first
 
+cd $ROM_TREE/packages/apps/Settings
+git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Updater
 git clean -f -d && git reset --hard
 cd $ROM_TREE/system/core
@@ -20,6 +22,13 @@ cd $ROM_TREE
 
 ### Patches
 
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-01.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-02.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-03.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-04.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-05.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-06.patch
+patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-07.patch
 patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-01.patch
 patch -d packages/apps/Updater            -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-02.patch
 patch -d system/core                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-01.patch
