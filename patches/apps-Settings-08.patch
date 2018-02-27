@@ -1,0 +1,205 @@
+From de4adbaeca99d71a2a9bcd20049edd9dc69b0fba Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Tue, 27 Feb 2018 11:13:29 +0800
+Subject: [PATCH] Revert "Settings: "Security & location" -> "Security &
+ privacy""
+
+This reverts commit 66e7a5ce2a17302041ae3145c48bd23dd6da972c.
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ AndroidManifest.xml                              | 4 ++--
+ res/values/cm_strings.xml                        | 2 --
+ res/xml/security_settings.xml                    | 2 +-
+ res/xml/security_settings_chooser.xml            | 2 +-
+ res/xml/security_settings_encrypted.xml          | 2 +-
+ res/xml/security_settings_lockscreen.xml         | 2 +-
+ res/xml/security_settings_lockscreen_profile.xml | 2 +-
+ res/xml/security_settings_misc.xml               | 2 +-
+ res/xml/security_settings_password_profile.xml   | 2 +-
+ res/xml/security_settings_pattern_profile.xml    | 2 +-
+ res/xml/security_settings_pin_profile.xml        | 2 +-
+ res/xml/security_settings_status.xml             | 2 +-
+ res/xml/security_settings_unification.xml        | 2 +-
+ 13 files changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index a2afa54ea7..251d7d9aa9 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -1280,7 +1280,7 @@
+         </activity>
+ 
+         <activity android:name="Settings$SecuritySettingsActivity"
+-                android:label="@string/security_privacy_settings_title"
++                android:label="@string/security_settings_title"
+                 android:icon="@drawable/ic_settings_security"
+                 android:configChanges="orientation|keyboardHidden|screenSize"
+                 android:taskAffinity=""
+@@ -1338,7 +1338,7 @@
+ 
+         <!-- Keep compatibility with old shortcuts. -->
+         <activity-alias android:name="SecuritySettings"
+-                android:label="@string/security_privacy_settings_title"
++                android:label="@string/security_settings_title"
+                 android:configChanges="orientation|keyboardHidden|screenSize"
+                 android:exported="true"
+                 android:targetActivity="Settings$SecuritySettingsActivity">
+diff --git a/res/values/cm_strings.xml b/res/values/cm_strings.xml
+index 9fb5bcfed2..b0c1458901 100644
+--- a/res/values/cm_strings.xml
++++ b/res/values/cm_strings.xml
+@@ -336,8 +336,6 @@
+ 
+     <string name="ok">OK</string>
+ 
+-    <string name="security_privacy_settings_title">Security &amp; privacy</string>
+-
+     <!-- LineageOS legal -->
+     <string name="lineagelicense_title">LineageOS legal</string>
+ 
+diff --git a/res/xml/security_settings.xml b/res/xml/security_settings.xml
+index 76a88652a8..abdfe231c5 100644
+--- a/res/xml/security_settings.xml
++++ b/res/xml/security_settings.xml
+@@ -16,6 +16,6 @@
+ 
+ <PreferenceScreen
+         xmlns:android="http://schemas.android.com/apk/res/android"
+-        android:title="@string/security_privacy_settings_title">
++        android:title="@string/security_settings_title">
+ 
+ </PreferenceScreen>
+diff --git a/res/xml/security_settings_chooser.xml b/res/xml/security_settings_chooser.xml
+index 32f1b5b321..067ebaba0d 100644
+--- a/res/xml/security_settings_chooser.xml
++++ b/res/xml/security_settings_chooser.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <PreferenceCategory
+         android:key="security_category"
+diff --git a/res/xml/security_settings_encrypted.xml b/res/xml/security_settings_encrypted.xml
+index 5075acd756..0d3fe760f5 100644
+--- a/res/xml/security_settings_encrypted.xml
++++ b/res/xml/security_settings_encrypted.xml
+@@ -15,7 +15,7 @@
+ -->
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <PreferenceCategory
+         android:key="security_category_for_encrypted_device"
+diff --git a/res/xml/security_settings_lockscreen.xml b/res/xml/security_settings_lockscreen.xml
+index 6df921ae0f..c141fb7c74 100644
+--- a/res/xml/security_settings_lockscreen.xml
++++ b/res/xml/security_settings_lockscreen.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <PreferenceCategory
+         android:key="security_category"
+diff --git a/res/xml/security_settings_lockscreen_profile.xml b/res/xml/security_settings_lockscreen_profile.xml
+index 955b0a20a7..e027c6baf5 100644
+--- a/res/xml/security_settings_lockscreen_profile.xml
++++ b/res/xml/security_settings_lockscreen_profile.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <com.android.settingslib.RestrictedPreference
+         android:key="unlock_set_or_change_profile"
+diff --git a/res/xml/security_settings_misc.xml b/res/xml/security_settings_misc.xml
+index 1ea99739b4..e47d40c5f9 100644
+--- a/res/xml/security_settings_misc.xml
++++ b/res/xml/security_settings_misc.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+         xmlns:lineage="http://schemas.android.com/apk/res/lineageos.platform"
+-        android:title="@string/security_privacy_settings_title">
++        android:title="@string/security_settings_title">
+ 
+     <PreferenceCategory android:title="@string/security_passwords_title"
+             android:persistent="false">
+diff --git a/res/xml/security_settings_password_profile.xml b/res/xml/security_settings_password_profile.xml
+index 75741473c8..84e16784ff 100644
+--- a/res/xml/security_settings_password_profile.xml
++++ b/res/xml/security_settings_password_profile.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <com.android.settingslib.RestrictedPreference
+         android:key="unlock_set_or_change_profile"
+diff --git a/res/xml/security_settings_pattern_profile.xml b/res/xml/security_settings_pattern_profile.xml
+index 90b6e0a475..b660e4a8c3 100644
+--- a/res/xml/security_settings_pattern_profile.xml
++++ b/res/xml/security_settings_pattern_profile.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <com.android.settingslib.RestrictedPreference
+         android:key="unlock_set_or_change_profile"
+diff --git a/res/xml/security_settings_pin_profile.xml b/res/xml/security_settings_pin_profile.xml
+index c50da18812..481a087943 100644
+--- a/res/xml/security_settings_pin_profile.xml
++++ b/res/xml/security_settings_pin_profile.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <com.android.settingslib.RestrictedPreference
+         android:key="unlock_set_or_change_profile"
+diff --git a/res/xml/security_settings_status.xml b/res/xml/security_settings_status.xml
+index 59057ac180..06930f94b4 100644
+--- a/res/xml/security_settings_status.xml
++++ b/res/xml/security_settings_status.xml
+@@ -15,7 +15,7 @@
+ -->
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <PreferenceCategory
+         android:key="security_status"
+diff --git a/res/xml/security_settings_unification.xml b/res/xml/security_settings_unification.xml
+index 4c52fb2731..79b8b7d7f4 100644
+--- a/res/xml/security_settings_unification.xml
++++ b/res/xml/security_settings_unification.xml
+@@ -16,7 +16,7 @@
+ 
+ <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
+-                  android:title="@string/security_privacy_settings_title">
++                  android:title="@string/security_settings_title">
+ 
+     <SwitchPreference
+         android:key="unification"
+-- 
+2.16.2
+
