@@ -1,4 +1,4 @@
-From c0986c902865f9f20e020fd314820812e9af23a3 Mon Sep 17 00:00:00 2001
+From e68b2f83a7a487424b59f00a7733b0d185a7fa06 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 3 Feb 2018 17:17:48 +0000
 Subject: [PATCH 5/6] Remove LineageOS audios
@@ -9,21 +9,21 @@ Signed-off-by: YumeMichi <do4suki@gmail.com>
  1 file changed, 5 deletions(-)
 
 diff --git a/config/common.mk b/config/common.mk
-index 3c0a89e1..6f339359 100644
+index 6461ce03..51201746 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -16,11 +16,6 @@ PRODUCT_GENERIC_PROPERTIES += \
- PRODUCT_GENERIC_PROPERTIES += \
+@@ -16,11 +16,6 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.build.selinux=1
  
 -# Default notification/alarm sounds
--PRODUCT_GENERIC_PROPERTIES += \
+-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 -    ro.config.notification_sound=Argon.ogg \
 -    ro.config.alarm_alert=Hassium.ogg
 -
  ifneq ($(TARGET_BUILD_VARIANT),user)
  # Thank you, please drive thru!
- PRODUCT_GENERIC_PROPERTIES += persist.sys.dun.override=0
+ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += persist.sys.dun.override=0
 -- 
-2.11.0.windows.1
+2.16.2
 

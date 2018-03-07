@@ -1,4 +1,4 @@
-From 13af54f56c979ecc868c7e5f24dc98188d4e73a4 Mon Sep 17 00:00:00 2001
+From d6bdc3b4ece479f26d145c8742b66f1593ed59d6 Mon Sep 17 00:00:00 2001
 From: Rashed Abdel-Tawab <rashed@linux.com>
 Date: Sun, 28 Jan 2018 11:26:08 -0800
 Subject: [PATCH 6/6] soong_config: Add BOARD_USES_QCOM_HARDWARE variable
@@ -44,5 +44,5 @@ index d9af7ab0..221b33a5 100644
  	echo '},'; \
  	echo '') > $(SOONG_VARIABLES_TMP)
 -- 
-2.11.0.windows.1
+2.16.2
 

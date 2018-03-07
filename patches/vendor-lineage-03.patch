@@ -1,4 +1,4 @@
-From db42032bc3d9044c24924391ab41a5abe0987a36 Mon Sep 17 00:00:00 2001
+From 8fdd8596cdfad8e5b291971d180d777f17fe425e Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 3 Feb 2018 16:39:22 +0000
 Subject: [PATCH 3/6] prebuilt: Add PA Gapps config
@@ -18,7 +18,7 @@ Signed-off-by: Evan Anderson <evananderson@aospa.co>
  create mode 100644 prebuilt/common/install/gapps-config.txt
 
 diff --git a/config/common.mk b/config/common.mk
-index 10c6ec77..44617ca5 100644
+index e23d27fc..ec12542b 100644
 --- a/config/common.mk
 +++ b/config/common.mk
 @@ -126,6 +126,10 @@ PRODUCT_PACKAGES += \
@@ -43,5 +43,5 @@ index 00000000..4f2c1d99
 ++Gallery
 ++Launcher
 -- 
-2.11.0.windows.1
+2.16.2
 

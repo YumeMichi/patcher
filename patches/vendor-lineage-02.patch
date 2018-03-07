@@ -1,4 +1,4 @@
-From 46bb44a70000828825044a059bfb0b9504993312 Mon Sep 17 00:00:00 2001
+From dd60c70f3fa7c324e776630fde358512e6400d49 Mon Sep 17 00:00:00 2001
 From: Adrian DC <radian.dc@gmail.com>
 Date: Mon, 24 Jul 2017 14:05:30 +0200
 Subject: [PATCH 2/6] soong_config: Add TARGET_USES_MEDIA_EXTENSIONS variable
@@ -46,5 +46,5 @@ index 2e80bd7f..d9af7ab0 100644
  	echo '},'; \
  	echo '') > $(SOONG_VARIABLES_TMP)
 -- 
-2.11.0.windows.1
+2.16.2
 

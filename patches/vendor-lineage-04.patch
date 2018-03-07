@@ -1,4 +1,4 @@
-From 543e2430a8509e061581f3aef9ebcc2587e68dad Mon Sep 17 00:00:00 2001
+From 3bb467369c9f367516b638d959cbd21f5c702962 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Wed, 21 Feb 2018 23:09:27 +0800
 Subject: [PATCH 4/6] Add mkshrc with some aliases
@@ -14,7 +14,7 @@ Change-Id: I449e313d55aefda8b23cfb87ccff580e00eeaa19
  create mode 100644 prebuilt/common/etc/mkshrc
 
 diff --git a/config/common.mk b/config/common.mk
-index 44617ca5..3c0a89e1 100644
+index ec12542b..6461ce03 100644
 --- a/config/common.mk
 +++ b/config/common.mk
 @@ -130,6 +130,10 @@ PRODUCT_PACKAGES += \
@@ -62,5 +62,5 @@ index 00000000..0e57d572
 +alias ll='ls -al'
 +alias lz='ls -alZ'
 -- 
-2.11.0.windows.1
+2.16.2
 
