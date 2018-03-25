@@ -8,8 +8,6 @@ cd $ROM_TREE/build/make
 git clean -f -d && git reset --hard
 cd $ROM_TREE/device/oppo/common
 git clean -f -d && git reset --hard
-cd $ROM_TREE/external/littlemock
-git clean -f -d && git reset --hard
 cd $ROM_TREE/hardware/interfaces
 git clean -f -d && git reset --hard
 cd $ROM_TREE/packages/apps/Settings
