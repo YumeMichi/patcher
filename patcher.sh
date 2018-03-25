@@ -37,8 +37,6 @@ patch -d build/make                       -p1 -s -N --no-backup-if-mismatch < $P
 patch -d device/oppo/common               -p1 -s -N --no-backup-if-mismatch < $PATCHES/oppo-common-01.patch
 patch -d external/littlemock              -p1 -s -N --no-backup-if-mismatch < $PATCHES/external-littlemock-01.patch
 patch -d hardware/interfaces              -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-01.patch
-patch -d hardware/interfaces              -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-02.patch
-patch -d hardware/interfaces              -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-03.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-01.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-02.patch
 patch -d packages/apps/Settings           -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-03.patch

@@ -1,194 +1,38 @@
-From ab3d520fcbc25a95826bb6f3a6a889329bdd7999 Mon Sep 17 00:00:00 2001
+From 5fcd012c0fc31ddeb4ff09a3f3d64ae5fcd03c0a Mon Sep 17 00:00:00 2001
 From: Sauhard Pande <sauhardp@codeaurora.org>
-Date: Thu, 11 May 2017 19:51:00 +0530
-Subject: [PATCH 1/3] Camed HAL extension: Added support in HIDL for Extended
- FD.
+Date: Fri, 14 Apr 2017 03:17:06 +0530
+Subject: [PATCH 3/3] Camera: HAL1 fix for crash in releaserecording frame
 
-Made changes in camera.device@1.0-impl
-1) Included extended HIDL extension files types.hal and
-IQCameraDeviceCallback.hal.
-2) Added mQDeviceCallback to get the interface extended callbacks
-defined in CameraHardwareInterface.
-3) Changes in sDataCb for coppying extra fields of QCameraFrameMetadata,
-if extended callback is present else do normal callback to support
-default implementation.
+Issue:
+During stoprecording deallocate meta is called which
+erases the entry from map in CameraDevice and also
+releases metadatabuffer. Thus when releaseRecordingframe
+is called the entry is not found in the map causing crash
+due to null pointer reference
 
-Change-Id: I4f691342d4a0e53a4949c141ed1f7865f5450c8c
+Fix:
+If there is no entry for that buffer in map then return
+
+Change-Id: I937754bbc68bdf2fd54e22a1ffc674f90730fb37
 ---
- camera/device/1.0/default/Android.bp         |  1 +
- camera/device/1.0/default/CameraDevice.cpp   | 90 ++++++++++++++++++++--------
- camera/device/1.0/default/CameraDevice_1_0.h |  3 +
- camera/provider/2.4/default/Android.bp       |  2 +
- 4 files changed, 72 insertions(+), 24 deletions(-)
+ camera/device/1.0/default/CameraDevice.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/camera/device/1.0/default/Android.bp b/camera/device/1.0/default/Android.bp
-index e0b31f0a..56436ffc 100644
---- a/camera/device/1.0/default/Android.bp
-+++ b/camera/device/1.0/default/Android.bp
-@@ -12,6 +12,7 @@ cc_library_shared {
-         "libhwbinder",
-         "libutils",
-         "android.hardware.camera.device@1.0",
-+        "vendor.qti.hardware.camera.device@1.0_vendor",
-         "android.hardware.camera.common@1.0",
-         "android.hardware.graphics.allocator@2.0",
-         "android.hardware.graphics.mapper@2.0",
 diff --git a/camera/device/1.0/default/CameraDevice.cpp b/camera/device/1.0/default/CameraDevice.cpp
-index a03bbc86..f6966dc2 100644
+index aa57db98..50cecd77 100644
 --- a/camera/device/1.0/default/CameraDevice.cpp
 +++ b/camera/device/1.0/default/CameraDevice.cpp
-@@ -428,30 +428,68 @@ void CameraDevice::sDataCb(int32_t msg_type, const camera_memory_t *data, unsign
-              index, mem->mNumBufs);
+@@ -881,6 +881,10 @@ void CameraDevice::releaseRecordingFrameLocked(
          return;
      }
--    if (object->mDeviceCallback != nullptr) {
--        CameraFrameMetadata hidlMetadata;
--        if (metadata) {
--            hidlMetadata.faces.resize(metadata->number_of_faces);
--            for (size_t i = 0; i < hidlMetadata.faces.size(); i++) {
--                hidlMetadata.faces[i].score = metadata->faces[i].score;
--                hidlMetadata.faces[i].id = metadata->faces[i].id;
--                for (int k = 0; k < 4; k++) {
--                    hidlMetadata.faces[i].rect[k] = metadata->faces[i].rect[k];
--                }
--                for (int k = 0; k < 2; k++) {
--                    hidlMetadata.faces[i].leftEye[k] = metadata->faces[i].left_eye[k];
--                }
--                for (int k = 0; k < 2; k++) {
--                    hidlMetadata.faces[i].rightEye[k] = metadata->faces[i].right_eye[k];
--                }
--                for (int k = 0; k < 2; k++) {
--                    hidlMetadata.faces[i].mouth[k] = metadata->faces[i].mouth[k];
--                }
--            }
--        }
--        CameraHeapMemory* mem = static_cast<CameraHeapMemory *>(data->handle);
--        object->mDeviceCallback->dataCallback(
--                (DataCallbackMsg) msg_type, mem->handle.mId, index, hidlMetadata);
-+    if(object->mQDeviceCallback != nullptr) {
-+         vendor::qti::hardware::camera::device::V1_0::QCameraFrameMetadata hidlMetadata;
-+         if (metadata) {
-+             hidlMetadata.faces.resize(metadata->number_of_faces);
-+             for (size_t i = 0; i < hidlMetadata.faces.size(); i++) {
-+                 hidlMetadata.faces[i].score = metadata->faces[i].score;
-+                 hidlMetadata.faces[i].id = metadata->faces[i].id;
-+                 for (int k = 0; k < 4; k++) {
-+                     hidlMetadata.faces[i].rect[k] = metadata->faces[i].rect[k];
-+                 }
-+                 for (int k = 0; k < 2; k++) {
-+                     hidlMetadata.faces[i].leftEye[k] = metadata->faces[i].left_eye[k];
-+                 }
-+                 for (int k = 0; k < 2; k++) {
-+                     hidlMetadata.faces[i].rightEye[k] = metadata->faces[i].right_eye[k];
-+                 }
-+                 for (int k = 0; k < 2; k++) {
-+                     hidlMetadata.faces[i].mouth[k] = metadata->faces[i].mouth[k];
-+                 }
-+                 hidlMetadata.faces[i].smile_degree = metadata->faces[i].smile_degree;
-+                 hidlMetadata.faces[i].smile_score = metadata->faces[i].smile_score;
-+                 hidlMetadata.faces[i].blink_detected = metadata->faces[i].blink_detected;
-+                 hidlMetadata.faces[i].face_recognised = metadata->faces[i].face_recognised;
-+                 hidlMetadata.faces[i].gaze_angle = metadata->faces[i].gaze_angle;
-+                 hidlMetadata.faces[i].updown_dir = metadata->faces[i].updown_dir;
-+                 hidlMetadata.faces[i].leftright_dir = metadata->faces[i].leftright_dir;
-+                 hidlMetadata.faces[i].roll_dir = metadata->faces[i].roll_dir;
-+                 hidlMetadata.faces[i].left_right_gaze = metadata->faces[i].left_right_gaze;
-+                 hidlMetadata.faces[i].top_bottom_gaze = metadata->faces[i].top_bottom_gaze;
-+                 hidlMetadata.faces[i].leye_blink = metadata->faces[i].leye_blink;
-+                 hidlMetadata.faces[i].reye_blink = metadata->faces[i].reye_blink;
-+             }
-+         }
-+         CameraHeapMemory* mem = static_cast<CameraHeapMemory *>(data->handle);
-+         object->mQDeviceCallback->QDataCallback(
-+                 (DataCallbackMsg) msg_type, mem->handle.mId, index, hidlMetadata);
-+    } else {
-+       if (object->mDeviceCallback != nullptr) {
-+           CameraFrameMetadata hidlMetadata;
-+           if (metadata) {
-+               hidlMetadata.faces.resize(metadata->number_of_faces);
-+               for (size_t i = 0; i < hidlMetadata.faces.size(); i++) {
-+                   hidlMetadata.faces[i].score = metadata->faces[i].score;
-+                   hidlMetadata.faces[i].id = metadata->faces[i].id;
-+                   for (int k = 0; k < 4; k++) {
-+                       hidlMetadata.faces[i].rect[k] = metadata->faces[i].rect[k];
-+                   }
-+                   for (int k = 0; k < 2; k++) {
-+                       hidlMetadata.faces[i].leftEye[k] = metadata->faces[i].left_eye[k];
-+                   }
-+                   for (int k = 0; k < 2; k++) {
-+                       hidlMetadata.faces[i].rightEye[k] = metadata->faces[i].right_eye[k];
-+                   }
-+                   for (int k = 0; k < 2; k++) {
-+                       hidlMetadata.faces[i].mouth[k] = metadata->faces[i].mouth[k];
-+                   }
-+               }
-+           }
-+           CameraHeapMemory* mem = static_cast<CameraHeapMemory *>(data->handle);
-+           object->mDeviceCallback->dataCallback(
-+                   (DataCallbackMsg) msg_type, mem->handle.mId, index, hidlMetadata);
-+       }
-     }
- }
- 
-@@ -667,6 +705,10 @@ Return<Status> CameraDevice::open(const sp<ICameraDeviceCallback>& callback) {
- 
-     initHalPreviewWindow();
-     mDeviceCallback = callback;
-+    mQDeviceCallback = vendor::qti::hardware::camera::device::V1_0::IQCameraDeviceCallback::castFrom(callback);
-+    if(mQDeviceCallback == nullptr) {
-+        ALOGI("could not cast ICameraDeviceCallback to IQCameraDeviceCallback");
-+    }
- 
-     if (mDevice->ops->set_callbacks) {
-         mDevice->ops->set_callbacks(mDevice,
-diff --git a/camera/device/1.0/default/CameraDevice_1_0.h b/camera/device/1.0/default/CameraDevice_1_0.h
-index 2c980f0a..b8d5a0a4 100644
---- a/camera/device/1.0/default/CameraDevice_1_0.h
-+++ b/camera/device/1.0/default/CameraDevice_1_0.h
-@@ -28,6 +28,7 @@
- #include <android/hidl/memory/1.0/IMemory.h>
- #include <hidl/MQDescriptor.h>
- #include <hidl/Status.h>
-+#include <vendor/qti/hardware/camera/device/1.0/IQCameraDeviceCallback.h>
- 
- namespace android {
- namespace hardware {
-@@ -44,6 +45,7 @@ using ::android::hardware::camera::common::V1_0::helper::HandleImporter;
- using ::android::hardware::camera::device::V1_0::CameraInfo;
- using ::android::hardware::camera::device::V1_0::CommandType;
- using ::android::hardware::camera::device::V1_0::ICameraDevice;
-+using ::vendor::qti::hardware::camera::device::V1_0::IQCameraDeviceCallback;
- using ::android::hardware::camera::device::V1_0::ICameraDeviceCallback;
- using ::android::hardware::camera::device::V1_0::ICameraDevicePreviewCallback;
- using ::android::hardware::camera::device::V1_0::MemoryId;
-@@ -164,6 +166,7 @@ private:
-     const SortedVector<std::pair<std::string, std::string>>& mCameraDeviceNames;
- 
-     sp<ICameraDeviceCallback> mDeviceCallback = nullptr;
-+    sp<IQCameraDeviceCallback> mQDeviceCallback = nullptr;
- 
-     mutable Mutex mMemoryMapLock; // gating access to mMemoryMap
-                                   // must not hold mLock after this lock is acquired
-diff --git a/camera/provider/2.4/default/Android.bp b/camera/provider/2.4/default/Android.bp
-index c0b35912..b82dc5d8 100644
---- a/camera/provider/2.4/default/Android.bp
-+++ b/camera/provider/2.4/default/Android.bp
-@@ -10,6 +10,7 @@ cc_library_shared {
-         "libutils",
-         "libcutils",
-         "android.hardware.camera.device@1.0",
-+        "vendor.qti.hardware.camera.device@1.0_vendor",
-         "android.hardware.camera.device@3.2",
-         "android.hardware.camera.device@3.3",
-         "camera.device@1.0-impl",
-@@ -44,6 +45,7 @@ cc_binary {
-         "liblog",
-         "libutils",
-         "android.hardware.camera.device@1.0",
-+        "vendor.qti.hardware.camera.device@1.0_vendor",
-         "android.hardware.camera.device@3.2",
-         "android.hardware.camera.device@3.3",
-         "android.hardware.camera.provider@2.4",
+     if (mDevice->ops->release_recording_frame) {
++        if (mMemoryMap.count(memId) == 0) {
++            ALOGE("Buffer with id %d already released", memId);
++            return;
++        }
+         CameraHeapMemory* camMemory;
+         {
+             Mutex::Autolock _l(mMemoryMapLock);
 -- 
 2.11.0.windows.1
 
