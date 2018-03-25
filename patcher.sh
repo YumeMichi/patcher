@@ -52,7 +52,5 @@ patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $P
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-02.patch
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-03.patch
 patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-04.patch
-patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-05.patch
-patch -d vendor/lineage                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/vendor-lineage-06.patch
 
 cd $ROM_TREE
