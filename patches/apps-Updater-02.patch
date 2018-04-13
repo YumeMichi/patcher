@@ -1,11 +1,9 @@
-From e03a130551319e1dd5b4d9dd66e9b9592f93ae2b Mon Sep 17 00:00:00 2001
+From 9f34785c4652bd5219842f21f27b621b6b473306 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
-Date: Wed, 21 Feb 2018 13:47:30 +0800
-Subject: [PATCH 2/2] Revert "Updater: add changelog button"
+Date: Sat, 7 Apr 2018 13:08:33 +0800
+Subject: [PATCH 2/2] Updater: Kill changelog button
 
-* No need for unofficial build.
-
-This reverts commit 76b9f49684fdba71d29cacf1eaed7f78a9ea8b44.
+ * Not used for unofficial build.
 
 Signed-off-by: YumeMichi <do4suki@gmail.com>
 ---
@@ -16,12 +14,12 @@ Signed-off-by: YumeMichi <do4suki@gmail.com>
  4 files changed, 19 deletions(-)
 
 diff --git a/res/menu/menu_toolbar.xml b/res/menu/menu_toolbar.xml
-index 56839b4..6190914 100644
+index 8b9117c..5e8afc3 100644
 --- a/res/menu/menu_toolbar.xml
 +++ b/res/menu/menu_toolbar.xml
-@@ -22,8 +22,4 @@
-         android:checkable="true"
-         android:title="@string/menu_mobile_data_warning"
+@@ -10,8 +10,4 @@
+         android:id="@+id/menu_preferences"
+         android:title="@string/menu_preferences"
          app:showAsAction="never" />
 -    <item
 -        android:id="@+id/menu_show_changelog"
@@ -29,23 +27,23 @@ index 56839b4..6190914 100644
 -        app:showAsAction="never" />
  </menu>
 diff --git a/res/values/strings.xml b/res/values/strings.xml
-index 07f9673..6716ea4 100644
+index bb6f50d..b0762e1 100644
 --- a/res/values/strings.xml
 +++ b/res/values/strings.xml
-@@ -58,8 +58,6 @@
+@@ -66,8 +66,6 @@
      <string name="menu_delete_update">Delete</string>
      <string name="menu_copy_url">Copy URL</string>
      <string name="menu_export_update">Export update</string>
 -    <string name="menu_show_changelog">Show changelog</string>
 -    <string name="menu_changelog_url" translatable="false">https://download.lineageos.org/<xliff:g id="device_name">%1$s</xliff:g>/changes</string>
  
-     <string name="dialog_checking_for_updates">Checking for updates</string>
      <string name="snack_updates_found">New updates found</string>
+     <string name="snack_no_updates_found">No new updates found</string>
 diff --git a/src/org/lineageos/updater/UpdatesActivity.java b/src/org/lineageos/updater/UpdatesActivity.java
-index a3c7b7d..1e0e3c4 100644
+index 7f07004..edf4188 100644
 --- a/src/org/lineageos/updater/UpdatesActivity.java
 +++ b/src/org/lineageos/updater/UpdatesActivity.java
-@@ -25,7 +25,6 @@ import android.content.IntentFilter;
+@@ -23,7 +23,6 @@ import android.content.IntentFilter;
  import android.content.ServiceConnection;
  import android.content.SharedPreferences;
  import android.icu.text.DateFormat;
@@ -53,8 +51,8 @@ index a3c7b7d..1e0e3c4 100644
  import android.os.Build;
  import android.os.Bundle;
  import android.os.IBinder;
-@@ -227,12 +226,6 @@ public class UpdatesActivity extends UpdatesListActivity {
-                         .apply();
+@@ -200,12 +199,6 @@ public class UpdatesActivity extends UpdatesListActivity {
+                 showPreferencesDialog();
                  return true;
              }
 -            case R.id.menu_show_changelog: {
@@ -67,10 +65,10 @@ index a3c7b7d..1e0e3c4 100644
          return super.onOptionsItemSelected(item);
      }
 diff --git a/src/org/lineageos/updater/misc/Utils.java b/src/org/lineageos/updater/misc/Utils.java
-index ec556b1..cde1594 100644
+index 5c2b5e8..3163f32 100644
 --- a/src/org/lineageos/updater/misc/Utils.java
 +++ b/src/org/lineageos/updater/misc/Utils.java
-@@ -156,12 +156,6 @@ public class Utils {
+@@ -157,12 +157,6 @@ public class Utils {
          return serverUrl;
      }
  
@@ -84,5 +82,5 @@ index ec556b1..cde1594 100644
          final Intent intent = new Intent(context, UpdaterService.class);
          intent.setAction(UpdaterService.ACTION_INSTALL_UPDATE);
 -- 
-2.11.0.windows.1
+2.17.0
 
