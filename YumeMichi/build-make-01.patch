@@ -1,45 +1,28 @@
-From dc0712534019079587aac11e30aa046421900eec Mon Sep 17 00:00:00 2001
-From: YumeMichi <do4suki@gmail.com>
-Date: Sat, 3 Feb 2018 17:13:10 +0000
-Subject: [PATCH 1/5] Add back AOSP audio props
+From 535684027d5106e7ee03c84e84c344b9df49860e Mon Sep 17 00:00:00 2001
+From: Sultanxda <sultanxda@gmail.com>
+Date: Sat, 6 Aug 2016 13:52:43 -0700
+Subject: [PATCH 5/5] Use 'release-keys' for build tag
 
-Signed-off-by: YumeMichi <do4suki@gmail.com>
+Some apps may check for this.
+
+Change-Id: Ibece80d0e6020efaf886d8d5f72290fa6740df7d
 ---
- target/product/core_base.mk | 4 ++++
- target/product/full_base.mk | 5 +++++
- 2 files changed, 9 insertions(+)
+ core/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/target/product/core_base.mk b/target/product/core_base.mk
-index ba2aacaa29..151e8de456 100644
---- a/target/product/core_base.mk
-+++ b/target/product/core_base.mk
-@@ -16,6 +16,10 @@
- # Note that components added here will be also shared in PDK. Components
- # that should not be in PDK should be added in lower level like core.mk.
- 
-+PRODUCT_PROPERTY_OVERRIDES := \
-+    ro.config.notification_sound=OnTheHunt.ogg \
-+    ro.config.alarm_alert=Alarm_Classic.ogg
-+
- PRODUCT_PACKAGES += \
-     ContactsProvider \
-     DefaultContainerService \
-diff --git a/target/product/full_base.mk b/target/product/full_base.mk
-index d0c6ca1d0b..7d19685f1b 100644
---- a/target/product/full_base.mk
-+++ b/target/product/full_base.mk
-@@ -27,6 +27,11 @@ PRODUCT_PACKAGES := \
-     libwnndict \
-     WAPPushManager
- 
-+# Additional settings used in all AOSP builds
-+PRODUCT_PROPERTY_OVERRIDES := \
-+    ro.config.ringtone=Ring_Synth_04.ogg \
-+    ro.config.notification_sound=pixiedust.ogg
-+
- # Put en_US first in the list, so make it default.
- PRODUCT_LOCALES := en_US
- 
+diff --git a/core/Makefile b/core/Makefile
+index 161b480ea6..8f893bddba 100644
+--- a/core/Makefile
++++ b/core/Makefile
+@@ -167,7 +167,7 @@ endif
+ # Both of these tags will be removed and replaced with "release-keys"
+ # when the target-files is signed in a post-build step.
+ ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/target/product/security/testkey)
+-BUILD_KEYS := test-keys
++BUILD_KEYS := release-keys
+ else
+ BUILD_KEYS := dev-keys
+ endif
 -- 
 2.17.0
 
