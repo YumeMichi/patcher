@@ -32,6 +32,7 @@ patch -d build/make                           -p1 -s -N --no-backup-if-mismatch 
 patch -d build/make                           -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-02.patch
 patch -d build/make                           -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-03.patch
 patch -d build/make                           -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-04.patch
+patch -d build/make                           -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-05.patch
 patch -d device/oppo/common                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/oppo-common-01.patch
 patch -d hardware/interfaces                  -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-01.patch
 patch -d hardware/qcom/display-caf/msm8974    -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-qcom-display-01.patch

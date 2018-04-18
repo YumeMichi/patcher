@@ -1,7 +1,7 @@
-From de2c1b7a62f02eb037c8666f0771c64ee102ae75 Mon Sep 17 00:00:00 2001
+From fbaaf0f8fc1fc7313c596d934848c56103d43ab4 Mon Sep 17 00:00:00 2001
 From: beanstown106 <nbenis106@gmail.com>
 Date: Sun, 25 Dec 2016 13:40:14 -0500
-Subject: [PATCH 3/4] GoogleAudio: Set new pixel sounds as defaults [2/2]
+Subject: [PATCH 3/5] GoogleAudio: Set new pixel sounds as defaults [2/2]
 
 ---
  target/product/core_base.mk | 4 ++--
@@ -9,7 +9,7 @@ Subject: [PATCH 3/4] GoogleAudio: Set new pixel sounds as defaults [2/2]
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/target/product/core_base.mk b/target/product/core_base.mk
-index 66e336fbd..ea08cd2e2 100644
+index 66e336fbd6..ea08cd2e2e 100644
 --- a/target/product/core_base.mk
 +++ b/target/product/core_base.mk
 @@ -17,8 +17,8 @@
@@ -24,7 +24,7 @@ index 66e336fbd..ea08cd2e2 100644
  PRODUCT_PACKAGES += \
      ContactsProvider \
 diff --git a/target/product/full_base.mk b/target/product/full_base.mk
-index bf93a02dd..b9b2c50d6 100644
+index bf93a02dd6..b9b2c50d6e 100644
 --- a/target/product/full_base.mk
 +++ b/target/product/full_base.mk
 @@ -29,8 +29,8 @@ PRODUCT_PACKAGES := \
@@ -39,5 +39,5 @@ index bf93a02dd..b9b2c50d6 100644
  # Put en_US first in the list, so make it default.
  PRODUCT_LOCALES := en_US
 -- 
-2.11.0.windows.1
+2.17.0
 
