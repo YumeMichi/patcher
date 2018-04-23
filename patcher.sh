@@ -43,6 +43,7 @@ patch -d packages/apps/Settings               -p1 -s -N --no-backup-if-mismatch 
 patch -d packages/apps/Settings               -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-06.patch
 patch -d packages/apps/Settings               -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-07.patch
 patch -d packages/apps/Settings               -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-08.patch
+patch -d packages/apps/Settings               -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Settings-09.patch
 patch -d packages/apps/Updater                -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-01.patch
 patch -d packages/apps/Updater                -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-02.patch
 patch -d system/core                          -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-01.patch
