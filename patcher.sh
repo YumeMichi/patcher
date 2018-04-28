@@ -25,6 +25,8 @@ cd $ROM_TREE/packages/apps/Updater
 git clean -f -d && git reset --hard
 cd $ROM_TREE/system/core
 git clean -f -d && git reset --hard
+cd $ROM_TREE/system/sepolicy
+git clean -f -d && git reset --hard
 
 cd $ROM_TREE
 
@@ -48,5 +50,8 @@ patch -d packages/apps/Updater                -p1 -s -N --no-backup-if-mismatch 
 patch -d packages/apps/Updater                -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-Updater-02.patch
 patch -d system/core                          -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-01.patch
 patch -d system/core                          -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-core-02.patch
+patch -d system/sepolicy                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-sepolicy-01.patch
+patch -d system/sepolicy                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-sepolicy-02.patch
+patch -d system/sepolicy                      -p1 -s -N --no-backup-if-mismatch < $PATCHES/system-sepolicy-03.patch
 
 cd $ROM_TREE
