@@ -11,8 +11,6 @@ PATCHES=$PATCHER_PATH/YumeMichi
 
 cd $ROM_TREE/build/make
 git clean -f -d && git reset --hard
-cd $ROM_TREE/device/oppo/common
-git clean -f -d && git reset --hard
 cd $ROM_TREE/hardware/interfaces
 git clean -f -d && git reset --hard
 cd $ROM_TREE/hardware/qcom/display-caf/msm8974
@@ -33,7 +31,6 @@ cd $ROM_TREE
 ### Patches
 
 patch -d build/make                           -p1 -s -N --no-backup-if-mismatch < $PATCHES/build-make-01.patch
-patch -d device/oppo/common                   -p1 -s -N --no-backup-if-mismatch < $PATCHES/oppo-common-01.patch
 patch -d hardware/interfaces                  -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-interfaces-01.patch
 patch -d hardware/qcom/display-caf/msm8974    -p1 -s -N --no-backup-if-mismatch < $PATCHES/hardware-qcom-display-01.patch
 patch -d packages/apps/LockClock              -p1 -s -N --no-backup-if-mismatch < $PATCHES/apps-LockClock-01.patch
