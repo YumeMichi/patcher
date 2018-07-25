@@ -1,32 +1,35 @@
-From 8838c2c5c8d39f982876076eb6868be2c2d7ea58 Mon Sep 17 00:00:00 2001
-From: Bruno Martins <bgcngm@gmail.com>
-Date: Tue, 9 Jan 2018 15:41:02 +0000
-Subject: [PATCH 3/7] DevelopmentSettings: Hide OEM unlock by default
+From 7f3f6c42a9afbd9cf99b2ffa36c902505a6414ab Mon Sep 17 00:00:00 2001
+From: Anurag Das <anurdas@codeaurora.org>
+Date: Mon, 18 Dec 2017 14:47:01 +0530
+Subject: [PATCH 5/7] Wifi: Restore hidden flag for hidden networks on update
+ network
 
- * The "OEM unlocking" toogle should not be visible on any
-   device running LineageOS, for obvious reasons. Allow it only
-   to show up for Google devices, such as Pixel, that set
-   ro.oem_unlock_supported=1.
+Currently when user modifies any of the network parameter for hidden
+networks, hidden flag is not updated. As a result this network is no
+longer part of hidden networks, we are unable to reconnect when user
+triggers wifi off and on.
 
-Change-Id: I2b09974fc24e783b985de213b504e964771cbcb7
+This commit sets the value of hiddenSSID flag of config at the Settings
+side on network update.
+
+CRs-Fixed: 2142385
+Change-Id: Ic20f03345645d8bf3bc9c3ff44910dd3f2797fec
 ---
- src/com/android/settings/development/DevelopmentSettings.java | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ src/com/android/settings/wifi/WifiConfigController.java | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/src/com/android/settings/development/DevelopmentSettings.java b/src/com/android/settings/development/DevelopmentSettings.java
-index 9930443af9..c7d3920689 100644
---- a/src/com/android/settings/development/DevelopmentSettings.java
-+++ b/src/com/android/settings/development/DevelopmentSettings.java
-@@ -473,7 +473,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
-         mKeepScreenOn = (RestrictedSwitchPreference) findAndInitSwitchPref(KEEP_SCREEN_ON);
-         mBtHciSnoopLog = findAndInitSwitchPref(BT_HCI_SNOOP_LOG);
-         mEnableOemUnlock = (RestrictedSwitchPreference) findAndInitSwitchPref(ENABLE_OEM_UNLOCK);
--        if (!showEnableOemUnlockPreference(getActivity())) {
-+        if (!showEnableOemUnlockPreference(getActivity()) ||
-+                !SystemProperties.getBoolean("ro.oem_unlock_supported", false)) {
-             removePreference(mEnableOemUnlock);
-             mEnableOemUnlock = null;
+diff --git a/src/com/android/settings/wifi/WifiConfigController.java b/src/com/android/settings/wifi/WifiConfigController.java
+index ecd4b5966e..d7bccc0d07 100644
+--- a/src/com/android/settings/wifi/WifiConfigController.java
++++ b/src/com/android/settings/wifi/WifiConfigController.java
+@@ -517,6 +517,7 @@ public class WifiConfigController implements TextWatcher,
+                     mAccessPoint.getSsidStr());
+         } else {
+             config.networkId = mAccessPoint.getConfig().networkId;
++            config.hiddenSSID = mAccessPoint.getConfig().hiddenSSID;
          }
+ 
+         config.shared = mSharedCheckBox.isChecked();
 -- 
 2.11.0.windows.1
 
