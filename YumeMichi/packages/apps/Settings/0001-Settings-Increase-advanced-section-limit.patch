@@ -1,0 +1,142 @@
+From 3f031e39cdbbd7e3c7f44ad86d10890cba794ba9 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Sun, 26 Aug 2018 21:01:15 +0200
+Subject: [PATCH] Settings: Increase advanced section limit
+
+Author: maxwen <max.weninger@gmail.com>
+Date:   Tue Aug 28 16:30:37 2018 +0200
+
+    Settings: Remove unneeded collapse limits
+
+    I am tired of more touches then needed to get where I want
+
+    Change-Id: I96091ae8f85e03ee06784109ad3295a5e0f96082
+
+Author: maxwen <max.weninger@gmail.com>
+Date:   Sun Aug 26 21:01:15 2018 +0200
+
+    Settings: Increase advanced section limit in display setting
+
+    thats ridiculus low
+
+    Change-Id: Ifc4b887d7c3dd54c9d84ce992cbbc6fd4cf4ccb5
+
+Change-Id: I3b6e447fa03239ce9dfcd0762259a1a83722ad2a
+---
+ res/xml/app_info_settings.xml             | 2 +-
+ res/xml/display_settings.xml              | 2 +-
+ res/xml/location_settings.xml             | 2 +-
+ res/xml/network_and_internet.xml          | 2 +-
+ res/xml/system_dashboard_fragment.xml     | 4 ++--
+ res/xml/wifi_network_details_fragment.xml | 2 +-
+ res/xml/wifi_tether_settings.xml          | 4 ++--
+ 7 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/res/xml/app_info_settings.xml b/res/xml/app_info_settings.xml
+index 2c766bbf24..b45362aff0 100644
+--- a/res/xml/app_info_settings.xml
++++ b/res/xml/app_info_settings.xml
+@@ -19,7 +19,7 @@
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:settings="http://schemas.android.com/apk/res-auto"
+     android:key="installed_app_detail_settings_screen"
+-    settings:initialExpandedChildrenCount="6">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <com.android.settings.applications.LayoutPreference
+         android:key="header_view"
+diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
+index 7dfe01a558..120d9d1d36 100644
+--- a/res/xml/display_settings.xml
++++ b/res/xml/display_settings.xml
+@@ -21,7 +21,7 @@
+     android:key="display_settings_screen"
+     android:title="@string/display_settings"
+     settings:keywords="@string/keywords_display"
+-    settings:initialExpandedChildrenCount="4">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <com.android.settingslib.RestrictedPreference
+         android:key="brightness"
+diff --git a/res/xml/location_settings.xml b/res/xml/location_settings.xml
+index 22079bfce8..84e369af38 100644
+--- a/res/xml/location_settings.xml
++++ b/res/xml/location_settings.xml
+@@ -33,7 +33,7 @@
+ 
+         <PreferenceCategory
+             android:key="location_advanced_settings"
+-            settings:initialExpandedChildrenCount="1">
++            settings:initialExpandedChildrenCount="8">
+ 
+             <!-- This preference category gets removed if new_recent_location_ui is disabled -->
+             <Preference
+diff --git a/res/xml/network_and_internet.xml b/res/xml/network_and_internet.xml
+index 6eda0b0966..6c9a95566e 100644
+--- a/res/xml/network_and_internet.xml
++++ b/res/xml/network_and_internet.xml
+@@ -19,7 +19,7 @@
+     xmlns:settings="http://schemas.android.com/apk/res-auto"
+     android:key="network_and_internet_screen"
+     android:title="@string/network_dashboard_title"
+-    settings:initialExpandedChildrenCount="5">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <com.android.settings.widget.MasterSwitchPreference
+         android:fragment="com.android.settings.wifi.WifiSettings"
+diff --git a/res/xml/system_dashboard_fragment.xml b/res/xml/system_dashboard_fragment.xml
+index 1ca86ab1eb..2c3bd3bc8a 100644
+--- a/res/xml/system_dashboard_fragment.xml
++++ b/res/xml/system_dashboard_fragment.xml
+@@ -19,7 +19,7 @@
+     xmlns:settings="http://schemas.android.com/apk/res-auto"
+     android:key="system_dashboard_screen"
+     android:title="@string/header_category_system"
+-    settings:initialExpandedChildrenCount="4">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <Preference
+         android:key="gesture_settings"
+@@ -71,4 +71,4 @@
+                 android:targetClass="@string/additional_system_update_menu" />
+     </Preference>
+ 
+-</PreferenceScreen>
+\ No newline at end of file
++</PreferenceScreen>
+diff --git a/res/xml/wifi_network_details_fragment.xml b/res/xml/wifi_network_details_fragment.xml
+index 5e2745a6e5..6918ccaa04 100644
+--- a/res/xml/wifi_network_details_fragment.xml
++++ b/res/xml/wifi_network_details_fragment.xml
+@@ -17,7 +17,7 @@
+ <PreferenceScreen
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:settings="http://schemas.android.com/apk/res-auto"
+-    settings:initialExpandedChildrenCount="5">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <com.android.settings.applications.LayoutPreference
+         android:key="connection_header"
+diff --git a/res/xml/wifi_tether_settings.xml b/res/xml/wifi_tether_settings.xml
+index a609621e58..57917d9379 100644
+--- a/res/xml/wifi_tether_settings.xml
++++ b/res/xml/wifi_tether_settings.xml
+@@ -19,7 +19,7 @@
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:settings="http://schemas.android.com/apk/res-auto"
+     android:title="@string/wifi_hotspot_checkbox_text"
+-    settings:initialExpandedChildrenCount="3">
++    settings:initialExpandedChildrenCount="8">
+ 
+     <com.android.settings.widget.ValidatedEditTextPreference
+         android:key="wifi_tether_network_name"
+@@ -50,4 +50,4 @@
+         android:dialogTitle="@string/wifi_hotspot_ap_band_title"
+         android:negativeButtonText="@string/cancel"
+         android:positiveButtonText="@string/apply" />
+-</PreferenceScreen>
+\ No newline at end of file
++</PreferenceScreen>
+-- 
+2.17.1
+

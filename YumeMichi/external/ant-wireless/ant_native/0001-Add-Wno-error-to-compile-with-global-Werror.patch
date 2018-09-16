@@ -1,0 +1,54 @@
+From 286bf05d5c73656c4b52733d4d19f5e7dd8d1551 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Mon, 27 Aug 2018 01:35:26 +0800
+Subject: [PATCH] Add -Wno-error to compile with global -Werror.
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ Android.mk                   | 2 +-
+ src/bt-vendor_vfs/Android.mk | 2 +-
+ src/vfs/Android.mk           | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 3ed9138..bf472bc 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -82,7 +82,7 @@ LOCAL_C_INCLUDES:= \
+ 
+ LOCAL_C_INCLUDES += frameworks/base/core/jni/include
+ 
+-LOCAL_CFLAGS:= -g -c -W -Wall -O2
++LOCAL_CFLAGS := -g -c -W -Wall -O2 -Wno-error
+ 
+ LOCAL_SRC_FILES:= \
+ 	app/ant_app.c
+diff --git a/src/bt-vendor_vfs/Android.mk b/src/bt-vendor_vfs/Android.mk
+index 733c7bc..50ea26a 100644
+--- a/src/bt-vendor_vfs/Android.mk
++++ b/src/bt-vendor_vfs/Android.mk
+@@ -16,7 +16,7 @@
+ 
+ include $(CLEAR_VARS)
+ 
+-LOCAL_CFLAGS := -g -c -W -Wall -O2
++LOCAL_CFLAGS := -g -c -W -Wall -O2 -Wno-error
+ 
+ # needed to pull in the header file for libbt-vendor.so
+ BDROID_DIR:= system/bt
+diff --git a/src/vfs/Android.mk b/src/vfs/Android.mk
+index 28ae431..6aecf09 100644
+--- a/src/vfs/Android.mk
++++ b/src/vfs/Android.mk
+@@ -16,7 +16,7 @@
+ 
+ include $(CLEAR_VARS)
+ 
+-LOCAL_CFLAGS := -g -c -W -Wall -O2
++LOCAL_CFLAGS := -g -c -W -Wall -O2 -Wno-error
+ 
+ LOCAL_C_INCLUDES := \
+    $(LOCAL_PATH)/src/common/inc \
+-- 
+2.17.1
+
