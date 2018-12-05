@@ -1,7 +1,7 @@
-From c2e19442c1e7ab922b671d0ed3129c92ffe595b0 Mon Sep 17 00:00:00 2001
+From c250a12c7b1ab408957e8264c290aa52f971a4b3 Mon Sep 17 00:00:00 2001
 From: spooja <spooja@codeaurora.org>
 Date: Fri, 23 Jun 2017 14:39:20 +0530
-Subject: [PATCH 2/2] Increase logcat buffer size to 4M for userdebug and engg
+Subject: [PATCH 2/3] Increase logcat buffer size to 4M for userdebug and engg
  builds
 
 Change-Id: I70ba03ee59cbfe28041d57b895b3be2bbac220ab
@@ -31,5 +31,5 @@ index 749832530..548a9da52 100644
      }
      bool lastMonotonic = monotonic;
 -- 
-2.11.0.windows.1
+2.17.1
 
