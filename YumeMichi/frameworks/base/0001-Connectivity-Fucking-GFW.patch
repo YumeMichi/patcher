@@ -1,15 +1,15 @@
-From 0cea03b256509312e1fb810780f91466d8e7db32 Mon Sep 17 00:00:00 2001
+From a858f6382aa306d3fffaeac44f97fb83424a429f Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 10 Dec 2016 10:51:32 +0000
-Subject: [PATCH] Connectivity: Fucking GFW
+Subject: [PATCH 01/20] Connectivity: Fucking GFW
 
 Change-Id: Ic1160c8b394191abfd212c65e0ce039acd44825d
 ---
- .../java/com/android/server/connectivity/NetworkMonitor.java  | 4 ++--
+ .../core/java/com/android/server/connectivity/NetworkMonitor.java     | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/connectivity/NetworkMonitor.java b/services/core/java/com/android/server/connectivity/NetworkMonitor.java
-index 9b9a3801aea..e5c42c0371e 100644
+index 9b9a380..e5c42c0 100644
 --- a/services/core/java/com/android/server/connectivity/NetworkMonitor.java
 +++ b/services/core/java/com/android/server/connectivity/NetworkMonitor.java
 @@ -101,9 +101,9 @@ public class NetworkMonitor extends StateMachine {
@@ -25,5 +25,5 @@ index 9b9a3801aea..e5c42c0371e 100644
      private static final String DEFAULT_OTHER_FALLBACK_URLS =
              "http://play.googleapis.com/generate_204";
 -- 
-2.17.1
+2.7.4
 

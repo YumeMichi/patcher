@@ -1,0 +1,26 @@
+From 8e2e29af2e94366c7f44e98bf230b9bf0055c35c Mon Sep 17 00:00:00 2001
+From: Christian Oder <myself5@carbonrom.org>
+Date: Mon, 29 Aug 2016 00:49:52 +0200
+Subject: [PATCH 19/20] base: Show SystemUI Tuner by default
+
+Change-Id: I7f2bc92656af85e73d623b70466f214706990726
+---
+ packages/SystemUI/AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/AndroidManifest.xml b/packages/SystemUI/AndroidManifest.xml
+index 5599b5a..7f40b14 100644
+--- a/packages/SystemUI/AndroidManifest.xml
++++ b/packages/SystemUI/AndroidManifest.xml
+@@ -279,7 +279,7 @@
+                 android:exported="true" />
+ 
+         <activity android:name=".tuner.TunerActivity"
+-                  android:enabled="false"
++                  android:enabled="true"
+                   android:icon="@drawable/tuner"
+                   android:theme="@style/TunerSettings"
+                   android:label="@string/system_ui_tuner"
+-- 
+2.7.4
+

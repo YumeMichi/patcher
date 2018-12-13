@@ -1,0 +1,54 @@
+From 29c6cf17674815e858c2e413316629421099e610 Mon Sep 17 00:00:00 2001
+From: Martin Bouchet <tincho5588@gmail.com>
+Date: Sun, 24 Sep 2017 04:51:55 -0300
+Subject: [PATCH] libril: Fix network operator search
+
+* For search, the number of strings returned for
+  RIL_REQUEST_QUERY_AVAILABLE_NETWORKS should be defined in the system
+  prop ro.ril.telephony.mqanelements
+
+Change-Id: Ie5bb8ba80c5ac93b7502da3b1bb3d2b4404ecd5e
+---
+ libril/ril_service.cpp | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/libril/ril_service.cpp b/libril/ril_service.cpp
+index dc2a4ce..ffde8e4 100644
+--- a/libril/ril_service.cpp
++++ b/libril/ril_service.cpp
+@@ -29,6 +29,7 @@
+ #include <hidl/HidlTransportSupport.h>
+ #include <utils/SystemClock.h>
+ #include <inttypes.h>
++#include <cutils/properties.h>
+ 
+ #define INVALID_HEX_CHAR 16
+ 
+@@ -4557,20 +4558,21 @@ int radio::getAvailableNetworksResponse(int slotId,
+ #if VDBG
+     RLOGD("getAvailableNetworksResponse: serial %d", serial);
+ #endif
++    int mqanelements = property_get_int32("ro.ril.telephony.mqanelements", 4);
+ 
+     if (radioService[slotId]->mRadioResponse != NULL) {
+         RadioResponseInfo responseInfo = {};
+         populateResponseInfo(responseInfo, serial, responseType, e);
+         hidl_vec<OperatorInfo> networks;
+         if ((response == NULL && responseLen != 0)
+-                || responseLen % (4 * sizeof(char *))!= 0) {
++                || responseLen % (mqanelements * sizeof(char *))!= 0) {
+             RLOGE("getAvailableNetworksResponse Invalid response: NULL");
+             if (e == RIL_E_SUCCESS) responseInfo.error = RadioError::INVALID_RESPONSE;
+         } else {
+             char **resp = (char **) response;
+             int numStrings = responseLen / sizeof(char *);
+-            networks.resize(numStrings/4);
+-            for (int i = 0, j = 0; i < numStrings; i = i + 4, j++) {
++            networks.resize(numStrings/mqanelements);
++            for (int i = 0, j = 0; i < numStrings; i = i + mqanelements, j++) {
+                 networks[j].alphaLong = convertCharPtrToHidlString(resp[i]);
+                 networks[j].alphaShort = convertCharPtrToHidlString(resp[i + 1]);
+                 networks[j].operatorNumeric = convertCharPtrToHidlString(resp[i + 2]);
+-- 
+2.7.4
+

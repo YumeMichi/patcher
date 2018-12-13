@@ -1,0 +1,41 @@
+From fda5ea9dd6c4df07b994ac2b64583f5db06a04c3 Mon Sep 17 00:00:00 2001
+From: xyyx <xyyx@mail.ru>
+Date: Fri, 7 Sep 2018 10:33:50 +0800
+Subject: [PATCH 03/20] SettingsProvider: Turn on development settings by
+ default
+
+Change-Id: I0dd472ecfecbac600a98615f67ed0fa21d13c2e6
+---
+ packages/SettingsProvider/res/values/defaults.xml                      | 3 +++
+ .../src/com/android/providers/settings/DatabaseHelper.java             | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/packages/SettingsProvider/res/values/defaults.xml b/packages/SettingsProvider/res/values/defaults.xml
+index e1a602b..0936735 100644
+--- a/packages/SettingsProvider/res/values/defaults.xml
++++ b/packages/SettingsProvider/res/values/defaults.xml
+@@ -217,4 +217,7 @@
+ 
+     <!-- Default for Settings.System.VIBRATE_WHEN_RINGING -->
+     <bool name="def_vibrate_when_ringing">false</bool>
++
++    <!-- Default for Settings.Global.DEVELOPMENT_SETTINGS_ENABLED -->
++    <integer  name="def_development_settings">1</integer>
+ </resources>
+diff --git a/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java b/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+index f7cd599..01c735e 100644
+--- a/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
++++ b/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+@@ -2636,6 +2636,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
+ 
+             loadSetting(stmt, Settings.Global.DEVICE_NAME, getDefaultDeviceName());
+ 
++            loadIntegerSetting(stmt, Global.DEVELOPMENT_SETTINGS_ENABLED,
++                    R.integer.def_development_settings);
++
+             /*
+              * IMPORTANT: Do not add any more upgrade steps here as the global,
+              * secure, and system settings are no longer stored in a database
+-- 
+2.7.4
+
