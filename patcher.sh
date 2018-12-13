@@ -3,11 +3,8 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'build/make'
-    'external/ant-wireless/ant_native'
     'frameworks/base'
-    'hardware/qcom/display-caf/msm8974'
     'packages/apps/LockClock'
-    'packages/apps/Settings'
     'system/core'
 )
 
