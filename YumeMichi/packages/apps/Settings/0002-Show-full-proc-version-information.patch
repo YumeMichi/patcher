@@ -1,13 +1,13 @@
-From f74b3927bd60313530f0113b69513e7cc171d260 Mon Sep 17 00:00:00 2001
+From b2d77686da9147b3b1f295986394b19fa33b3c8e Mon Sep 17 00:00:00 2001
 From: James Roberts <xoomdevnet@gmail.com>
 Date: Fri, 8 Sep 2017 19:42:59 +0530
-Subject: [PATCH 2/7] Show full proc/version information
+Subject: [PATCH 2/5] Show full proc/version information
 
 - Adapted for O by @ishubhamsingh
 
 Signed-off-by: Shubham Singh <coolsks94@gmail.com>
 ---
- .../KernelVersionPreferenceController.java         | 94 +++++++++++++++++++++-
+ .../KernelVersionPreferenceController.java    | 94 ++++++++++++++++++-
  1 file changed, 93 insertions(+), 1 deletion(-)
 
 diff --git a/src/com/android/settings/deviceinfo/KernelVersionPreferenceController.java b/src/com/android/settings/deviceinfo/KernelVersionPreferenceController.java
@@ -134,5 +134,5 @@ index 5afed9c83e..f206d498ab 100644
 +    }
  }
 -- 
-2.11.0.windows.1
+2.20.0
 

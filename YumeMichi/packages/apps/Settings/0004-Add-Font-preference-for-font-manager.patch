@@ -1,7 +1,7 @@
-From 6e40d6025b062bdb6de206233dbc894f7903e067 Mon Sep 17 00:00:00 2001
+From 76ec9d0944421ef21615990368023b5640f8dc60 Mon Sep 17 00:00:00 2001
 From: bigrushdog <randall.rushing@gmail.com>
 Date: Thu, 1 Mar 2018 10:56:48 -0800
-Subject: [PATCH] Add Font preference for font manager
+Subject: [PATCH 4/5] Add Font preference for font manager
 
 Change-Id: If46236d3f6db3a16d9885cdd9e4fc9278fbec412
 ---
@@ -23,7 +23,7 @@ Change-Id: If46236d3f6db3a16d9885cdd9e4fc9278fbec412
  create mode 100644 src/com/android/settings/display/FontPickerPreferenceController.java
 
 diff --git a/AndroidManifest.xml b/AndroidManifest.xml
-index a2afa54ea7..4edf6ef5a5 100644
+index 5615594fea..0cbbce952b 100644
 --- a/AndroidManifest.xml
 +++ b/AndroidManifest.xml
 @@ -86,6 +86,7 @@
@@ -154,7 +154,7 @@ index 0000000000..8ebfb7983f
 +    <string name="font_picker_title">Font</string>
 +</resources>
 diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
-index 02645f7d2a..5ea762987c 100644
+index 065197bd7c..003bf9ab37 100644
 --- a/res/xml/display_settings.xml
 +++ b/res/xml/display_settings.xml
 @@ -77,6 +77,11 @@
@@ -544,5 +544,5 @@ index 0000000000..a25eacbd3c
 +    }
 +}
 -- 
-2.17.0
+2.20.0
 

@@ -1,4 +1,4 @@
-From 6894c97b2bfa17198c00dffeb1c0333d95567a48 Mon Sep 17 00:00:00 2001
+From d108632ee2c5cdafcbb6f209e39af913a0a01fce Mon Sep 17 00:00:00 2001
 From: Surge Raval <Surge1223@gmail.com>
 Date: Wed, 4 Jan 2017 10:29:34 -0800
 Subject: [PATCH 3/3] Sepolicy exceptions for font engine assets
@@ -58,10 +58,10 @@ index 13391f19..1dac70ed 100644
  read_runtime_log_tags(system_app)
  
 diff --git a/private/system_server.te b/private/system_server.te
-index 37860df9..7ca7cb75 100644
+index 78985346..5d367cca 100644
 --- a/private/system_server.te
 +++ b/private/system_server.te
-@@ -706,6 +706,9 @@ with_asan(`
+@@ -709,6 +709,9 @@ with_asan(`
    allow system_server zygote_exec:file rx_file_perms;
  ')
  
@@ -98,5 +98,5 @@ index 1df9f708..0fe4acc4 100644
 +# Themes
 +type theme_data_file, file_type, data_file_type;
 -- 
-2.17.0
+2.20.0
 

@@ -1,7 +1,7 @@
-From 5fd283b6402a888d58b529f963bda1d68fa214bd Mon Sep 17 00:00:00 2001
+From 5fc93de787651a5e481af16a99cd9f4c12368202 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Sat, 14 Apr 2018 00:09:09 +0200
-Subject: [PATCH] [2/2] Settings: Add progress for font apply
+Subject: [PATCH 5/5] Settings: Add progress for font apply
 
 Change-Id: I12312f3a7859a4244387f5183a3d938bffb5b83f
 ---
@@ -168,5 +168,5 @@ index a25eacbd3c..3b0c6cfbdc 100644
      }
  }
 -- 
-2.17.0
+2.20.0
 

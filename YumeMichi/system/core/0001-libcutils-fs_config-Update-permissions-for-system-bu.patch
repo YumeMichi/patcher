@@ -1,7 +1,7 @@
-From df54ef5ebafbc8817c21ce4c8a2089e638ce7f90 Mon Sep 17 00:00:00 2001
+From 812327066dd39388792e662f5c8a09e625a7477c Mon Sep 17 00:00:00 2001
 From: axxx007xxxz <mattiabrsrn7@gmail.com>
 Date: Sat, 17 Feb 2018 23:28:15 +0100
-Subject: [PATCH 3/3] libcutils: fs_config: Update permissions for
+Subject: [PATCH] libcutils: fs_config: Update permissions for
  /system/build.prop
 
 Allow "group" and "others" to read it.
@@ -27,5 +27,5 @@ index cb15b57b8..4859ca93b 100644
      { 00444, AID_ROOT,      AID_ROOT,      0, sys_conf_file + 1 },
      { 00440, AID_ROOT,      AID_SHELL,     0, "system/etc/init.goldfish.rc" },
 -- 
-2.17.1
+2.20.0
 

@@ -1,4 +1,4 @@
-From 3fbab7330905e3aaa93728da90eb6deb02cfee09 Mon Sep 17 00:00:00 2001
+From 89e7bd011410b488f7f5a1f80897134eee3879c6 Mon Sep 17 00:00:00 2001
 From: Surge Raval <Surge1223@gmail.com>
 Date: Thu, 15 Feb 2018 02:02:20 +0000
 Subject: [PATCH 2/3] Implement sepolicy rules for font service in o-mr1
@@ -266,5 +266,5 @@ index 40bec840..25deda64 100644
  (typeattributeset tombstoned_26_0 (tombstoned))
  (typeattributeset tombstone_data_file_26_0 (tombstone_data_file))
 -- 
-2.17.0
+2.20.0
 

@@ -1,4 +1,4 @@
-From a293abd235232f4da797978588994abc3c240290 Mon Sep 17 00:00:00 2001
+From c13b7f3b817220ba8df4641f5e1fbf0e8104b482 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Mon, 26 Sep 2016 21:16:38 -0700
 Subject: [PATCH] LockClock: Remove wakelock
@@ -26,7 +26,7 @@ index 0b1ac30..641615c 100644
      <uses-permission android:name="lineageos.permission.ACCESS_WEATHER_MANAGER" />
      <uses-permission android:name="lineageos.permission.READ_WEATHER" />
 diff --git a/src/org/lineageos/lockclock/weather/WeatherUpdateService.java b/src/org/lineageos/lockclock/weather/WeatherUpdateService.java
-index 711d571..55689cd 100644
+index 9dd362d..8da4178 100644
 --- a/src/org/lineageos/lockclock/weather/WeatherUpdateService.java
 +++ b/src/org/lineageos/lockclock/weather/WeatherUpdateService.java
 @@ -32,8 +32,6 @@ import android.os.HandlerThread;
@@ -59,7 +59,7 @@ index 711d571..55689cd 100644
  
              WeatherLocation customWeatherLocation = null;
              if (Preferences.useCustomWeatherLocation(mContext)) {
-@@ -400,8 +391,6 @@ public class WeatherUpdateService extends Service {
+@@ -404,8 +395,6 @@ public class WeatherUpdateService extends Service {
              finishedIntent.putExtra(EXTRA_UPDATE_CANCELLED, updateCancelled);
              mContext.sendBroadcast(finishedIntent);
  
@@ -69,5 +69,5 @@ index 711d571..55689cd 100644
              mContext.stopService(new Intent(mContext, WeatherUpdateService.class));
          }
 -- 
-2.17.0
+2.20.0
 

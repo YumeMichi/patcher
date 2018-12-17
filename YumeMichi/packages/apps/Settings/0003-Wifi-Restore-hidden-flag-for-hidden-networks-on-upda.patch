@@ -1,7 +1,7 @@
-From 7f3f6c42a9afbd9cf99b2ffa36c902505a6414ab Mon Sep 17 00:00:00 2001
+From a12f9710301c7c8cd99bffbdb5004bf912f9aa53 Mon Sep 17 00:00:00 2001
 From: Anurag Das <anurdas@codeaurora.org>
 Date: Mon, 18 Dec 2017 14:47:01 +0530
-Subject: [PATCH 5/7] Wifi: Restore hidden flag for hidden networks on update
+Subject: [PATCH 3/5] Wifi: Restore hidden flag for hidden networks on update
  network
 
 Currently when user modifies any of the network parameter for hidden
@@ -31,5 +31,5 @@ index ecd4b5966e..d7bccc0d07 100644
  
          config.shared = mSharedCheckBox.isChecked();
 -- 
-2.11.0.windows.1
+2.20.0
 
