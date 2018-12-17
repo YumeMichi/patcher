@@ -1,0 +1,133 @@
+From 00325c79a14748d0484a5b55e7896a0a0e386bb4 Mon Sep 17 00:00:00 2001
+From: mydongistiny <jaysonedson@gmail.com>
+Date: Mon, 30 Oct 2017 04:23:23 -0700
+Subject: [PATCH 06/35] Pixel Navbar: Fix colors for light colored navbar
+
+Change-Id: I68e2a55f6f02f03802af099a36706b3636e10125
+---
+ .../google/android/systemui/OpaLayout.java    | 42 ++++++++++++++++++-
+ 1 file changed, 40 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
+index f2c5a860a06..8ad1da7020b 100644
+--- a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
++++ b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
+@@ -4,6 +4,9 @@ import android.animation.Animator;
+ import android.animation.AnimatorListenerAdapter;
+ import android.content.Context;
+ import android.graphics.drawable.Drawable;
++import android.animation.ArgbEvaluator;
++import android.graphics.Color;
++import android.graphics.PorterDuff;
+ import android.os.SystemClock;
+ import android.os.UserManager;
+ import android.util.ArraySet;
+@@ -21,6 +24,7 @@ import com.android.systemui.Interpolators;
+ import com.android.systemui.R;
+ import com.android.systemui.plugins.statusbar.phone.NavBarButtonProvider.ButtonInterface;
+ import com.android.systemui.statusbar.policy.KeyButtonView;
++import com.android.settingslib.Utils;
+ 
+ public class OpaLayout extends FrameLayout implements ButtonInterface{
+ 
+@@ -63,9 +67,13 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+     private View mBlue;
+     private View mGreen;
+     private View mYellow;
+-    private View mWhite;
++    private ImageView mWhite;
+     private View mHalo;
+ 
++    private int mDarkModeFillColor;
++    private int mLightModeFillColor;
++    private int mIconTint = Color.WHITE;
++
+     private View mTop;
+     private View mRight;
+     private View mLeft;
+@@ -83,6 +91,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+ 
+     public OpaLayout(Context context) {
+         super(context);
++        mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
++        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
+         mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
+         mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+         mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
+@@ -111,6 +121,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+ 
+     public OpaLayout(Context context, AttributeSet attrs) {
+         super(context, attrs);
++        mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
++        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
+         mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
+         mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+         mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
+@@ -139,6 +151,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+ 
+     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+         super(context, attrs, defStyleAttr);
++        mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
++        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
+         mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
+         mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+         mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
+@@ -167,6 +181,8 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+ 
+     public OpaLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+         super(context, attrs, defStyleAttr, defStyleRes);
++        mDarkModeFillColor = context.getColor(R.color.dark_mode_icon_color_single_tone);
++        mLightModeFillColor = context.getColor(R.color.light_mode_icon_color_single_tone);
+         mFastOutSlowInInterpolator = Interpolators.FAST_OUT_SLOW_IN;
+         mHomeDisappearInterpolator = new PathInterpolator(0.8f, 0f, 1f, 1f);
+         mCollapseInterpolator = Interpolators.FAST_OUT_LINEAR_IN;
+@@ -484,7 +500,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+         mBlue = findViewById(R.id.blue);
+         mYellow = findViewById(R.id.yellow);
+         mGreen = findViewById(R.id.green);
+-        mWhite = findViewById(R.id.white);
++        mWhite = (ImageView) findViewById(R.id.white);
+         mHalo = findViewById(R.id.halo);
+         mHome = (KeyButtonView) findViewById(R.id.home_button);
+ 
+@@ -592,6 +608,7 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+         mYellow.setVisibility(visibility);
+         mGreen.setVisibility(visibility);
+         mHalo.setVisibility(visibility);
++        updateIconColor();
+     }
+ 
+     private void showAllOpa(){
+@@ -602,8 +619,29 @@ public class OpaLayout extends FrameLayout implements ButtonInterface{
+         mYellow.setVisibility(visibility);
+         mGreen.setVisibility(visibility);
+         mHalo.setVisibility(visibility);
++        updateIconColor();
+     }
+ 
+     public void setDarkIntensity(float intensity) {
++        mIconTint = getColorForDarkIntensity(
++                intensity, mLightModeFillColor, mDarkModeFillColor);
++        updateIconColor();
++    }
++
++    private void updateIconColor() {
++        int mIconColor = mIconTint;
++        updateHomeDrawable(mIconColor);
++    }
++
++    private int getColorForDarkIntensity(float intensity, int lightColor, int darkColor) {
++        return (int) ArgbEvaluator.getInstance().evaluate(intensity, lightColor, darkColor);
++    }
++
++    private void updateHomeDrawable(int homeColor) {
++        int intHomeDrawable = R.drawable.ic_sysbar_home;
++        Drawable drawHomeIcon = getResources().getDrawable(intHomeDrawable);
++        drawHomeIcon.setColorFilter(null);
++        drawHomeIcon.setColorFilter(homeColor, PorterDuff.Mode.SRC_IN);
++        setImageDrawable(drawHomeIcon);
+     }
+ }
+-- 
+2.20.0
+

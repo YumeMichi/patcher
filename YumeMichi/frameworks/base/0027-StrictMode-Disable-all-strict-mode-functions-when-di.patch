@@ -1,0 +1,78 @@
+From 8ece4333ca6d39507c96d276e0bffc633d35e520 Mon Sep 17 00:00:00 2001
+From: Sultanxda <sultanxda@gmail.com>
+Date: Wed, 9 Sep 2015 19:34:21 -0700
+Subject: [PATCH 27/35] StrictMode: Disable all strict mode functions when
+ disable prop is set
+
+Strict mode can still be used to produce red border flashes even when the
+disable property is set, among other things.
+
+Truly disable all strict-mode checks outright when the disable property
+is set.
+
+Change-Id: If66e5902fca2dbb163ce8ee6dec96dc109b96158
+Signed-off-by: Sultanxda <sultanxda@gmail.com>
+---
+ core/java/android/os/StrictMode.java | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/core/java/android/os/StrictMode.java b/core/java/android/os/StrictMode.java
+index 3b6df5df13a..5b165f0c94b 100644
+--- a/core/java/android/os/StrictMode.java
++++ b/core/java/android/os/StrictMode.java
+@@ -1188,7 +1188,7 @@ public final class StrictMode {
+ 
+         // For debug builds, log event loop stalls to dropbox for analysis.
+         // Similar logic also appears in ActivityThread.java for system apps.
+-        if (!doFlashes && (Build.IS_USER || suppress)) {
++        if ((!doFlashes && Build.IS_USER) || suppress) {
+             setCloseGuardEnabled(false);
+             return false;
+         }
+@@ -1478,6 +1478,10 @@ public final class StrictMode {
+         // until the time the looper is idle again (right before
+         // the next epoll_wait)
+         void handleViolationWithTimingAttempt(final ViolationInfo info) {
++            final boolean suppress = SystemProperties.getBoolean(DISABLE_PROPERTY, false);
++            if (suppress) {
++                return;
++            }
+             Looper looper = Looper.myLooper();
+ 
+             // Without a Looper, we're unable to time how long the
+@@ -1805,6 +1809,10 @@ public final class StrictMode {
+      * @param policy the policy to put into place
+      */
+     public static void setVmPolicy(final VmPolicy policy) {
++        final boolean suppress = SystemProperties.getBoolean(DISABLE_PROPERTY, false);
++        if (suppress) {
++            return;
++        }
+         synchronized (StrictMode.class) {
+             sVmPolicy = policy;
+             sVmPolicyMask = policy.mask;
+@@ -2028,6 +2036,10 @@ public final class StrictMode {
+      */
+     public static void onVmPolicyViolation(String message, Throwable originStack,
+             boolean forceDeath) {
++        final boolean suppress = SystemProperties.getBoolean(DISABLE_PROPERTY, false);
++        if (suppress) {
++            return;
++        }
+         final boolean penaltyDropbox = (sVmPolicyMask & PENALTY_DROPBOX) != 0;
+         final boolean penaltyDeath = ((sVmPolicyMask & PENALTY_DEATH) != 0) || forceDeath;
+         final boolean penaltyLog = (sVmPolicyMask & PENALTY_LOG) != 0;
+@@ -2132,6 +2144,10 @@ public final class StrictMode {
+      * we here read back all the encoded violations.
+      */
+     /* package */ static void readAndHandleBinderCallViolations(Parcel p) {
++        final boolean suppress = SystemProperties.getBoolean(DISABLE_PROPERTY, false);
++        if (suppress) {
++            return;
++        }
+         // Our own stack trace to append
+         StringWriter sw = new StringWriter();
+         sw.append("# via Binder call with stack:\n");
+-- 
+2.20.0
+

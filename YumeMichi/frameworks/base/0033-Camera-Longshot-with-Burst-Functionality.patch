@@ -1,0 +1,79 @@
+From ce1f585c1d0dfe6d3804580ea4f8a2eeef85d041 Mon Sep 17 00:00:00 2001
+From: Vijay Kumar Tumati <vtumati@codeaurora.org>
+Date: Wed, 22 Apr 2015 12:50:02 +0530
+Subject: [PATCH 33/35] Camera: Longshot with Burst Functionality
+
+New Longshot stop command is sent after receiving all the required YUV
+callbacks or releasing the shutter before reaching Max number.
+
+Change-Id: I264d94cde624b5f2ead88236bdff8d6db41e12e6
+---
+ core/java/android/hardware/Camera.java |  9 +++++++++
+ core/jni/android_hardware_Camera.cpp   | 24 +++++++++++++++++++++---
+ 2 files changed, 30 insertions(+), 3 deletions(-)
+
+diff --git a/core/java/android/hardware/Camera.java b/core/java/android/hardware/Camera.java
+index 0e3738f3573..142f1131a39 100644
+--- a/core/java/android/hardware/Camera.java
++++ b/core/java/android/hardware/Camera.java
+@@ -2217,6 +2217,15 @@ public class Camera {
+     }
+     private native final void native_setLongshot(boolean enable);
+ 
++    /** @hide
++     * Stop longshot. Available only in ZSL.
++     */
++    public final void stopLongshot()
++    {
++        native_stopLongshot();
++    }
++    private native final void native_stopLongshot();
++
+      /** @hide
+      * Handles the Touch Co-ordinate.
+      */
+diff --git a/core/jni/android_hardware_Camera.cpp b/core/jni/android_hardware_Camera.cpp
+index fac42470216..0c8a4df22b2 100644
+--- a/core/jni/android_hardware_Camera.cpp
++++ b/core/jni/android_hardware_Camera.cpp
+@@ -520,6 +520,21 @@ static void android_hardware_Camera_setLongshot(JNIEnv *env, jobject thiz, jbool
+     }
+ }
+ 
++static void android_hardware_Camera_stopLongshot(JNIEnv *env, jobject thiz)
++{
++    ALOGV("stopLongshot");
++    JNICameraContext* context;
++    status_t rc;
++    sp<Camera> camera = get_native_camera(env, thiz, &context);
++    if (camera == 0) return;
++
++    rc = camera->sendCommand(CAMERA_CMD_STOP_LONGSHOT, 0, 0);
++
++    if (rc != NO_ERROR) {
++       jniThrowException(env, "java/lang/RuntimeException", "enabling longshot mode failed");
++    }
++}
++
+ static void android_hardware_Camera_sendHistogramData(JNIEnv *env, jobject thiz)
+  {
+    ALOGV("sendHistogramData" );
+@@ -1190,9 +1205,12 @@ static const JNINativeMethod camMethods[] = {
+   { "native_sendHistogramData",
+     "()V",
+      (void *)android_hardware_Camera_sendHistogramData },
+- { "native_setLongshot",
+-     "(Z)V",
+-      (void *)android_hardware_Camera_setLongshot },
++  { "native_setLongshot",
++    "(Z)V",
++     (void *)android_hardware_Camera_setLongshot },
++  { "native_stopLongshot",
++    "()V",
++     (void *)android_hardware_Camera_stopLongshot },
+   { "native_setParameters",
+     "(Ljava/lang/String;)V",
+     (void *)android_hardware_Camera_setParameters },
+-- 
+2.20.0
+

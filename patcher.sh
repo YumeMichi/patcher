@@ -3,10 +3,13 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'build/make'
+    'frameworks/av'
+    'frameworks/base'
     'packages/apps/LockClock'
     'packages/apps/Settings'
     'system/core'
     'system/sepolicy'
+    'vendor/lineage'
 )
 
 for repository in "${REPOSITORIES[@]}"; do

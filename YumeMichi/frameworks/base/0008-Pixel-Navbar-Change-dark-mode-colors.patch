@@ -1,0 +1,32 @@
+From e337b63de53e15b6937d9c21d6a67537b58efa94 Mon Sep 17 00:00:00 2001
+From: jhenrique09 <jhenrique09.mcz@hotmail.com>
+Date: Sat, 11 Nov 2017 14:32:32 -0200
+Subject: [PATCH 08/35] Pixel Navbar: Change dark mode colors
+
+Change-Id: I3993392471727862265c007a460320131365a785
+---
+ packages/SystemUI/res/values/custom_colors.xml | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/packages/SystemUI/res/values/custom_colors.xml b/packages/SystemUI/res/values/custom_colors.xml
+index 2e1e76d74c1..3c8d97b52c6 100644
+--- a/packages/SystemUI/res/values/custom_colors.xml
++++ b/packages/SystemUI/res/values/custom_colors.xml
+@@ -23,9 +23,9 @@
+     <color name="icon_color_split_screen">@android:color/white</color>
+     <color name="icon_color_home">@android:color/white</color>
+     <color name="icon_color_overview">@android:color/white</color>
+-    <color name="icon_color_back_dark">@android:color/black</color>
+-    <color name="icon_color_ime_switcher_dark">@android:color/black</color>
+-    <color name="icon_color_split_screen_dark">@android:color/black</color>
+-    <color name="icon_color_home_dark">@android:color/black</color>
+-    <color name="icon_color_overview_dark">@android:color/black</color>
++    <color name="icon_color_back_dark">@color/dark_mode_icon_color_single_tone</color>
++    <color name="icon_color_ime_switcher_dark">@color/dark_mode_icon_color_single_tone</color>
++    <color name="icon_color_split_screen_dark">@color/dark_mode_icon_color_single_tone</color>
++    <color name="icon_color_home_dark">@color/dark_mode_icon_color_single_tone</color>
++    <color name="icon_color_overview_dark">@color/dark_mode_icon_color_single_tone</color>
+ </resources>
+-- 
+2.20.0
+

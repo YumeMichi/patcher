@@ -1,0 +1,63 @@
+From 0d4f75bc8e4b3137def56086f74123092c3a7121 Mon Sep 17 00:00:00 2001
+From: jhenrique09 <jhenrique09.mcz@hotmail.com>
+Date: Wed, 8 Nov 2017 17:28:26 -0200
+Subject: [PATCH 03/35] SystemUI: Restore navbar buttons paddings
+
+Change-Id: Ib2cc72d9b419f7ef6a13ac67522345c0ebccbffc
+---
+ packages/SystemUI/res/layout/back.xml        | 4 +---
+ packages/SystemUI/res/layout/home.xml        | 4 +---
+ packages/SystemUI/res/layout/recent_apps.xml | 4 +---
+ 3 files changed, 3 insertions(+), 9 deletions(-)
+
+diff --git a/packages/SystemUI/res/layout/back.xml b/packages/SystemUI/res/layout/back.xml
+index 43bec91ad05..4e8726b3a63 100644
+--- a/packages/SystemUI/res/layout/back.xml
++++ b/packages/SystemUI/res/layout/back.xml
+@@ -22,10 +22,8 @@
+     android:layout_height="match_parent"
+     android:layout_weight="0"
+     systemui:keyCode="4"
+-    android:scaleType="fitCenter"
++    android:scaleType="center"
+     android:contentDescription="@string/accessibility_back"
+-    android:paddingTop="15dp"
+-    android:paddingBottom="15dp"
+     android:paddingStart="@dimen/navigation_key_padding"
+     android:paddingEnd="@dimen/navigation_key_padding"
+     />
+diff --git a/packages/SystemUI/res/layout/home.xml b/packages/SystemUI/res/layout/home.xml
+index 7b67b79f943..95863272b9b 100644
+--- a/packages/SystemUI/res/layout/home.xml
++++ b/packages/SystemUI/res/layout/home.xml
+@@ -21,10 +21,8 @@
+     android:layout_height="match_parent"
+     android:layout_weight="0"
+     systemui:keyCode="3"
+-    android:scaleType="fitCenter"
++    android:scaleType="center"
+     android:contentDescription="@string/accessibility_home"
+-    android:paddingTop="@dimen/home_padding"
+-    android:paddingBottom="@dimen/home_padding"
+     android:paddingStart="@dimen/navigation_key_padding"
+     android:paddingEnd="@dimen/navigation_key_padding"
+     />
+diff --git a/packages/SystemUI/res/layout/recent_apps.xml b/packages/SystemUI/res/layout/recent_apps.xml
+index d5cc7a6673d..f8ab5095c8c 100644
+--- a/packages/SystemUI/res/layout/recent_apps.xml
++++ b/packages/SystemUI/res/layout/recent_apps.xml
+@@ -22,10 +22,8 @@
+     android:layout_height="match_parent"
+     android:layout_weight="0"
+     systemui:keyCode="187"
+-    android:scaleType="fitCenter"
++    android:scaleType="center"
+     android:contentDescription="@string/accessibility_recent"
+-    android:paddingTop="15dp"
+-    android:paddingBottom="15dp"
+     android:paddingStart="@dimen/navigation_key_padding"
+     android:paddingEnd="@dimen/navigation_key_padding"
+     />
+-- 
+2.20.0
+

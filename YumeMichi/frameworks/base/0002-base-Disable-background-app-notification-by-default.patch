@@ -1,0 +1,29 @@
+From c46c2d4c8149728ac3582ebedfff8097b291109d Mon Sep 17 00:00:00 2001
+From: Erwan Finot <lafritedu70@hotmail.fr>
+Date: Sat, 2 Sep 2017 17:55:02 +0200
+Subject: [PATCH 02/35] base: Disable background app notification by default
+
+it can be enabled again with this commit (that's 1/2 part):
+https://github.com/ezio84/abc_packages_apps_Settings/commit/b9bd0b52ee586f787e994bfdfec0749ceca06791
+
+Change-Id: If07f2fe82374bfa3ecfc880ab061f1c6f16c828d
+---
+ .../internal/notification/SystemNotificationChannels.java       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/java/com/android/internal/notification/SystemNotificationChannels.java b/core/java/com/android/internal/notification/SystemNotificationChannels.java
+index d64c9a1d813..629cb76af9f 100644
+--- a/core/java/com/android/internal/notification/SystemNotificationChannels.java
++++ b/core/java/com/android/internal/notification/SystemNotificationChannels.java
+@@ -135,7 +135,7 @@ public class SystemNotificationChannels {
+         NotificationChannel foregroundChannel = new NotificationChannel(
+                 FOREGROUND_SERVICE,
+                 context.getString(R.string.notification_channel_foreground_service),
+-                NotificationManager.IMPORTANCE_LOW);
++                NotificationManager.IMPORTANCE_NONE);
+         foregroundChannel.setBlockableSystem(true);
+         channelsList.add(foregroundChannel);
+ 
+-- 
+2.20.0
+

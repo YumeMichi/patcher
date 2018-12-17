@@ -1,0 +1,51 @@
+From ec8d2d9ddf2fedd94360f8365e2a2b3f85303a0a Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Sun, 14 Jan 2018 02:11:04 +0100
+Subject: [PATCH 14/35] SystemUI: Use ArrayList in QSTileImpl
+
+no offense google but I dont think cant write better classes then oracle
+
+also:
+01-13 23:51:02.001 E/AndroidRuntime(1753): FATAL EXCEPTION: main
+01-13 23:51:02.001 E/AndroidRuntime(1753): Process: com.android.systemui, PID: 1753
+01-13 23:51:02.001 E/AndroidRuntime(1753): java.lang.ArrayIndexOutOfBoundsException: length=0; index=0
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at android.util.ArraySet.add(ArraySet.java:413)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.tileimpl.QSTileImpl.setListening(QSTileImpl.java:117)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.customize.TileQueryHelper.addStockTiles(TileQueryHelper.java:88)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.customize.TileQueryHelper.addSystemTiles(TileQueryHelper.java:69)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.customize.TileQueryHelper.<init>(TileQueryHelper.java:61)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.customize.QSCustomizer.queryTiles(QSCustomizer.java:242)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.customize.QSCustomizer.show(QSCustomizer.java:210)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at com.android.systemui.qs.QSPanel$2.run(QSPanel.java:453)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at android.os.Handler.handleCallback(Handler.java:790)
+01-13 23:51:02.001 E/AndroidRuntime(1753):     at android.os.Handler.dispatchMessage(Handler.java:99)
+
+Change-Id: Ie1f870b8d63e0628ba61ea0fbb50bb5f44118fd1
+---
+ .../src/com/android/systemui/qs/tileimpl/QSTileImpl.java       | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+index 9d05f36faab..071bb093c37 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+@@ -33,7 +33,6 @@ import android.os.Looper;
+ import android.os.Message;
+ import android.service.quicksettings.Tile;
+ import android.text.format.DateUtils;
+-import android.util.ArraySet;
+ import android.util.Log;
+ import android.util.SparseArray;
+ 
+@@ -70,7 +69,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
+     // @NonFinalForTesting
+     protected H mHandler = new H(Dependency.get(Dependency.BG_LOOPER));
+     protected final Handler mUiHandler = new Handler(Looper.getMainLooper());
+-    private final ArraySet<Object> mListeners = new ArraySet<>();
++    private final ArrayList<Object> mListeners = new ArrayList<>();
+     private final MetricsLogger mMetricsLogger = Dependency.get(MetricsLogger.class);
+ 
+     private final ArrayList<Callback> mCallbacks = new ArrayList<>();
+-- 
+2.20.0
+

@@ -1,0 +1,62 @@
+From ec30ea45d30b46958008471c4e162f7e69d4dea5 Mon Sep 17 00:00:00 2001
+From: Henrique Silva <jhenrique09.mcz@hotmail.com>
+Date: Tue, 31 Jul 2018 14:48:30 -0300
+Subject: [PATCH] av: camera: Allow disabling shutter sound for specific
+ packages
+
+* MiuiCamera needs that, the sound will be handled on app-side
+
+Change-Id: I0a0dd936c9ebf3d2a56aafb7b93a81f1c626a8dc
+Signed-off-by: Henrique Silva <jhenrique09.mcz@hotmail.com>
+---
+ .../camera/libcameraservice/CameraService.cpp   | 17 +++++++++++++++++
+ .../camera/libcameraservice/CameraService.h     |  1 +
+ 2 files changed, 18 insertions(+)
+
+diff --git a/services/camera/libcameraservice/CameraService.cpp b/services/camera/libcameraservice/CameraService.cpp
+index 3755d55cd..046036c0f 100644
+--- a/services/camera/libcameraservice/CameraService.cpp
++++ b/services/camera/libcameraservice/CameraService.cpp
+@@ -2058,10 +2058,27 @@ CameraService::Client::Client(const sp<CameraService>& cameraService,
+     mRemoteCallback = cameraClient;
+ 
+     cameraService->loadSound();
++    cameraService->ensureCameraShuterSoundDisabled(clientPackageName);
+ 
+     LOG1("Client::Client X (pid %d, id %d)", callingPid, mCameraId);
+ }
+ 
++void CameraService::ensureCameraShuterSoundDisabled(const String16& clientPackageName) {
++    char value[PROPERTY_VALUE_MAX];
++    if (property_get("camera.disable_shutter_sound.packagelist", value, NULL) > 0){
++        std::stringstream disable_shutter_package_list(value);
++        std::string package;
++        while(std::getline(disable_shutter_package_list, package, ',')){
++            if (package.compare(String8(clientPackageName)) == 0){
++                mSoundPlayer[SOUND_SHUTTER] = NULL;
++                mSoundPlayer[SOUND_RECORDING_START] = NULL;
++                mSoundPlayer[SOUND_RECORDING_STOP] = NULL;
++                return;
++            }
++        }
++    }
++}
++
+ // tear down the client
+ CameraService::Client::~Client() {
+     ALOGV("~Client");
+diff --git a/services/camera/libcameraservice/CameraService.h b/services/camera/libcameraservice/CameraService.h
+index 6d5dde89d..db0d9a34c 100644
+--- a/services/camera/libcameraservice/CameraService.h
++++ b/services/camera/libcameraservice/CameraService.h
+@@ -174,6 +174,7 @@ public:
+     };
+ 
+     void                loadSound();
++    void                ensureCameraShuterSoundDisabled(const String16& clientPackageName);
+     void                playSound(sound_kind kind);
+     void                releaseSound();
+ 
+-- 
+2.20.0
+

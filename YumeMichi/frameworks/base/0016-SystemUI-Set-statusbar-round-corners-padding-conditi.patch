@@ -1,0 +1,82 @@
+From f0319bcb4f53a1cc8a687af8d6618e7488176d48 Mon Sep 17 00:00:00 2001
+From: Alex Cruz <du.alexcruz@gmail.com>
+Date: Thu, 22 Mar 2018 00:26:13 -0400
+Subject: [PATCH 16/35] SystemUI: Set statusbar round corners padding
+ conditionally
+
+The pixel 2XL among other devices that have round corners don't look good
+when the round corner padding is set to 0. The edges get cut off and again
+it just doesn't look good. This is why Google introduced this padding in
+the statusbar.
+
+So instead of setting the padding for 10 devices and having to constantly
+have to remind new maintainers that they need to add this overlay, we set
+the default padding for the Pixel 2XL (taimen) which is currently the only
+device we support that needs this and set the 0 padding dimens for the rest
+of our devices.
+
+Change-Id: I65f639966c1c3be462ed4dec008c86c931517a02
+---
+ packages/SystemUI/res/values-sw372dp/dimens.xml          | 1 +
+ packages/SystemUI/res/values/dimens.xml                  | 1 +
+ .../src/com/android/systemui/RoundedCorners.java         | 9 +++++++--
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SystemUI/res/values-sw372dp/dimens.xml b/packages/SystemUI/res/values-sw372dp/dimens.xml
+index 635185d7f2a..1938eb91e06 100644
+--- a/packages/SystemUI/res/values-sw372dp/dimens.xml
++++ b/packages/SystemUI/res/values-sw372dp/dimens.xml
+@@ -18,4 +18,5 @@
+ <resources>
+     <dimen name="nav_content_padding">8dp</dimen>
+     <dimen name="rounded_corner_content_padding">8dp</dimen>
++    <dimen name="rounded_corner_content_padding_alt">0dp</dimen>
+ </resources>
+diff --git a/packages/SystemUI/res/values/dimens.xml b/packages/SystemUI/res/values/dimens.xml
+index 9901f6ff8fd..8c7f51cf392 100644
+--- a/packages/SystemUI/res/values/dimens.xml
++++ b/packages/SystemUI/res/values/dimens.xml
+@@ -848,6 +848,7 @@
+ 
+     <dimen name="rounded_corner_radius">0dp</dimen>
+     <dimen name="rounded_corner_content_padding">0dp</dimen>
++    <dimen name="rounded_corner_content_padding_alt">0dp</dimen>
+     <dimen name="nav_content_padding">0dp</dimen>
+ 
+     <!-- Intended corner radius when drawing the mobile signal -->
+diff --git a/packages/SystemUI/src/com/android/systemui/RoundedCorners.java b/packages/SystemUI/src/com/android/systemui/RoundedCorners.java
+index b15b79fb984..857f3f92f10 100644
+--- a/packages/SystemUI/src/com/android/systemui/RoundedCorners.java
++++ b/packages/SystemUI/src/com/android/systemui/RoundedCorners.java
+@@ -21,6 +21,7 @@ import android.app.Fragment;
+ import android.content.res.ColorStateList;
+ import android.graphics.Color;
+ import android.graphics.PixelFormat;
++import android.os.Build;
+ import android.provider.Settings.Secure;
+ import android.support.annotation.VisibleForTesting;
+ import android.util.DisplayMetrics;
+@@ -66,8 +67,12 @@ public class RoundedCorners extends SystemUI implements Tunable {
+         }
+         int padding = mContext.getResources().getDimensionPixelSize(
+                 R.dimen.rounded_corner_content_padding);
+-        if (padding != 0) {
++        int padding_alt = mContext.getResources().getDimensionPixelSize(
++                R.dimen.rounded_corner_content_padding_alt);
++        if (padding != 0 && Build.PRODUCT.equals("taimen")) {
+             setupPadding(padding);
++        } else {
++            setupPadding(padding_alt);
+         }
+     }
+ 
+@@ -215,4 +220,4 @@ public class RoundedCorners extends SystemUI implements Tunable {
+                     FLAG_START | FLAG_END);
+         }
+     }
+-}
++}
+\ No newline at end of file
+-- 
+2.20.0
+

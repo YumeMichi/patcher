@@ -1,0 +1,549 @@
+From 4519fb499043f3c408bf4753e5ec0be5ed02c908 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Thu, 21 Sep 2017 03:29:56 +0200
+Subject: [PATCH 11/35] SystemUI: Add back QS hide label
+
+if enabled label click (secondary) will be reassigned to long click
+for dual target tiles
+
+Change-Id: I440362ab38057cbfba7750d75825179bd830c4e8
+---
+ core/java/android/provider/Settings.java      | 11 +++-
+ .../android/systemui/plugins/qs/QSTile.java   |  1 +
+ .../systemui/plugins/qs/QSTileView.java       |  3 +
+ .../SystemUI/res/menu/qs_customize_menu.xml   |  9 +++
+ .../SystemUI/res/values/custom_dimens.xml     |  2 +
+ .../SystemUI/res/values/custom_strings.xml    |  1 +
+ .../android/systemui/qs/PagedTileLayout.java  |  5 ++
+ .../src/com/android/systemui/qs/QSPanel.java  | 26 ++++++++-
+ .../com/android/systemui/qs/QuickQSPanel.java |  5 ++
+ .../com/android/systemui/qs/TileLayout.java   | 25 +++++++--
+ .../systemui/qs/customize/QSCustomizer.java   | 55 +++++++++++++------
+ .../systemui/qs/customize/TileAdapter.java    |  9 +++
+ .../systemui/qs/tileimpl/QSTileImpl.java      | 11 +++-
+ .../systemui/qs/tileimpl/QSTileView.java      |  5 ++
+ .../systemui/qs/tiles/BluetoothTile.java      |  5 ++
+ .../android/systemui/qs/tiles/DndTile.java    |  5 ++
+ .../android/systemui/qs/tiles/WifiTile.java   |  5 ++
+ 17 files changed, 154 insertions(+), 29 deletions(-)
+
+diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
+index a3ac2a2b620..4f394911e26 100755
+--- a/core/java/android/provider/Settings.java
++++ b/core/java/android/provider/Settings.java
+@@ -3959,6 +3959,11 @@ public final class Settings {
+           */
+          public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
+ 
++        /**
++         * @hide
++         */
++        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
++
+         /**
+          * Number of qs columns on landscape orientation
+          * @hide
+@@ -3966,9 +3971,10 @@ public final class Settings {
+         public static final String QS_LAYOUT_COLUMNS_LANDSCAPE = "qs_layout_columns_landscape";
+ 
+         /**
++         * Whether to display qs tile titles in the qs panel
+          * @hide
+          */
+-        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
++        public static final String QS_TILE_TITLE_VISIBILITY = "qs_tile_title_visibility";
+ 
+         /**
+          * Settings to backup. This is here so that it's in the same place as the settings
+@@ -4136,6 +4142,9 @@ public final class Settings {
+             PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
+             PRIVATE_SETTINGS.add(EGG_MODE);
+             PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
++            PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS);
++            PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS_LANDSCAPE);
++            PRIVATE_SETTINGS.add(QS_TILE_TITLE_VISIBILITY);
+         }
+ 
+         /**
+diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
+index 4700187d502..3c349e1bcce 100644
+--- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
++++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
+@@ -67,6 +67,7 @@ public interface QSTile {
+     CharSequence getTileLabel();
+ 
+     State getState();
++    boolean isDualTarget();
+ 
+     default LogMaker populate(LogMaker logMaker) {
+         return logMaker;
+diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
+index 7beb64cda61..e60f1d243f9 100644
+--- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
++++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
+@@ -41,4 +41,7 @@ public abstract class QSTileView extends LinearLayout {
+     public void setHideExpand(boolean value) {
+         // empty by default
+     }
++    public void setHideLabel(boolean value) {
++        // empty by default
++    }
+ }
+diff --git a/packages/SystemUI/res/menu/qs_customize_menu.xml b/packages/SystemUI/res/menu/qs_customize_menu.xml
+index 33e76ce617d..2681d8f9a91 100644
+--- a/packages/SystemUI/res/menu/qs_customize_menu.xml
++++ b/packages/SystemUI/res/menu/qs_customize_menu.xml
+@@ -27,11 +27,17 @@ limitations under the License.
+                 <item android:id="@+id/menu_item_columns_five"
+                       android:title="@string/qs_menu_item_columns_five"
+                       android:checkable="true" />
++                <item android:id="@+id/menu_item_columns_six"
++                      android:title="@string/qs_menu_item_columns_six"
++                      android:checkable="true" />
+             </menu>
+         </item>
+         <item android:id="@+id/menu_item_columns_landscape"
+               android:title="@string/qs_menu_item_columns_landscape">
+             <menu>
++                <item android:id="@+id/menu_item_columns_landscape_three"
++                      android:title="@string/qs_menu_item_columns_three"
++                      android:checkable="true" />
+                 <item android:id="@+id/menu_item_columns_landscape_four"
+                       android:title="@string/qs_menu_item_columns_four"
+                       android:checkable="true" />
+@@ -49,6 +55,9 @@ limitations under the License.
+                       android:checkable="true" />
+             </menu>
+         </item>
++        <item android:id="@+id/menu_item_titles"
++              android:title="@string/qs_menu_item_titles"
++              android:checkable="true" />
+         <item android:id="@+id/menu_item_reset"
+               android:title="@string/qs_menu_item_reset"/>
+ </menu>
+diff --git a/packages/SystemUI/res/values/custom_dimens.xml b/packages/SystemUI/res/values/custom_dimens.xml
+index ea2a851a419..efc26a3ab42 100644
+--- a/packages/SystemUI/res/values/custom_dimens.xml
++++ b/packages/SystemUI/res/values/custom_dimens.xml
+@@ -32,4 +32,6 @@
+     <dimen name="opa_overshoot_translation">8.0dip</dimen>
+     <dimen name="opa_return_translation">-1.0dip</dimen>
+     <dimen name="opa_rest_to_collapse">7.0dip</dimen>
++
++    <dimen name="qs_tile_height_wo_label">48dp</dimen>
+ </resources>
+diff --git a/packages/SystemUI/res/values/custom_strings.xml b/packages/SystemUI/res/values/custom_strings.xml
+index 16f964b34e8..8d7aa55f133 100644
+--- a/packages/SystemUI/res/values/custom_strings.xml
++++ b/packages/SystemUI/res/values/custom_strings.xml
+@@ -28,4 +28,5 @@
+     <string name="qs_menu_item_columns_eight">8</string>
+     <string name="qs_menu_item_columns_nine">9</string>
+     <string name="qs_menu_item_reset">Reset</string>
++    <string name="qs_menu_item_titles">Show labels</string>
+ </resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
+index a7a31c172a0..2dfa6744be6 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
+@@ -336,4 +336,9 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
+     public int getNumColumns() {
+         return mPages.get(0).getNumColumns();
+     }
++
++    @Override
++    public boolean isShowTitles() {
++        return mPages.get(0).isShowTitles();
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+index 60c71c4c9b0..65f3d810bd3 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+@@ -445,11 +445,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+         r.callback = callback;
+         r.tileView.init(r.tile);
+         r.tile.refreshState();
+-        r.tileView.setHideExpand(mTileLayout.getNumColumns() > 4);
+         mRecords.add(r);
+ 
+         if (mTileLayout != null) {
+             mTileLayout.addTile(r);
++            configureTile(r.tile, r.tileView);
+         }
+ 
+         return r;
+@@ -632,17 +632,37 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+         boolean updateResources();
+         void updateSettings();
+         int getNumColumns();
++        boolean isShowTitles();
+ 
+         void setListening(boolean listening);
+     }
+ 
++    private void configureTile(QSTile t, QSTileView v) {
++        if (mTileLayout != null) {
++            v.setHideExpand(mTileLayout.getNumColumns() > 4);
++            v.setHideLabel(!mTileLayout.isShowTitles());
++            if (t.isDualTarget()) {
++                if (!mTileLayout.isShowTitles()) {
++                    v.setOnLongClickListener(view -> {
++                        t.secondaryClick();
++                        return true;
++                    });
++                } else {
++                    v.setOnLongClickListener(view -> {
++                        t.longClick();
++                        return true;
++                    });
++                }
++            }
++        }
++    }
++
+     public void updateSettings() {
+         if (mTileLayout != null) {
+             mTileLayout.updateSettings();
+ 
+             for (TileRecord r : mRecords) {
+-                QSTileView v = r.tileView;
+-                v.setHideExpand(mTileLayout.getNumColumns() > 4);
++                configureTile(r.tile, r.tileView);
+             }
+         }
+     }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
+index c66c0cad82a..95796e0845e 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
+@@ -261,5 +261,10 @@ public class QuickQSPanel extends QSPanel {
+         public int getNumColumns() {
+             return getNumQuickTiles(mContext);
+         }
++
++        @Override
++        public boolean isShowTitles() {
++            return false;
++        }
+     }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
+index 447fa628ad8..de7fb3551b3 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
+@@ -25,7 +25,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
+     protected int mCellWidth;
+     protected int mCellHeight;
+     protected int mCellMargin;
+-    protected int mDefaultColumns;
++    protected boolean mShowTitles = true;
+ 
+     protected final ArrayList<TileRecord> mRecords = new ArrayList<>();
+     private int mCellMarginTop;
+@@ -143,17 +143,27 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
+     @Override
+     public void updateSettings() {
+         final Resources res = mContext.getResources();
+-        mDefaultColumns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
++        int defaultColumns = Math.max(1, res.getInteger(R.integer.quick_settings_num_columns));
+         boolean isPortrait = res.getConfiguration().orientation
+                 == Configuration.ORIENTATION_PORTRAIT;
+         int columns = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, defaultColumns,
+                 UserHandle.USER_CURRENT);
+         int columnsLandscape = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, defaultColumns,
+                 UserHandle.USER_CURRENT);
+-        if (mColumns != (isPortrait ? columns : columnsLandscape)) {
++        boolean showTitles = Settings.System.getIntForUser(
++                mContext.getContentResolver(), Settings.System.QS_TILE_TITLE_VISIBILITY, 1,
++                UserHandle.USER_CURRENT) == 1;
++
++        if (showTitles) {
++            mCellHeight = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_height);
++        } else {
++            mCellHeight = mContext.getResources().getDimensionPixelSize(R.dimen.qs_tile_height_wo_label);
++        }
++        if (mColumns != (isPortrait ? columns : columnsLandscape) || mShowTitles != showTitles) {
+             mColumns = isPortrait ? columns : columnsLandscape;
++            mShowTitles = showTitles;
+             requestLayout();
+         }
+     }
+@@ -162,4 +172,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
+     public int getNumColumns() {
+         return mColumns;
+     }
++
++    @Override
++    public boolean isShowTitles() {
++        return mShowTitles;
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
+index 7e61bffed9f..3cf46ccf8b9 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
+@@ -92,7 +92,6 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+     private boolean mOpening;
+     private boolean mIsShowingNavBackdrop;
+     private GridLayoutManager mLayout;
+-    private int mDefaultColumns;
+     private Menu mColumnsSubMenu;
+     private Menu mColumnsLandscapeSubMenu;
+ 
+@@ -125,16 +124,20 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+             mColumnsLandscapeSubMenu = menuItemLand.getSubMenu();
+         }
+ 
+-        updateColumnsMenu();
++        int qsTitlesValue = Settings.System.getIntForUser(mContext.getContentResolver(),
++                Settings.System.QS_TILE_TITLE_VISIBILITY, 1,
++                UserHandle.USER_CURRENT);
++        MenuItem qsTitlesMenuItem = mToolbar.getMenu().findItem(R.id.menu_item_titles);
++        qsTitlesMenuItem.setChecked(qsTitlesValue == 1);
+ 
+         mToolbar.setTitle(R.string.qs_edit);
+-        mDefaultColumns = Math.max(1,
++        int defaultColumns = Math.max(1,
+                     mContext.getResources().getInteger(R.integer.quick_settings_num_columns));
+         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
+         mTileAdapter = new TileAdapter(getContext());
+         mRecyclerView.setAdapter(mTileAdapter);
+         mTileAdapter.getItemTouchHelper().attachToRecyclerView(mRecyclerView);
+-        mLayout = new GridLayoutManager(getContext(), mDefaultColumns);
++        mLayout = new GridLayoutManager(getContext(), defaultColumns);
+         mLayout.setSpanSizeLookup(mTileAdapter.getSizeLookup());
+         mRecyclerView.setLayoutManager(mLayout);
+         mRecyclerView.addItemDecoration(mTileAdapter.getItemDecoration());
+@@ -280,6 +283,14 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+                 Settings.System.putIntForUser(mContext.getContentResolver(),
+                         Settings.System.QS_LAYOUT_COLUMNS, 5, UserHandle.USER_CURRENT);
+                 break;
++            case R.id.menu_item_columns_six:
++                Settings.System.putIntForUser(mContext.getContentResolver(),
++                        Settings.System.QS_LAYOUT_COLUMNS, 6, UserHandle.USER_CURRENT);
++                break;
++            case R.id.menu_item_columns_landscape_three:
++                Settings.System.putIntForUser(mContext.getContentResolver(),
++                        Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, 3, UserHandle.USER_CURRENT);
++                break;
+             case R.id.menu_item_columns_landscape_four:
+                 Settings.System.putIntForUser(mContext.getContentResolver(),
+                         Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, 4, UserHandle.USER_CURRENT);
+@@ -300,6 +311,12 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+                 Settings.System.putIntForUser(mContext.getContentResolver(),
+                         Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, 8, UserHandle.USER_CURRENT);
+                 break;
++            case R.id.menu_item_titles:
++                item.setChecked(!item.isChecked());
++                Settings.System.putIntForUser(mContext.getContentResolver(),
++                        Settings.System.QS_TILE_TITLE_VISIBILITY, item.isChecked() ? 1 : 0,
++                        UserHandle.USER_CURRENT);
++                break;
+         }
+         updateSettings();
+         return false;
+@@ -312,13 +329,6 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+             tiles.add(tile);
+         }
+         mTileAdapter.resetTileSpecs(mHost, tiles);
+-        Settings.System.putIntForUser(mContext.getContentResolver(),
+-                Settings.System.QS_LAYOUT_COLUMNS, mDefaultColumns,
+-                UserHandle.USER_CURRENT);
+-        Settings.System.putIntForUser(mContext.getContentResolver(),
+-                Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
+-                UserHandle.USER_CURRENT);
+-        updateSettings();
+     }
+ 
+     private void setTileSpecs() {
+@@ -412,20 +422,25 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+         final Resources res = mContext.getResources();
+         boolean isPortrait = res.getConfiguration().orientation
+                 == Configuration.ORIENTATION_PORTRAIT;
++        int defaultColumns = Math.max(1, mContext.getResources().getInteger(R.integer.quick_settings_num_columns));
+         int columns = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, defaultColumns,
+                 UserHandle.USER_CURRENT);
+         int columnsLandscape = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, defaultColumns,
+                 UserHandle.USER_CURRENT);
++        boolean showTitles = Settings.System.getIntForUser(
++                mContext.getContentResolver(), Settings.System.QS_TILE_TITLE_VISIBILITY, 1,
++                UserHandle.USER_CURRENT) == 1;
+         mTileAdapter.setColumnCount(isPortrait ? columns : columnsLandscape);
++        mTileAdapter.setHideLabel(!showTitles);
+         mLayout.setSpanCount(isPortrait ? columns : columnsLandscape);
+-        updateColumnsMenu();
++        updateColumnsMenu(defaultColumns);
+     }
+ 
+-    private void updateColumnsMenu() {
++    private void updateColumnsMenu(int defaultColumns) {
+         int columns = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS, defaultColumns,
+                 UserHandle.USER_CURRENT);
+         MenuItem menuItemThree = mToolbar.getMenu().findItem(R.id.menu_item_columns_three);
+         menuItemThree.setChecked(columns == 3);
+@@ -433,15 +448,19 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+         menuItemFour.setChecked(columns == 4);
+         MenuItem menuItemFive = mToolbar.getMenu().findItem(R.id.menu_item_columns_five);
+         menuItemFive.setChecked(columns == 5);
++        MenuItem menuItemSix = mToolbar.getMenu().findItem(R.id.menu_item_columns_six);
++        menuItemSix.setChecked(columns == 6);
+ 
+         int columnsLandscape = Settings.System.getIntForUser(
+-                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, mDefaultColumns,
++                mContext.getContentResolver(), Settings.System.QS_LAYOUT_COLUMNS_LANDSCAPE, defaultColumns,
+                 UserHandle.USER_CURRENT);
++        menuItemThree = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_three);
++        menuItemThree.setChecked(columnsLandscape == 3);
+         menuItemFour = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_four);
+         menuItemFour.setChecked(columnsLandscape == 4);
+         menuItemFive = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_five);
+         menuItemFive.setChecked(columnsLandscape == 5);
+-        MenuItem menuItemSix = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_six);
++        menuItemSix = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_six);
+         menuItemSix.setChecked(columnsLandscape == 6);
+         MenuItem menuItemSeven = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_seven);
+         menuItemSeven.setChecked(columnsLandscape == 7);
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
+index 31a79cf21af..65bbb861a23 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
+@@ -85,6 +85,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
+     private boolean mAccessibilityMoving;
+     private int mAccessibilityFromIndex;
+     private QSTileHost mHost;
++    private boolean mHideLabel;
+ 
+     public TileAdapter(Context context) {
+         mContext = context;
+@@ -270,6 +271,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
+         holder.mTileView.onStateChanged(info.state);
+         holder.mTileView.setAppLabel(info.appLabel);
+         holder.mTileView.setShowAppLabel(position > mEditIndex && !info.isSystem);
++        holder.mTileView.setHideLabel(mHideLabel);
+ 
+         final boolean selectable = !mAccessibilityMoving || position < mEditIndex;
+         if (!(mAccessibilityManager.isTouchExplorationEnabled() && selectable)) {
+@@ -589,4 +591,11 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
+     public void setColumnCount(int columns) {
+         mSizeLookup.setColumnCount(columns);
+     }
++
++    public void setHideLabel(boolean value) {
++        if (mHideLabel != value) {
++            mHideLabel = value;
++            notifyDataSetChanged();
++        }
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+index 576a447447b..9d05f36faab 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
+@@ -89,6 +89,11 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
+ 
+     abstract protected void handleUpdateState(TState state, Object arg);
+ 
++    @Override
++    public boolean isDualTarget() {
++        return false;
++    }
++
+     /**
+      * Declare the category of this tile.
+      *
+@@ -272,8 +277,10 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
+     }
+ 
+     protected void handleLongClick() {
+-        Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(
+-                getLongClickIntent(), 0);
++        if (getLongClickIntent() != null) {
++            Dependency.get(ActivityStarter.class).postStartActivityDismissingKeyguard(
++                    getLongClickIntent(), 0);
++        }
+     }
+ 
+     public abstract Intent getLongClickIntent();
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
+index 99584db01bd..4c0b9d7a481 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
+@@ -19,6 +19,7 @@ import android.content.res.Configuration;
+ import android.service.quicksettings.Tile;
+ import android.text.SpannableStringBuilder;
+ import android.text.style.ForegroundColorSpan;
++import android.util.Log;
+ import android.view.Gravity;
+ import android.view.LayoutInflater;
+ import android.view.View;
+@@ -134,4 +135,8 @@ public class QSTileView extends QSTileBaseView {
+         mExpandIndicator.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
+         mExpandSpace.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
+     }
++
++    public void setHideLabel(boolean value) {
++        mLabelContainer.setVisibility(value ? View.GONE : View.VISIBLE);
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
+index ac3326a8f63..10074756cc3 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
+@@ -64,6 +64,11 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
+         mDetailAdapter = (BluetoothDetailAdapter) createDetailAdapter();
+     }
+ 
++    @Override
++    public boolean isDualTarget() {
++        return true;
++    }
++
+     @Override
+     public DetailAdapter getDetailAdapter() {
+         return mDetailAdapter;
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
+index f725657437b..71cf0148f30 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
+@@ -97,6 +97,11 @@ public class DndTile extends QSTileImpl<BooleanState> {
+         }
+     }
+ 
++    @Override
++    public boolean isDualTarget() {
++        return true;
++    }
++
+     public static void setVisible(Context context, boolean visible) {
+         Prefs.putBoolean(context, Prefs.Key.DND_TILE_VISIBLE, visible);
+     }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
+index fdbb260f39b..2f9d248b8b9 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
+@@ -69,6 +69,11 @@ public class WifiTile extends QSTileImpl<SignalState> {
+         mActivityStarter = Dependency.get(ActivityStarter.class);
+     }
+ 
++    @Override
++    public boolean isDualTarget() {
++        return true;
++    }
++
+     @Override
+     public SignalState newTileState() {
+         return new SignalState();
+-- 
+2.20.0
+

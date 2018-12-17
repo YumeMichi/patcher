@@ -1,0 +1,192 @@
+From a84212035cd263484d782858e3e0aef03115973e Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Thu, 21 Sep 2017 00:38:01 +0200
+Subject: [PATCH 10/35] SystemUI: Hide QS expand image on bigger column counts
+
+we neeeeed space
+
+Change-Id: I207d781e7e1094a8425de9f545a53a57d7001d5a
+---
+ .../systemui/plugins/qs/QSTileView.java       |  3 +++
+ .../android/systemui/qs/PagedTileLayout.java  |  5 ++++
+ .../src/com/android/systemui/qs/QSPanel.java  | 11 ++++++++-
+ .../com/android/systemui/qs/QuickQSPanel.java |  5 ++++
+ .../com/android/systemui/qs/TileLayout.java   |  5 ++++
+ .../systemui/qs/customize/QSCustomizer.java   |  1 +
+ .../systemui/qs/tileimpl/QSTileView.java      | 23 +++++++++++++------
+ 7 files changed, 45 insertions(+), 8 deletions(-)
+
+diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
+index 18d27bb419d..7beb64cda61 100644
+--- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
++++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
+@@ -38,4 +38,7 @@ public abstract class QSTileView extends LinearLayout {
+     public abstract void onStateChanged(State state);
+ 
+     public abstract int getDetailY();
++    public void setHideExpand(boolean value) {
++        // empty by default
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
+index 1c397561f8f..a7a31c172a0 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
+@@ -331,4 +331,9 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
+         }
+         postDistributeTiles();
+     }
++
++    @Override
++    public int getNumColumns() {
++        return mPages.get(0).getNumColumns();
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+index 3fd3cd24200..60c71c4c9b0 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
+@@ -27,6 +27,7 @@ import android.os.Handler;
+ import android.os.Message;
+ import android.service.quicksettings.Tile;
+ import android.util.AttributeSet;
++import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.widget.ImageView;
+@@ -115,7 +116,6 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+         if (mTileLayout instanceof PagedTileLayout) {
+             ((PagedTileLayout) mTileLayout).setPageIndicator((PageIndicator) mPageIndicator);
+         }
+-        updateSettings();
+ 
+         addDivider();
+ 
+@@ -152,6 +152,8 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+         mTileLayout.setListening(mListening);
+         addView((View) mTileLayout);
+ 
++        updateSettings();
++
+         mIsAutomaticBrightnessAvailable = getResources().getBoolean(
+                 com.android.internal.R.bool.config_automatic_brightness_available);
+     }
+@@ -443,6 +445,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+         r.callback = callback;
+         r.tileView.init(r.tile);
+         r.tile.refreshState();
++        r.tileView.setHideExpand(mTileLayout.getNumColumns() > 4);
+         mRecords.add(r);
+ 
+         if (mTileLayout != null) {
+@@ -628,6 +631,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+ 
+         boolean updateResources();
+         void updateSettings();
++        int getNumColumns();
+ 
+         void setListening(boolean listening);
+     }
+@@ -635,6 +639,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
+     public void updateSettings() {
+         if (mTileLayout != null) {
+             mTileLayout.updateSettings();
++
++            for (TileRecord r : mRecords) {
++                QSTileView v = r.tileView;
++                v.setHideExpand(mTileLayout.getNumColumns() > 4);
++            }
+         }
+     }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
+index eb28ddef060..c66c0cad82a 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
+@@ -256,5 +256,10 @@ public class QuickQSPanel extends QSPanel {
+         @Override
+         public void updateSettings() {
+         }
++
++        @Override
++        public int getNumColumns() {
++            return getNumQuickTiles(mContext);
++        }
+     }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
+index b5906b88058..447fa628ad8 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
+@@ -157,4 +157,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
+             requestLayout();
+         }
+     }
++
++    @Override
++    public int getNumColumns() {
++        return mColumns;
++    }
+ }
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
+index 793af36ee83..7e61bffed9f 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
+@@ -143,6 +143,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
+         mRecyclerView.setItemAnimator(animator);
+         mLightBarController = Dependency.get(LightBarController.class);
+         updateNavBackDrop(getResources().getConfiguration());
++        updateSettings();
+     }
+ 
+     @Override
+diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
+index 263dac0f44e..99584db01bd 100644
+--- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
++++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
+@@ -43,6 +43,8 @@ public class QSTileView extends QSTileBaseView {
+     private ViewGroup mLabelContainer;
+     private View mExpandIndicator;
+     private View mExpandSpace;
++    private boolean mHideEpxand;
++    private boolean mDualTarget;
+ 
+     public QSTileView(Context context, QSIconView icon) {
+         this(context, icon, false);
+@@ -103,14 +105,15 @@ public class QSTileView extends QSTileBaseView {
+             mState = state.state;
+             mLabel.setText(state.label);
+         }
+-        mExpandIndicator.setVisibility(state.dualTarget ? View.VISIBLE : View.GONE);
+-        mExpandSpace.setVisibility(state.dualTarget ? View.VISIBLE : View.GONE);
+-        mLabelContainer.setContentDescription(state.dualTarget ? state.dualLabelContentDescription
++        mDualTarget = state.dualTarget;
++        mExpandIndicator.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
++        mExpandSpace.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
++        mLabelContainer.setContentDescription(mDualTarget ? state.dualLabelContentDescription
+                 : null);
+-        if (state.dualTarget != mLabelContainer.isClickable()) {
+-            mLabelContainer.setClickable(state.dualTarget);
+-            mLabelContainer.setLongClickable(state.dualTarget);
+-            mLabelContainer.setBackground(state.dualTarget ? newTileBackground() : null);
++        if (mDualTarget != mLabelContainer.isClickable()) {
++            mLabelContainer.setClickable(mDualTarget);
++            mLabelContainer.setLongClickable(mDualTarget);
++            mLabelContainer.setBackground(mDualTarget ? newTileBackground() : null);
+         }
+         mLabel.setEnabled(!state.disabledByPolicy);
+         mPadLock.setVisibility(state.disabledByPolicy ? View.VISIBLE : View.GONE);
+@@ -125,4 +128,10 @@ public class QSTileView extends QSTileBaseView {
+         mLabelContainer.setClickable(false);
+         mLabelContainer.setLongClickable(false);
+     }
++
++    public void setHideExpand(boolean value) {
++        mHideEpxand = value;
++        mExpandIndicator.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
++        mExpandSpace.setVisibility((mDualTarget && !mHideEpxand) ? View.VISIBLE : View.GONE);
++    }
+ }
+-- 
+2.20.0
+

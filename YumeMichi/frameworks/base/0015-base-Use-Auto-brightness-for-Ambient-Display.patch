@@ -1,0 +1,28 @@
+From a93e60e763308ffa7245670e4bc076f1b33c0d08 Mon Sep 17 00:00:00 2001
+From: ezio84 <brabus84@gmail.com>
+Date: Thu, 22 Mar 2018 13:02:07 +0100
+Subject: [PATCH 15/35] base: Use Auto brightness for Ambient Display
+
+this works well now
+
+Change-Id: I3354b623404fe05bd67586ad39864c6bf8d20542
+---
+ core/res/res/values/config.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 01b272186d5..9d84c94df18 100644
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -1185,7 +1185,7 @@
+     <bool name="config_skipScreenOnBrightnessRamp">false</bool>
+ 
+     <!-- Allow automatic adjusting of the screen brightness while dozing in low power state. -->
+-    <bool name="config_allowAutoBrightnessWhileDozing">false</bool>
++    <bool name="config_allowAutoBrightnessWhileDozing">true</bool>
+ 
+     <!-- Stability requirements in milliseconds for accepting a new brightness level.  This is used
+          for debouncing the light sensor.  Different constants are used to debounce the light sensor
+-- 
+2.20.0
+

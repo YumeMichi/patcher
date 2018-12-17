@@ -1,0 +1,32 @@
+From 91857837b9ee2303313d56efaa01a7016aab5cfe Mon Sep 17 00:00:00 2001
+From: Sauhard Pande <sauhardp@codeaurora.org>
+Date: Mon, 28 Aug 2017 10:59:10 +0530
+Subject: [PATCH 34/35] Camera: Clearing exception for Extended Face
+
+Issue: For project which dont have ExtendedFace
+Class, exception for class is thrown causing issue.
+
+Fix: Added exception clear.
+
+Change-Id: Ieabe774719e1e5cafd62476e05aa4310a92d8260
+CRs-Fixed: 2246547
+---
+ core/jni/android_hardware_Camera.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/core/jni/android_hardware_Camera.cpp b/core/jni/android_hardware_Camera.cpp
+index 0c8a4df22b2..4fa56e3d436 100644
+--- a/core/jni/android_hardware_Camera.cpp
++++ b/core/jni/android_hardware_Camera.cpp
+@@ -1336,6 +1336,8 @@ int register_android_hardware_Camera(JNIEnv *env)
+     if (NULL != clazz) {
+         fields.face_constructor = env->GetMethodID(clazz, "<init>", "()V");
+         find_fields(env, extendedfacefields_to_find, NELEM(extendedfacefields_to_find));
++    }else {
++        env->ExceptionClear();
+     }
+ 
+     // Register native functions
+-- 
+2.20.0
+

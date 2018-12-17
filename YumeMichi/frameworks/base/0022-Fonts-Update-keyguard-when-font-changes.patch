@@ -1,0 +1,198 @@
+From bc9f0e1780e9369f02693697907c8f61af95c54d Mon Sep 17 00:00:00 2001
+From: bigrushdog <randall.rushing@gmail.com>
+Date: Tue, 20 Mar 2018 18:28:21 -0700
+Subject: [PATCH 22/35] Fonts: Update keyguard when font changes
+
+Change-Id: I84a2eeb1e85f4e3da2b62f955537fafe597efc24
+---
+ packages/SystemUI/res-keyguard/values/styles.xml           | 4 ----
+ .../src/com/android/keyguard/KeyguardStatusView.java       | 7 +++++++
+ .../src/com/android/systemui/BatteryMeterView.java         | 4 ++++
+ .../systemui/statusbar/phone/KeyguardBottomAreaView.java   | 5 ++++-
+ .../systemui/statusbar/phone/KeyguardStatusBarView.java    | 6 +++++-
+ 5 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/packages/SystemUI/res-keyguard/values/styles.xml b/packages/SystemUI/res-keyguard/values/styles.xml
+index 826e3ea1f7e..3eaf71e5de8 100644
+--- a/packages/SystemUI/res-keyguard/values/styles.xml
++++ b/packages/SystemUI/res-keyguard/values/styles.xml
+@@ -33,7 +33,6 @@
+         <item name="android:gravity">center_horizontal|center_vertical</item>
+         <item name="android:background">@null</item>
+         <item name="android:textSize">32sp</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyLight</item>
+         <item name="android:textColor">?attr/wallpaperTextColor</item>
+         <item name="android:paddingBottom">-16dp</item>
+     </style>
+@@ -42,7 +41,6 @@
+     </style>
+     <style name="Widget.TextView.NumPadKey.Klondike" parent="Widget.TextView.NumPadKey">
+         <item name="android:textSize">12sp</item>
+-        <item name="android:fontFamily">sans-serif</item>
+         <item name="android:textColor">?attr/wallpaperTextColorSecondary</item>
+         <item name="android:paddingBottom">0dp</item>
+     </style>
+@@ -53,8 +51,6 @@
+     </style>
+     <style name="widget_big_thin">
+         <item name="android:textSize">@dimen/widget_big_font_size</item>
+-        <item name="android:fontFamily">@*android:string/config_headlineFontFamilyLight</item>
+-        <item name="android:fontFeatureSettings">@*android:string/config_headlineFontFeatureSettings</item>
+     </style>
+ 
+     <style name="BouncerSecurityContainer">
+diff --git a/packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java b/packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java
+index bc2a59df42a..9b982dc29b7 100644
+--- a/packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java
++++ b/packages/SystemUI/src/com/android/keyguard/KeyguardStatusView.java
+@@ -24,6 +24,7 @@ import android.content.res.Configuration;
+ import android.content.res.Resources;
+ import android.graphics.Color;
+ import android.graphics.PorterDuff;
++import android.graphics.Typeface;
+ import android.os.Handler;
+ import android.os.Looper;
+ import android.os.UserHandle;
+@@ -51,6 +52,7 @@ public class KeyguardStatusView extends GridLayout {
+     private static final boolean DEBUG = KeyguardConstants.DEBUG;
+     private static final String TAG = "KeyguardStatusView";
+     private static final int MARQUEE_DELAY_MS = 2000;
++    private static final String FONT_FAMILY = "sans-serif-light";
+ 
+     private final LockPatternUtils mLockPatternUtils;
+     private final AlarmManager mAlarmManager;
+@@ -177,8 +179,10 @@ public class KeyguardStatusView extends GridLayout {
+     @Override
+     protected void onConfigurationChanged(Configuration newConfig) {
+         super.onConfigurationChanged(newConfig);
++        Typeface tf = Typeface.create(FONT_FAMILY, Typeface.NORMAL);
+         mClockView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                 getResources().getDimensionPixelSize(R.dimen.widget_big_font_size));
++        mClockView.setTypeface(tf);
+         // Some layouts like burmese have a different margin for the clock
+         MarginLayoutParams layoutParams = (MarginLayoutParams) mClockView.getLayoutParams();
+         layoutParams.bottomMargin = getResources().getDimensionPixelSize(
+@@ -186,10 +190,13 @@ public class KeyguardStatusView extends GridLayout {
+         mClockView.setLayoutParams(layoutParams);
+         mDateView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                 getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
++        mDateView.setTypeface(tf);
+         if (mOwnerInfo != null) {
+             mOwnerInfo.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                     getResources().getDimensionPixelSize(R.dimen.widget_label_font_size));
++           mOwnerInfo.setTypeface(tf);
+         }
++        mAlarmStatusView.setTypeface(tf);
+     }
+ 
+     public void refreshTime() {
+diff --git a/packages/SystemUI/src/com/android/systemui/BatteryMeterView.java b/packages/SystemUI/src/com/android/systemui/BatteryMeterView.java
+index 1327f4615eb..8cc49226884 100644
+--- a/packages/SystemUI/src/com/android/systemui/BatteryMeterView.java
++++ b/packages/SystemUI/src/com/android/systemui/BatteryMeterView.java
+@@ -24,6 +24,7 @@ import android.content.res.Resources;
+ import android.content.res.TypedArray;
+ import android.database.ContentObserver;
+ import android.graphics.Rect;
++import android.graphics.Typeface;
+ import android.net.Uri;
+ import android.os.Handler;
+ import android.provider.Settings;
+@@ -63,6 +64,7 @@ public class BatteryMeterView extends LinearLayout implements
+     private final ImageView mBatteryIconView;
+     private final CurrentUserTracker mUserTracker;
+     private TextView mBatteryPercentView;
++    private static final String FONT_FAMILY = "sans-serif-medium";
+ 
+     private BatteryController mBatteryController;
+     private SettingObserver mSettingObserver;
+@@ -203,9 +205,11 @@ public class BatteryMeterView extends LinearLayout implements
+     }
+ 
+     private void updatePercentText() {
++        Typeface tf = Typeface.create(FONT_FAMILY, Typeface.NORMAL);
+         if (mBatteryPercentView != null) {
+             mBatteryPercentView.setText(
+                     NumberFormat.getPercentInstance().format(mLevel / 100f));
++            mBatteryPercentView.setTypeface(tf);
+         }
+     }
+ 
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardBottomAreaView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardBottomAreaView.java
+index f0588626e79..a161d97f9aa 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardBottomAreaView.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardBottomAreaView.java
+@@ -37,6 +37,7 @@ import android.content.pm.ActivityInfo;
+ import android.content.pm.PackageManager;
+ import android.content.pm.ResolveInfo;
+ import android.content.res.Configuration;
++import android.graphics.Typeface;
+ import android.graphics.drawable.Drawable;
+ import android.os.AsyncTask;
+ import android.os.Bundle;
+@@ -93,6 +94,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
+         AccessibilityController.AccessibilityStateChangedCallback, View.OnLongClickListener {
+ 
+     final static String TAG = "StatusBar/KeyguardBottomAreaView";
++    private static final String FONT_FAMILY = "sans-serif";
+ 
+     public static final String CAMERA_LAUNCH_SOURCE_AFFORDANCE = "lockscreen_affordance";
+     public static final String CAMERA_LAUNCH_SOURCE_WIGGLE = "wiggle_gesture";
+@@ -303,6 +305,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
+     @Override
+     protected void onConfigurationChanged(Configuration newConfig) {
+         super.onConfigurationChanged(newConfig);
++        Typeface tf = Typeface.create(FONT_FAMILY, Typeface.ITALIC);
+         int indicationBottomMargin = getResources().getDimensionPixelSize(
+                 R.dimen.keyguard_indication_margin_bottom);
+         MarginLayoutParams mlp = (MarginLayoutParams) mIndicationArea.getLayoutParams();
+@@ -318,7 +321,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
+         mIndicationText.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                 getResources().getDimensionPixelSize(
+                         com.android.internal.R.dimen.text_size_small_material));
+-
++        mIndicationText.setTypeface(tf);
+         ViewGroup.LayoutParams lp = mRightAffordanceView.getLayoutParams();
+         lp.width = getResources().getDimensionPixelSize(R.dimen.keyguard_affordance_width);
+         lp.height = getResources().getDimensionPixelSize(R.dimen.keyguard_affordance_height);
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
+index a6691b1656d..bf48595db01 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/KeyguardStatusBarView.java
+@@ -23,6 +23,7 @@ import android.content.res.Resources;
+ import android.content.res.TypedArray;
+ import android.graphics.Color;
+ import android.graphics.Rect;
++import android.graphics.Typeface;
+ import android.graphics.drawable.Drawable;
+ import android.util.AttributeSet;
+ import android.util.TypedValue;
+@@ -59,6 +60,8 @@ import com.android.systemui.statusbar.policy.UserSwitcherController;
+ public class KeyguardStatusBarView extends RelativeLayout
+         implements BatteryStateChangeCallback, OnUserInfoChangedListener, ConfigurationListener {
+ 
++    private static final String FONT_FAMILY = "sans-serif";
++
+     private boolean mBatteryCharging;
+     private boolean mKeyguardUserSwitcherShowing;
+     private boolean mBatteryListening;
+@@ -100,7 +103,7 @@ public class KeyguardStatusBarView extends RelativeLayout
+     @Override
+     protected void onConfigurationChanged(Configuration newConfig) {
+         super.onConfigurationChanged(newConfig);
+-
++        Typeface tf = Typeface.create(FONT_FAMILY, Typeface.NORMAL);
+         MarginLayoutParams lp = (MarginLayoutParams) mMultiUserAvatar.getLayoutParams();
+         lp.width = lp.height = getResources().getDimensionPixelSize(
+                 R.dimen.multi_user_avatar_keyguard_size);
+@@ -133,6 +136,7 @@ public class KeyguardStatusBarView extends RelativeLayout
+         mCarrierLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                 getResources().getDimensionPixelSize(
+                         com.android.internal.R.dimen.text_size_small_material));
++        mCarrierLabel.setTypeface(tf);
+         lp = (MarginLayoutParams) mCarrierLabel.getLayoutParams();
+         lp.setMarginStart(
+                 getResources().getDimensionPixelSize(R.dimen.keyguard_carrier_text_margin));
+-- 
+2.20.0
+

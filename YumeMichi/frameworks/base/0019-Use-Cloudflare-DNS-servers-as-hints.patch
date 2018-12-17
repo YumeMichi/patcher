@@ -1,0 +1,33 @@
+From a855464d124296c9c9fe70a6f9363f0c6b8073d6 Mon Sep 17 00:00:00 2001
+From: Daniel Micay <danielmicay@gmail.com>
+Date: Mon, 2 Apr 2018 10:37:46 -0400
+Subject: [PATCH 19/35] Use Cloudflare DNS servers as hints
+
+Cloudflare DNS has a better privacy policy than Google Public DNS and
+has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
+Android ships one of them.
+
+Change-Id: Ia0fe7c25583415344637de9b8402b161d442a980
+---
+ packages/SettingsLib/res/values/strings.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/SettingsLib/res/values/strings.xml b/packages/SettingsLib/res/values/strings.xml
+index bd884a3c972..c8fe7e54d9b 100644
+--- a/packages/SettingsLib/res/values/strings.xml
++++ b/packages/SettingsLib/res/values/strings.xml
+@@ -921,9 +921,9 @@
+     <!-- Hint text for the IP address -->
+     <string name="wifi_ip_address_hint" translatable="false">192.168.1.128</string>
+     <!-- Hint text for DNS -->
+-    <string name="wifi_dns1_hint" translatable="false">8.8.8.8</string>
++    <string name="wifi_dns1_hint" translatable="false">1.0.0.1</string>
+     <!-- Hint text for DNS -->
+-    <string name="wifi_dns2_hint" translatable="false">8.8.4.4</string>
++    <string name="wifi_dns2_hint" translatable="false">1.1.1.1</string>
+     <!-- Hint text for the gateway -->
+     <string name="wifi_gateway_hint" translatable="false">192.168.1.1</string>
+     <!-- Hint text for network prefix length -->
+-- 
+2.20.0
+

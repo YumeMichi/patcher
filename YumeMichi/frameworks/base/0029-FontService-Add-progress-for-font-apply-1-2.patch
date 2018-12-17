@@ -1,0 +1,34 @@
+From eca8d9a24a35ba58ca41b4dc91fafdf943fc6e01 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Sat, 14 Apr 2018 00:06:05 +0200
+Subject: [PATCH 29/35] FontService: Add progress for font apply [1/2]
+
+since this can take a few seconds its nice to give
+user some feedback that things are going on.
+so add a broadcast for change font. This is still
+not exactly sent when font apply is read but gives
+some approx information
+
+Change-Id: I86d31b7a0652261560b87bd17b2e106648e3a62c
+---
+ services/core/java/com/android/server/FontService.java | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/services/core/java/com/android/server/FontService.java b/services/core/java/com/android/server/FontService.java
+index 0b4e44e792d..1b909297c3d 100644
+--- a/services/core/java/com/android/server/FontService.java
++++ b/services/core/java/com/android/server/FontService.java
+@@ -467,6 +467,10 @@ public class FontService extends IFontService.Stub {
+             } else {
+                 copyFonts(info);
+             }
++            Intent intent = new Intent("com.android.server.ACTION_FONT_CHANGED");
++            intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY
++                        | Intent.FLAG_RECEIVER_FOREGROUND);
++            mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
+         } finally {
+             Binder.restoreCallingIdentity(ident);
+         }
+-- 
+2.20.0
+

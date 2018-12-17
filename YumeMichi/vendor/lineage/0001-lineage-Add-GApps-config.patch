@@ -1,0 +1,41 @@
+From 994cf60d4531fad2dbae8d894e1e3b8d8cd3a292 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Sat, 3 Feb 2018 16:39:22 +0000
+Subject: [PATCH 1/2] lineage: Add GApps config
+
+Change-Id: Ie8779ce93262eb93cf9252104a420657ce179072
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ config/common.mk                         | 4 ++++
+ prebuilt/common/install/gapps-config.txt | 4 ++++
+ 2 files changed, 8 insertions(+)
+ create mode 100644 prebuilt/common/install/gapps-config.txt
+
+diff --git a/config/common.mk b/config/common.mk
+index 23f19a1..8fba3fc 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -131,6 +131,10 @@ PRODUCT_PACKAGES += \
+     libprotobuf-cpp-full \
+     librsjni
+ 
++# Include PA GApps config
++PRODUCT_COPY_FILES += \
++    vendor/lineage/prebuilt/common/install/gapps-config.txt:install/gapps-config.txt
++
+ # Custom Lineage packages
+ PRODUCT_PACKAGES += \
+     AudioFX \
+diff --git a/prebuilt/common/install/gapps-config.txt b/prebuilt/common/install/gapps-config.txt
+new file mode 100644
+index 0000000..4f2c1d9
+--- /dev/null
++++ b/prebuilt/common/install/gapps-config.txt
+@@ -0,0 +1,4 @@
++# don't remove these stock packages on gapps install
+++CameraStock
+++Gallery
+++Launcher
+-- 
+2.20.0
+

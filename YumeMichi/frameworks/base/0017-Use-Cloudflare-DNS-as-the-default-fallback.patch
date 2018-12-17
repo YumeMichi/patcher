@@ -1,0 +1,30 @@
+From 583dc01b83ee8f81ebdd0a740fd358f6f9dddef8 Mon Sep 17 00:00:00 2001
+From: Daniel Micay <danielmicay@gmail.com>
+Date: Mon, 2 Apr 2018 12:59:51 -0400
+Subject: [PATCH 17/35] Use Cloudflare DNS as the default fallback
+
+Cloudflare DNS has a better privacy policy than Google Public DNS and
+has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
+Android ships one of them.
+
+Change-Id: I102b3e268f10257a4f0be45e77d222780d7273be
+---
+ core/res/res/values/config.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 9d84c94df18..f1547158f16 100644
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -1651,7 +1651,7 @@
+     <bool name="config_bluetooth_default_profiles">true</bool>
+ 
+     <!-- IP address of the dns server to use if nobody else suggests one -->
+-    <string name="config_default_dns_server" translatable="false">8.8.8.8</string>
++    <string name="config_default_dns_server" translatable="false">1.0.0.1</string>
+ 
+     <!-- The default mobile provisioning apn. Empty by default, maybe overridden by
+          an mcc/mnc specific config.xml -->
+-- 
+2.20.0
+

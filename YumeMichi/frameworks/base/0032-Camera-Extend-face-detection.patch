@@ -1,0 +1,333 @@
+From 31af93d0582b7eed24d2c76235f3da2fe296005c Mon Sep 17 00:00:00 2001
+From: Elvice Wu <elvicew@codeaurora.org>
+Date: Tue, 21 Jul 2015 16:52:33 -0700
+Subject: [PATCH 32/35] Camera: Extend face detection
+
+This change is the combination of following commits,
+plus moving face detection related classes out from
+org.codeaurora.performance.jar to org.codeaurora.camer.jar.
+
+ # This is the 1st commit message:
+ Add framework support for extended face detect
+ CRs-Fixed: 587195
+ Change-Id: I2a1c477ee6d11f2b9764966abbb85ede9100fe91
+
+ # This is the 2nd commit message:
+ Camera: Extended face features added
+ - QCFace renamed to ExtendedFace
+ CRs-Fixed: 587195
+ Change-Id: I7c7e2073f283522c2f0bd0fa5e7b96a74ae18011
+
+ # This is the 3rd commit message:
+ Camera: QCFace AOST copyrights fixed
+ AOST files copyright data must not be updated to 2014
+ CRs-Fixed: 587195
+ Change-Id: I0cd603da674152c9f47350e571ec3e230b61f8dd
+
+Change-Id: I259c80fb9c7f768097d67be493db40b24cd2eda9
+---
+ core/java/org/codeaurora/camera/Android.mk    |  30 +++
+ .../org/codeaurora/camera/ExtendedFace.java   | 211 ++++++++++++++++++
+ .../camera/org.codeaurora.camera.xml          |  35 +++
+ 3 files changed, 276 insertions(+)
+ create mode 100644 core/java/org/codeaurora/camera/Android.mk
+ create mode 100644 core/java/org/codeaurora/camera/ExtendedFace.java
+ create mode 100644 core/java/org/codeaurora/camera/org.codeaurora.camera.xml
+
+diff --git a/core/java/org/codeaurora/camera/Android.mk b/core/java/org/codeaurora/camera/Android.mk
+new file mode 100644
+index 00000000000..2e005f79eef
+--- /dev/null
++++ b/core/java/org/codeaurora/camera/Android.mk
+@@ -0,0 +1,30 @@
++LOCAL_PATH := $(call my-dir)
++
++include $(CLEAR_VARS)
++
++LOCAL_SRC_FILES := $(call all-subdir-java-files)
++
++LOCAL_MODULE_TAGS := optional
++
++LOCAL_MODULE:= org.codeaurora.camera
++
++# This will install the file in /system/framework
++LOCAL_MODULE_PATH := $(TARGET_OUT_JAVA_LIBRARIES)
++
++include $(BUILD_JAVA_LIBRARY)
++
++# ====  permissions ========================
++include $(CLEAR_VARS)
++
++LOCAL_MODULE := org.codeaurora.camera.xml
++
++LOCAL_MODULE_TAGS := optional
++
++LOCAL_MODULE_CLASS := ETC
++
++# This will install the file in /system/etc/permissions
++LOCAL_MODULE_PATH := $(TARGET_OUT_ETC)/permissions
++
++LOCAL_SRC_FILES := $(LOCAL_MODULE)
++
++include $(BUILD_PREBUILT)
+diff --git a/core/java/org/codeaurora/camera/ExtendedFace.java b/core/java/org/codeaurora/camera/ExtendedFace.java
+new file mode 100644
+index 00000000000..afda0b64b14
+--- /dev/null
++++ b/core/java/org/codeaurora/camera/ExtendedFace.java
+@@ -0,0 +1,211 @@
++/* Copyright (c) 2015, The Linux Foundataion. All rights reserved.
++*
++* Redistribution and use in source and binary forms, with or without
++* modification, are permitted provided that the following conditions are
++* met:
++*     * Redistributions of source code must retain the above copyright
++*       notice, this list of conditions and the following disclaimer.
++*     * Redistributions in binary form must reproduce the above
++*       copyright notice, this list of conditions and the following
++*       disclaimer in the documentation and/or other materials provided
++*       with the distribution.
++*     * Neither the name of The Linux Foundation nor the names of its
++*       contributors may be used to endorse or promote products derived
++*       from this software without specific prior written permission.
++*
++* THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
++* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
++* ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
++* BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++* CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++* SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
++* BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++* WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
++* OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
++* IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++*
++*/
++
++package org.codeaurora.camera;
++
++import android.hardware.Camera;
++
++import java.util.ArrayList;
++
++import android.os.Bundle;
++
++import android.os.SystemProperties;
++
++/**
++ * {@hide} Information about a face identified through Extended camera face
++ *
++ * <p>
++ * When face detection is used with a camera, the {@link FaceDetectionListener}
++ * returns a list of face objects for use in focusing and metering.
++ * </p>
++ *
++ * @see FaceDetectionListener
++ */
++public class ExtendedFace extends android.hardware.Camera.Face {
++    public ExtendedFace() {
++        super();
++    }
++
++    private int smileDegree = 0;
++    private int smileScore = 0;
++    private int blinkDetected = 0;
++    private int faceRecognized = 0;
++    private int gazeAngle = 0;
++    private int updownDir = 0;
++    private int leftrightDir = 0;
++    private int rollDir = 0;
++    private int leyeBlink = 0;
++    private int reyeBlink = 0;
++    private int leftrightGaze = 0;
++    private int topbottomGaze = 0;
++
++    private static final String STR_TRUE = "true";
++    private static final String STR_FALSE = "false";
++
++    /**
++     * The smilie degree for the detection of the face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getSmileDegree() {
++        return smileDegree;
++    }
++
++    /**
++     * The smilie score for the detection of the face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getSmileScore() {
++        return smileScore;
++    }
++
++    /**
++     * The smilie degree for the detection of the face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getBlinkDetected() {
++        return blinkDetected;
++    }
++
++    /**
++     * If face is recognized.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getFaceRecognized() {
++        return faceRecognized;
++    }
++
++    /**
++     * The gaze angle for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getGazeAngle() {
++        return gazeAngle;
++    }
++
++    /**
++     * The up down direction for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getUpDownDirection() {
++        return updownDir;
++    }
++
++    /**
++     * The left right direction for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getLeftRightDirection() {
++        return leftrightDir;
++    }
++
++    /**
++     * The roll direction for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getRollDirection() {
++        return rollDir;
++    }
++
++    /**
++     * The degree of left eye blink for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getLeftEyeBlinkDegree() {
++        return leyeBlink;
++    }
++
++    /**
++     * The degree of right eye blink for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getRightEyeBlinkDegree() {
++        return reyeBlink;
++    }
++
++    /**
++     * The gaze degree of left-right direction for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getLeftRightGazeDegree() {
++        return leftrightGaze;
++    }
++
++    /**
++     * The gaze degree of up-down direction for the detected face.
++     *
++     * @see #startFaceDetection()
++     */
++    public int getTopBottomGazeDegree() {
++        return topbottomGaze;
++    }
++
++    private static final String BUNDLE_KEY_SMILE_SCORE = "smileScore";
++    private static final String BUNDLE_KEY_SMILE_VALUE = "smileValue";
++    private static final String BUNDLE_KEY_BLINK_DETECTED = "blinkDetected";
++    private static final String BUNDLE_KEY_LEFT_EYE_CLOSED_VALUE = "leftEyeClosedValue";
++    private static final String BUNDLE_KEY_RIGHT_EYE_CLOSED_VALUE = "rightEyeClosedValue";
++    private static final String BUNDLE_KEY_FACE_PITCH_DEGREE = "facePitchDegree";
++    private static final String BUNDLE_KEY_FACE_YAW_DEGREE = "faceYawDegree";
++    private static final String BUNDLE_KEY_FACE_ROLL_DEGREE = "faceRollDegree";
++    private static final String BUNDLE_KEY_GAZE_UP_DOWN_DEGREE = "gazeUpDownDegree";
++    private static final String BUNDLE_KEY_GAZE_LEFT_RIGHT_DEGREE = "gazeLeftRightDegree";
++    private static final String BUNDLE_KEY_FACE_RECOGNIZED = "faceRecognized";
++
++    public Bundle getExtendedFaceInfo() {
++        Bundle faceInfo = new Bundle();
++        faceInfo.putInt(BUNDLE_KEY_SMILE_VALUE, this.smileDegree);
++
++        faceInfo.putInt(BUNDLE_KEY_LEFT_EYE_CLOSED_VALUE, this.leyeBlink);
++        faceInfo.putInt(BUNDLE_KEY_RIGHT_EYE_CLOSED_VALUE, this.reyeBlink);
++
++        faceInfo.putInt(BUNDLE_KEY_FACE_PITCH_DEGREE, this.updownDir);
++        faceInfo.putInt(BUNDLE_KEY_FACE_YAW_DEGREE, this.leftrightDir);
++        faceInfo.putInt(BUNDLE_KEY_FACE_ROLL_DEGREE, this.rollDir);
++        faceInfo.putInt(BUNDLE_KEY_GAZE_UP_DOWN_DEGREE, this.topbottomGaze);
++        faceInfo.putInt(BUNDLE_KEY_GAZE_LEFT_RIGHT_DEGREE, this.leftrightGaze);
++
++        faceInfo.putInt(BUNDLE_KEY_BLINK_DETECTED, this.blinkDetected);
++        faceInfo.putInt(BUNDLE_KEY_SMILE_SCORE, this.smileScore);
++        faceInfo.putInt(BUNDLE_KEY_FACE_RECOGNIZED, this.faceRecognized);
++
++        return faceInfo;
++    }
++
++}
+diff --git a/core/java/org/codeaurora/camera/org.codeaurora.camera.xml b/core/java/org/codeaurora/camera/org.codeaurora.camera.xml
+new file mode 100644
+index 00000000000..20b2aa05822
+--- /dev/null
++++ b/core/java/org/codeaurora/camera/org.codeaurora.camera.xml
+@@ -0,0 +1,35 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- Copyright (c) 2015, The Linux Foundation. All rights reserved.
++
++    Redistribution and use in source and binary forms, with or without
++    modification, are permitted provided that the following conditions are
++    met:
++        * Redistributions of source code must retain the above copyright
++          notice, this list of conditions and the following disclaimer.
++        * Redistributions in binary form must reproduce the above
++          copyright notice, this list of conditions and the following
++          disclaimer in the documentation and/or other materials provided
++          with the distribution.
++        * Neither the name of The Linux Foundation nor the names of its
++          contributors may be used to endorse or promote products derived
++          from this software without specific prior written permission.
++
++    THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
++    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
++    ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
++    BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
++    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
++    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
++    BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
++    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
++    IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++
++-->
++
++<!-- This is the library that allows devices to use Camera QFace APIs. -->
++<permissions>
++    <library name="org.codeaurora.camera"
++            file="/system/framework/org.codeaurora.camera.jar" />
++</permissions>
+-- 
+2.20.0
+
