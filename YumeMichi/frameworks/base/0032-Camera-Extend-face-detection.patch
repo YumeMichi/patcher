@@ -1,7 +1,7 @@
 From 31af93d0582b7eed24d2c76235f3da2fe296005c Mon Sep 17 00:00:00 2001
 From: Elvice Wu <elvicew@codeaurora.org>
 Date: Tue, 21 Jul 2015 16:52:33 -0700
-Subject: [PATCH 32/35] Camera: Extend face detection
+Subject: [PATCH 32/37] Camera: Extend face detection
 
 This change is the combination of following commits,
 plus moving face detection related classes out from
@@ -329,5 +329,5 @@ index 00000000000..20b2aa05822
 +            file="/system/framework/org.codeaurora.camera.jar" />
 +</permissions>
 -- 
-2.20.0
+2.20.1
 

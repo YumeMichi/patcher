@@ -1,7 +1,7 @@
 From f3e4c13e84bc713f89ba4841c763b310ea44c87b Mon Sep 17 00:00:00 2001
 From: bigrushdog <randall.rushing@gmail.com>
 Date: Tue, 27 Feb 2018 15:09:48 -0800
-Subject: [PATCH 23/35] base: Introduce FontService
+Subject: [PATCH 23/37] base: Introduce FontService
 
 In addition to shipping with a series of fonts, this service
 also supports user apps that provide fonts. To create a font
@@ -1112,5 +1112,5 @@ index 66a723ea8f0..ab46dc8cdf8 100644
          // service, and permissions service, therefore we start it after them.
          // Start sensor service in a separate thread. Completion should be checked
 -- 
-2.20.0
+2.20.1
 

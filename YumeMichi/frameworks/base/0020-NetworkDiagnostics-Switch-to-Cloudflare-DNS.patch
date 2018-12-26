@@ -1,7 +1,7 @@
 From 350340c61bc685542975b63abaa14b51b0f3adb1 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 13:06:33 -0400
-Subject: [PATCH 20/35] NetworkDiagnostics: Switch to Cloudflare DNS
+Subject: [PATCH 20/37] NetworkDiagnostics: Switch to Cloudflare DNS
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -29,5 +29,5 @@ index 85d1d1ef1d7..3bcfdb454e7 100644
      // For brevity elsewhere.
      private static final long now() {
 -- 
-2.20.0
+2.20.1
 

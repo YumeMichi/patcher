@@ -1,7 +1,7 @@
 From 26d360ee007c6fe31b08a2584b74bd6dd6b5c429 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Sun, 7 Aug 2016 10:07:44 -0700
-Subject: [PATCH 28/35] display: Don't animate screen brightness when turning
+Subject: [PATCH 28/37] display: Don't animate screen brightness when turning
  the screen on
 
 Make the display wake from sleep faster by going directly to the target
@@ -26,5 +26,5 @@ index d71269f9eae..5625e348009 100644
                  mFirstTime = false;
                  mRate = 0;
 -- 
-2.20.0
+2.20.1
 

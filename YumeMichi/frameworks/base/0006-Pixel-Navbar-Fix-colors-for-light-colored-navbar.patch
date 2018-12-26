@@ -1,7 +1,7 @@
 From 00325c79a14748d0484a5b55e7896a0a0e386bb4 Mon Sep 17 00:00:00 2001
 From: mydongistiny <jaysonedson@gmail.com>
 Date: Mon, 30 Oct 2017 04:23:23 -0700
-Subject: [PATCH 06/35] Pixel Navbar: Fix colors for light colored navbar
+Subject: [PATCH 06/37] Pixel Navbar: Fix colors for light colored navbar
 
 Change-Id: I68e2a55f6f02f03802af099a36706b3636e10125
 ---
@@ -129,5 +129,5 @@ index f2c5a860a06..8ad1da7020b 100644
      }
  }
 -- 
-2.20.0
+2.20.1
 

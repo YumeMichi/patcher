@@ -1,7 +1,7 @@
 From d07bbf68566f8ac91c7b1d599e66ab47ca55717e Mon Sep 17 00:00:00 2001
 From: d34d <clark@cyngn.com>
 Date: Wed, 7 Mar 2018 09:16:30 -0800
-Subject: [PATCH 21/35] base: Add dynamic theme fonts support
+Subject: [PATCH 21/37] base: Add dynamic theme fonts support
 
 Change-Id: Ib01db13b38cb7010e342de1761bfe18289093fa5
 ---
@@ -714,5 +714,5 @@ index 02c73648585..1925def6d39 100644
              checkTime(startTime, "startProcess: returned from zygote!");
              Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
 -- 
-2.20.0
+2.20.1
 

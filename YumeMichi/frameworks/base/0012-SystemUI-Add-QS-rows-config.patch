@@ -1,7 +1,7 @@
 From 60849b3893de8a0d4fd868d37b1ba0a834e7e16a Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 13:15:18 +0200
-Subject: [PATCH 12/35] SystemUI: Add QS rows config
+Subject: [PATCH 12/37] SystemUI: Add QS rows config
 
 with inspiration from ezio84
 
@@ -234,5 +234,5 @@ index 3cf46ccf8b9..1210f7bf1dc 100644
      }
  }
 -- 
-2.20.0
+2.20.1
 

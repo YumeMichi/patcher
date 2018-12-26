@@ -1,7 +1,7 @@
 From 4519fb499043f3c408bf4753e5ec0be5ed02c908 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 03:29:56 +0200
-Subject: [PATCH 11/35] SystemUI: Add back QS hide label
+Subject: [PATCH 11/37] SystemUI: Add back QS hide label
 
 if enabled label click (secondary) will be reassigned to long click
 for dual target tiles
@@ -545,5 +545,5 @@ index fdbb260f39b..2f9d248b8b9 100644
      public SignalState newTileState() {
          return new SignalState();
 -- 
-2.20.0
+2.20.1
 

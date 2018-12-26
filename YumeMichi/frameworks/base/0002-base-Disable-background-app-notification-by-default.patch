@@ -1,7 +1,7 @@
 From c46c2d4c8149728ac3582ebedfff8097b291109d Mon Sep 17 00:00:00 2001
 From: Erwan Finot <lafritedu70@hotmail.fr>
 Date: Sat, 2 Sep 2017 17:55:02 +0200
-Subject: [PATCH 02/35] base: Disable background app notification by default
+Subject: [PATCH 02/37] base: Disable background app notification by default
 
 it can be enabled again with this commit (that's 1/2 part):
 https://github.com/ezio84/abc_packages_apps_Settings/commit/b9bd0b52ee586f787e994bfdfec0749ceca06791
@@ -25,5 +25,5 @@ index d64c9a1d813..629cb76af9f 100644
          channelsList.add(foregroundChannel);
  
 -- 
-2.20.0
+2.20.1
 

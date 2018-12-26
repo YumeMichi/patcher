@@ -1,7 +1,7 @@
 From bc9f0e1780e9369f02693697907c8f61af95c54d Mon Sep 17 00:00:00 2001
 From: bigrushdog <randall.rushing@gmail.com>
 Date: Tue, 20 Mar 2018 18:28:21 -0700
-Subject: [PATCH 22/35] Fonts: Update keyguard when font changes
+Subject: [PATCH 22/37] Fonts: Update keyguard when font changes
 
 Change-Id: I84a2eeb1e85f4e3da2b62f955537fafe597efc24
 ---
@@ -194,5 +194,5 @@ index a6691b1656d..bf48595db01 100644
          lp.setMarginStart(
                  getResources().getDimensionPixelSize(R.dimen.keyguard_carrier_text_margin));
 -- 
-2.20.0
+2.20.1
 

@@ -1,7 +1,7 @@
 From f0319bcb4f53a1cc8a687af8d6618e7488176d48 Mon Sep 17 00:00:00 2001
 From: Alex Cruz <du.alexcruz@gmail.com>
 Date: Thu, 22 Mar 2018 00:26:13 -0400
-Subject: [PATCH 16/35] SystemUI: Set statusbar round corners padding
+Subject: [PATCH 16/37] SystemUI: Set statusbar round corners padding
  conditionally
 
 The pixel 2XL among other devices that have round corners don't look good
@@ -78,5 +78,5 @@ index b15b79fb984..857f3f92f10 100644
 +}
 \ No newline at end of file
 -- 
-2.20.0
+2.20.1
 

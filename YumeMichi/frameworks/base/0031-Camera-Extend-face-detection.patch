@@ -1,7 +1,7 @@
 From d6236c3a70764c790c3e5217fa01c3354f0035c0 Mon Sep 17 00:00:00 2001
 From: Shuzhen Wang <shuzhenw@codeaurora.org>
 Date: Mon, 6 Jul 2015 15:20:24 -0700
-Subject: [PATCH 31/35] Camera: Extend face detection
+Subject: [PATCH 31/37] Camera: Extend face detection
 
 This change is the combination of below commits, plus removing
 ExtendedFace class from frameworks/base.
@@ -179,5 +179,5 @@ index 4fb2c279744..fac42470216 100644
      return RegisterMethodsOrDie(env, "android/hardware/Camera", camMethods, NELEM(camMethods));
  }
 -- 
-2.20.0
+2.20.1
 

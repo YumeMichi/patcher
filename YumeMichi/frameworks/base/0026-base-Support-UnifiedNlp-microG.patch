@@ -1,7 +1,7 @@
 From 0679df93230b0fede2b02928803b6071cd134f54 Mon Sep 17 00:00:00 2001
 From: Simon Polack <simonpolack@googlemail.com>
 Date: Fri, 11 Aug 2017 11:32:22 +0200
-Subject: [PATCH 26/35] base: Support UnifiedNlp (microG)
+Subject: [PATCH 26/37] base: Support UnifiedNlp (microG)
 
 * Add UnifiedNlp standalone to nlp lookup list
 
@@ -26,5 +26,5 @@ index f1547158f16..222521ac858 100644
  
      <!-- This string array can be overriden to enable test location providers initially. -->
 -- 
-2.20.0
+2.20.1
 

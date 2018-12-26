@@ -1,7 +1,7 @@
 From c73929056180e37316b7567b47f67c0b18af7c60 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Mon, 31 Oct 2016 23:48:50 +0100
-Subject: [PATCH 09/35] SystemUI: Make QS columns count configurable
+Subject: [PATCH 09/37] SystemUI: Make QS columns count configurable
 
 And add infrastructure to add more settings and
 distribute them to QS panel
@@ -532,5 +532,5 @@ index 5edfe0eb374..31a79cf21af 100644
 +    }
  }
 -- 
-2.20.0
+2.20.1
 

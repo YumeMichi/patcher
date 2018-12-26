@@ -1,7 +1,7 @@
 From a84212035cd263484d782858e3e0aef03115973e Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 00:38:01 +0200
-Subject: [PATCH 10/35] SystemUI: Hide QS expand image on bigger column counts
+Subject: [PATCH 10/37] SystemUI: Hide QS expand image on bigger column counts
 
 we neeeeed space
 
@@ -188,5 +188,5 @@ index 263dac0f44e..99584db01bd 100644
 +    }
  }
 -- 
-2.20.0
+2.20.1
 

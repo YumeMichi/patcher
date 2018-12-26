@@ -1,7 +1,7 @@
 From 0dcf4f2edca768c339bd8e25b364d3e3bc3c12c9 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Sun, 1 Oct 2017 15:17:26 +0200
-Subject: [PATCH 01/35] SystemUI: Bring back different dnd icon for priority
+Subject: [PATCH 01/37] SystemUI: Bring back different dnd icon for priority
  mode
 
 curent one will be alarms only again
@@ -152,5 +152,5 @@ index 5d4ed7fa60e..934a0615395 100644
          } else if (zen == Global.ZEN_MODE_NO_INTERRUPTIONS) {
              zenVisible = true;
 -- 
-2.20.0
+2.20.1
 

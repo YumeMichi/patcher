@@ -1,7 +1,7 @@
 From faf7d5822f29d9deaf7c71020065bae456e361d2 Mon Sep 17 00:00:00 2001
 From: Jacob McSwain <jacob.a.mcswain@gmail.com>
 Date: Fri, 25 Nov 2016 21:54:23 -0600
-Subject: [PATCH 04/35] SystemUI: Add back the Pixel Navbar
+Subject: [PATCH 04/37] SystemUI: Add back the Pixel Navbar
 
 - Shoutout to bigrushdog for providing a decompiled form used
   to verify the smali and as a guideline for the more obsure
@@ -856,5 +856,5 @@ index 00000000000..b42c56b0fe3
 +
 +}
 -- 
-2.20.0
+2.20.1
 

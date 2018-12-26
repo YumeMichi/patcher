@@ -1,7 +1,7 @@
 From a855464d124296c9c9fe70a6f9363f0c6b8073d6 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 10:37:46 -0400
-Subject: [PATCH 19/35] Use Cloudflare DNS servers as hints
+Subject: [PATCH 19/37] Use Cloudflare DNS servers as hints
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -29,5 +29,5 @@ index bd884a3c972..c8fe7e54d9b 100644
      <string name="wifi_gateway_hint" translatable="false">192.168.1.1</string>
      <!-- Hint text for network prefix length -->
 -- 
-2.20.0
+2.20.1
 

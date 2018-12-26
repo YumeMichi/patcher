@@ -1,7 +1,7 @@
 From 8ece4333ca6d39507c96d276e0bffc633d35e520 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Wed, 9 Sep 2015 19:34:21 -0700
-Subject: [PATCH 27/35] StrictMode: Disable all strict mode functions when
+Subject: [PATCH 27/37] StrictMode: Disable all strict mode functions when
  disable prop is set
 
 Strict mode can still be used to produce red border flashes even when the
@@ -74,5 +74,5 @@ index 3b6df5df13a..5b165f0c94b 100644
          StringWriter sw = new StringWriter();
          sw.append("# via Binder call with stack:\n");
 -- 
-2.20.0
+2.20.1
 

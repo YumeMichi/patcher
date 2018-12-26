@@ -1,7 +1,7 @@
 From 63081b6f432aa666091d22c96347135c14e2021f Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Fri, 6 Apr 2018 00:27:20 +0200
-Subject: [PATCH 24/35] FontService: Dynamic font fix for FDE devices
+Subject: [PATCH 24/37] FontService: Dynamic font fix for FDE devices
 
 Change-Id: I337af1c07b98bbda2b85020229b2905f9ec7f7ff
 ---
@@ -34,5 +34,5 @@ index 71e0ea0b8e0..0b4e44e792d 100644
          }
      }
 -- 
-2.20.0
+2.20.1
 

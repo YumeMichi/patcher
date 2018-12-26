@@ -1,7 +1,7 @@
 From d1aedd7f9222f18f6909d69ce2ff204f3ed4df82 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Fri, 20 Apr 2018 14:07:20 +0200
-Subject: [PATCH 30/35] SystemUI: Restore keyguard default font styles
+Subject: [PATCH 30/37] SystemUI: Restore keyguard default font styles
 
 after 34023208f03684eb163eb5925002d7b6d680dea0 two minor
 adjustments are needed to restore exactly the same styles
@@ -98,5 +98,5 @@ index b243db3b0c9..14abfd9e011 100644
          mDigit = digit;
          updateText();
 -- 
-2.20.0
+2.20.1
 

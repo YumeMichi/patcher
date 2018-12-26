@@ -1,7 +1,7 @@
 From 2755b9a65478a09b6e8c42991cf73a26cd776d95 Mon Sep 17 00:00:00 2001
 From: mar-v-in <github@rvin.mooo.com>
 Date: Mon, 21 Dec 2015 22:11:35 +0100
-Subject: [PATCH 25/35] base: Add support for fake signatures
+Subject: [PATCH 25/37] base: Add support for fake signatures
 
 * Enabled per app by dynamic permission
 
@@ -96,5 +96,5 @@ index 2dbed48aef9..fde42c9493e 100644
      public void checkPackageStartable(String packageName, int userId) {
          final int callingUid = Binder.getCallingUid();
 -- 
-2.20.0
+2.20.1
 

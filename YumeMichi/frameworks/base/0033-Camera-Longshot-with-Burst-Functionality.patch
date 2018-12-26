@@ -1,7 +1,7 @@
 From ce1f585c1d0dfe6d3804580ea4f8a2eeef85d041 Mon Sep 17 00:00:00 2001
 From: Vijay Kumar Tumati <vtumati@codeaurora.org>
 Date: Wed, 22 Apr 2015 12:50:02 +0530
-Subject: [PATCH 33/35] Camera: Longshot with Burst Functionality
+Subject: [PATCH 33/37] Camera: Longshot with Burst Functionality
 
 New Longshot stop command is sent after receiving all the required YUV
 callbacks or releasing the shutter before reaching Max number.
@@ -75,5 +75,5 @@ index fac42470216..0c8a4df22b2 100644
      "(Ljava/lang/String;)V",
      (void *)android_hardware_Camera_setParameters },
 -- 
-2.20.0
+2.20.1
 

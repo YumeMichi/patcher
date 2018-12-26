@@ -1,7 +1,7 @@
 From 42dbf203553bdc17997251b72d1215f9bd6b9e27 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 12:55:28 -0400
-Subject: [PATCH 18/35] Use Cloudflare DNS servers as defaults for tethering
+Subject: [PATCH 18/37] Use Cloudflare DNS servers as defaults for tethering
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -26,5 +26,5 @@ index acbc10b9dc4..6dd661bfdb8 100644
      public final String[] tetherableUsbRegexs;
      public final String[] tetherableWifiRegexs;
 -- 
-2.20.0
+2.20.1
 

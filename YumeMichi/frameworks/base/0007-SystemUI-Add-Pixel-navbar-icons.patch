@@ -1,7 +1,7 @@
 From d4f369f2f73b02e3da361b92857eb246064211f8 Mon Sep 17 00:00:00 2001
 From: ezio84 <brabus84@gmail.com>
 Date: Mon, 28 Aug 2017 17:31:06 +0200
-Subject: [PATCH 07/35] SystemUI: Add Pixel navbar icons
+Subject: [PATCH 07/37] SystemUI: Add Pixel navbar icons
 
 xml kanged from https://github.com/DirtyUnicorns/android_packages_apps_DUI/commit/5ab126402d9b86ff08fb6a383bc9199a23cc2e8d
 
@@ -5923,5 +5923,5 @@ index 00000000000..2e1e76d74c1
 +    <color name="icon_color_overview_dark">@android:color/black</color>
 +</resources>
 -- 
-2.20.0
+2.20.1
 
