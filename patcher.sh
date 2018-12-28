@@ -3,7 +3,6 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'build/make'
-    'device/oppo/common'
     'frameworks/av'
     'frameworks/base'
     'hardware/ril-caf'
