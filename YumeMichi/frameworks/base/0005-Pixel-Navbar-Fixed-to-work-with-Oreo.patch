@@ -1,16 +1,16 @@
-From 0921b17a3236222964621ef4bc0338e22a785d0d Mon Sep 17 00:00:00 2001
+From bada070df443195865e9b3de4bd39187fd626503 Mon Sep 17 00:00:00 2001
 From: mydongistiny <jaysonedson@gmail.com>
 Date: Sat, 7 Oct 2017 01:23:51 -0700
-Subject: [PATCH 05/37] Pixel Navbar: Fixed to work with Oreo
+Subject: [PATCH 05/34] Pixel Navbar: Fixed to work with Oreo
 
 Change-Id: I84f5953d7fe05f26ec347f78be9a73e1ebf95398
 Signed-off-by: mydongistiny <jaysonedson@gmail.com>
 ---
- .../SystemUI/src/com/google/android/systemui/OpaLayout.java | 6 ++++--
+ packages/SystemUI/src/com/google/android/systemui/OpaLayout.java | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
-index b42c56b0fe3..f2c5a860a06 100644
+index b42c56b..f2c5a86 100644
 --- a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 +++ b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 @@ -19,10 +19,10 @@ import android.widget.ImageView;
@@ -34,5 +34,5 @@ index b42c56b0fe3..f2c5a860a06 100644
 +    }
  }
 -- 
-2.20.1
+2.7.4
 

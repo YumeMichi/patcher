@@ -1,7 +1,7 @@
-From a855464d124296c9c9fe70a6f9363f0c6b8073d6 Mon Sep 17 00:00:00 2001
+From 1b4f01177a7f6f901b3c1bb5ea1ed554df6d86e8 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 10:37:46 -0400
-Subject: [PATCH 19/37] Use Cloudflare DNS servers as hints
+Subject: [PATCH 19/34] Use Cloudflare DNS servers as hints
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -13,7 +13,7 @@ Change-Id: Ia0fe7c25583415344637de9b8402b161d442a980
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/packages/SettingsLib/res/values/strings.xml b/packages/SettingsLib/res/values/strings.xml
-index bd884a3c972..c8fe7e54d9b 100644
+index bd884a3..c8fe7e5 100644
 --- a/packages/SettingsLib/res/values/strings.xml
 +++ b/packages/SettingsLib/res/values/strings.xml
 @@ -921,9 +921,9 @@
@@ -29,5 +29,5 @@ index bd884a3c972..c8fe7e54d9b 100644
      <string name="wifi_gateway_hint" translatable="false">192.168.1.1</string>
      <!-- Hint text for network prefix length -->
 -- 
-2.20.1
+2.7.4
 

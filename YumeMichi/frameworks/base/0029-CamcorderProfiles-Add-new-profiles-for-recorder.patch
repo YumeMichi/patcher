@@ -1,7 +1,7 @@
-From e4e9852b2abfd4213a47f65cbf499b28ebd86e97 Mon Sep 17 00:00:00 2001
+From 69cc470ba3a77e2a4d8c9805edc8a74ae3f195ee Mon Sep 17 00:00:00 2001
 From: Praveen Chavan <pchavan@codeaurora.org>
 Date: Tue, 14 Jul 2015 12:38:37 -0700
-Subject: [PATCH 36/37] CamcorderProfiles: Add new profiles for recorder
+Subject: [PATCH 29/34] CamcorderProfiles: Add new profiles for recorder
 
 Below changes are squased:
 
@@ -11,13 +11,13 @@ add VGA and 4K-DCI profiles.
 
 Change-Id: I4d23d7609225e921f6d0500bb03756bbfb2cde21
 ---
- core/jni/android_hardware_Camera.cpp          |  6 ++
- .../java/android/media/CamcorderProfile.java  | 75 ++++++++++++++++++-
- media/jni/android_media_MediaProfiles.cpp     |  9 ++-
+ core/jni/android_hardware_Camera.cpp           |  6 +++
+ media/java/android/media/CamcorderProfile.java | 75 +++++++++++++++++++++++++-
+ media/jni/android_media_MediaProfiles.cpp      |  9 +++-
  3 files changed, 87 insertions(+), 3 deletions(-)
 
 diff --git a/core/jni/android_hardware_Camera.cpp b/core/jni/android_hardware_Camera.cpp
-index 4fa56e3d436..b603622b0b7 100644
+index 4fa56e3..b603622 100644
 --- a/core/jni/android_hardware_Camera.cpp
 +++ b/core/jni/android_hardware_Camera.cpp
 @@ -504,6 +504,7 @@ void JNICameraContext::setCallbackMode(JNIEnv *env, bool installed, bool manualM
@@ -66,7 +66,7 @@ index 4fa56e3d436..b603622b0b7 100644
  void JNICameraContext::addCallbackBuffer(
          JNIEnv *env, jbyteArray cbb, int msgType)
 diff --git a/media/java/android/media/CamcorderProfile.java b/media/java/android/media/CamcorderProfile.java
-index d303a2e3988..6785670d192 100644
+index d303a2e..6785670 100644
 --- a/media/java/android/media/CamcorderProfile.java
 +++ b/media/java/android/media/CamcorderProfile.java
 @@ -206,6 +206,77 @@ public class CamcorderProfile
@@ -159,7 +159,7 @@ index d303a2e3988..6785670d192 100644
              throw new IllegalArgumentException(errMessage);
          }
 diff --git a/media/jni/android_media_MediaProfiles.cpp b/media/jni/android_media_MediaProfiles.cpp
-index 5bc80925eca..08da08a32da 100644
+index 5bc8092..08da08a 100644
 --- a/media/jni/android_media_MediaProfiles.cpp
 +++ b/media/jni/android_media_MediaProfiles.cpp
 @@ -169,8 +169,13 @@ static bool isCamcorderQualityKnown(int quality)
@@ -179,5 +179,5 @@ index 5bc80925eca..08da08a32da 100644
  
  static jobject
 -- 
-2.20.1
+2.7.4
 

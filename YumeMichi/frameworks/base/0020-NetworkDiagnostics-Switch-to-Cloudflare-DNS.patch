@@ -1,7 +1,7 @@
-From 350340c61bc685542975b63abaa14b51b0f3adb1 Mon Sep 17 00:00:00 2001
+From a593722adc01205ecf231b7d77cdacdb3e55e4d7 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 13:06:33 -0400
-Subject: [PATCH 20/37] NetworkDiagnostics: Switch to Cloudflare DNS
+Subject: [PATCH 20/34] NetworkDiagnostics: Switch to Cloudflare DNS
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -9,11 +9,11 @@ Android ships one of them.
 
 Change-Id: Ida24063569cd53d285fae1a9a445b887b603e722
 ---
- .../com/android/server/connectivity/NetworkDiagnostics.java   | 4 ++--
+ .../core/java/com/android/server/connectivity/NetworkDiagnostics.java | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/connectivity/NetworkDiagnostics.java b/services/core/java/com/android/server/connectivity/NetworkDiagnostics.java
-index 85d1d1ef1d7..3bcfdb454e7 100644
+index 85d1d1e..3bcfdb4 100644
 --- a/services/core/java/com/android/server/connectivity/NetworkDiagnostics.java
 +++ b/services/core/java/com/android/server/connectivity/NetworkDiagnostics.java
 @@ -85,9 +85,9 @@ import libcore.io.IoUtils;
@@ -29,5 +29,5 @@ index 85d1d1ef1d7..3bcfdb454e7 100644
      // For brevity elsewhere.
      private static final long now() {
 -- 
-2.20.1
+2.7.4
 

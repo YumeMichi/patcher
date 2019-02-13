@@ -1,7 +1,7 @@
-From c73929056180e37316b7567b47f67c0b18af7c60 Mon Sep 17 00:00:00 2001
+From 9df5a83ae542e2445da5e2d2acd62f98a91cc948 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Mon, 31 Oct 2016 23:48:50 +0100
-Subject: [PATCH 09/37] SystemUI: Make QS columns count configurable
+Subject: [PATCH 09/34] SystemUI: Make QS columns count configurable
 
 And add infrastructure to add more settings and
 distribute them to QS panel
@@ -21,29 +21,28 @@ allow max 9 columns in landscape
 
 Change-Id: I401cca347da1a94f352a9ffcb99f1409ddc4d008
 ---
- core/java/android/provider/Settings.java      |  11 ++
- .../SystemUI/res/menu/qs_customize_menu.xml   |  54 ++++++++
- .../SystemUI/res/values/custom_strings.xml    |  31 +++++
- .../android/systemui/qs/PagedTileLayout.java  |   8 ++
- .../com/android/systemui/qs/QSFragment.java   |   5 +
- .../src/com/android/systemui/qs/QSPanel.java  |   8 ++
- .../com/android/systemui/qs/QuickQSPanel.java |   3 +
- .../com/android/systemui/qs/TileLayout.java   |  29 +++-
- .../systemui/qs/customize/QSCustomizer.java   | 126 ++++++++++++++++--
- .../systemui/qs/customize/TileAdapter.java    |  15 ++-
+ core/java/android/provider/Settings.java           |  11 ++
+ packages/SystemUI/res/menu/qs_customize_menu.xml   |  54 +++++++++
+ packages/SystemUI/res/values/custom_strings.xml    |  31 +++++
+ .../com/android/systemui/qs/PagedTileLayout.java   |   8 ++
+ .../src/com/android/systemui/qs/QSFragment.java    |   5 +
+ .../src/com/android/systemui/qs/QSPanel.java       |   8 ++
+ .../src/com/android/systemui/qs/QuickQSPanel.java  |   3 +
+ .../src/com/android/systemui/qs/TileLayout.java    |  29 ++++-
+ .../systemui/qs/customize/QSCustomizer.java        | 126 +++++++++++++++++++--
+ .../android/systemui/qs/customize/TileAdapter.java |  15 ++-
  10 files changed, 272 insertions(+), 18 deletions(-)
  create mode 100644 packages/SystemUI/res/menu/qs_customize_menu.xml
  create mode 100644 packages/SystemUI/res/values/custom_strings.xml
 
 diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
-index ad010a89ccd..a3ac2a2b620 100755
+index 3b0fdb6..44f572a 100755
 --- a/core/java/android/provider/Settings.java
 +++ b/core/java/android/provider/Settings.java
-@@ -3959,6 +3959,17 @@ public final class Settings {
-           */
+@@ -3977,6 +3977,17 @@ public final class Settings {
           public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
  
-+        /**
+         /**
 +         * Number of qs columns on landscape orientation
 +         * @hide
 +         */
@@ -54,12 +53,13 @@ index ad010a89ccd..a3ac2a2b620 100755
 +         */
 +        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
 +
-         /**
++        /**
           * Settings to backup. This is here so that it's in the same place as the settings
           * keys and easy to update.
+          *
 diff --git a/packages/SystemUI/res/menu/qs_customize_menu.xml b/packages/SystemUI/res/menu/qs_customize_menu.xml
 new file mode 100644
-index 00000000000..33e76ce617d
+index 0000000..33e76ce
 --- /dev/null
 +++ b/packages/SystemUI/res/menu/qs_customize_menu.xml
 @@ -0,0 +1,54 @@
@@ -119,7 +119,7 @@ index 00000000000..33e76ce617d
 +</menu>
 diff --git a/packages/SystemUI/res/values/custom_strings.xml b/packages/SystemUI/res/values/custom_strings.xml
 new file mode 100644
-index 00000000000..16f964b34e8
+index 0000000..16f964b
 --- /dev/null
 +++ b/packages/SystemUI/res/values/custom_strings.xml
 @@ -0,0 +1,31 @@
@@ -155,7 +155,7 @@ index 00000000000..16f964b34e8
 +    <string name="qs_menu_item_reset">Reset</string>
 +</resources>
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
-index f3417dc078c..1c397561f8f 100644
+index f3417dc..1c39756 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 @@ -323,4 +323,12 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
@@ -172,7 +172,7 @@ index f3417dc078c..1c397561f8f 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSFragment.java b/packages/SystemUI/src/com/android/systemui/qs/QSFragment.java
-index 4a91ee02695..4eb8577d035 100644
+index 4a91ee0..4eb8577 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSFragment.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSFragment.java
 @@ -340,6 +340,11 @@ public class QSFragment extends Fragment implements QS {
@@ -188,7 +188,7 @@ index 4a91ee02695..4eb8577d035 100644
  
      /**
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-index 2b35b72584b..3fd3cd24200 100644
+index 2b35b72..3fd3cd2 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 @@ -115,6 +115,7 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
@@ -215,7 +215,7 @@ index 2b35b72584b..3fd3cd24200 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
-index 16b29b7adcd..eb28ddef060 100644
+index 16b29b7..eb28dde 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 @@ -253,5 +253,8 @@ public class QuickQSPanel extends QSPanel {
@@ -228,7 +228,7 @@ index 16b29b7adcd..eb28ddef060 100644
      }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
-index 3b9e7bcfb9b..b5906b88058 100644
+index 3b9e7bc..b5906b8 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 @@ -1,7 +1,10 @@
@@ -291,7 +291,7 @@ index 3b9e7bcfb9b..b5906b88058 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
-index 5a3081cd666..793af36ee83 100644
+index 5a3081c..793af36 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 @@ -26,6 +26,10 @@ import android.graphics.drawable.TransitionDrawable;
@@ -497,7 +497,7 @@ index 5a3081cd666..793af36ee83 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
-index 5edfe0eb374..31a79cf21af 100644
+index 5edfe0e..31a79cf 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 @@ -469,13 +469,18 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
@@ -532,5 +532,5 @@ index 5edfe0eb374..31a79cf21af 100644
 +    }
  }
 -- 
-2.20.1
+2.7.4
 

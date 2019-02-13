@@ -1,7 +1,7 @@
-From d4f369f2f73b02e3da361b92857eb246064211f8 Mon Sep 17 00:00:00 2001
+From 842d5fb113328d28fc6e7f458a6d2f5af3b80cbb Mon Sep 17 00:00:00 2001
 From: ezio84 <brabus84@gmail.com>
 Date: Mon, 28 Aug 2017 17:31:06 +0200
-Subject: [PATCH 07/37] SystemUI: Add Pixel navbar icons
+Subject: [PATCH 07/34] SystemUI: Add Pixel navbar icons
 
 xml kanged from https://github.com/DirtyUnicorns/android_packages_apps_DUI/commit/5ab126402d9b86ff08fb6a383bc9199a23cc2e8d
 
@@ -9,107 +9,107 @@ added also the needed dark counterpart
 
 Change-Id: If5f039bd541ab3dd90925bcd91b3e5cc64a72270
 ---
- .../res/drawable-hdpi/ic_sysbar_back.png      | Bin 1412 -> 0 bytes
- .../res/drawable-hdpi/ic_sysbar_back_dark.png | Bin 1630 -> 0 bytes
- .../res/drawable-hdpi/ic_sysbar_back_ime.png  | Bin 1468 -> 0 bytes
- .../drawable-hdpi/ic_sysbar_back_ime_dark.png | Bin 1614 -> 0 bytes
- .../res/drawable-hdpi/ic_sysbar_home.png      | Bin 1777 -> 0 bytes
- .../res/drawable-hdpi/ic_sysbar_home_dark.png | Bin 1848 -> 0 bytes
- .../res/drawable-hdpi/ic_sysbar_recent.png    | Bin 803 -> 0 bytes
- .../drawable-hdpi/ic_sysbar_recent_dark.png   | Bin 1302 -> 0 bytes
- .../drawable-ldrtl-hdpi/ic_sysbar_back.png    | Bin 1535 -> 0 bytes
- .../drawable-ldrtl-mdpi/ic_sysbar_back.png    | Bin 965 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 1906 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 1715 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 1081 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 994 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 2739 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 2496 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 4954 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 4592 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 7747 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 7152 -> 0 bytes
- .../drawable-ldrtl-xhdpi/ic_sysbar_back.png   | Bin 2084 -> 0 bytes
- .../drawable-ldrtl-xxhdpi/ic_sysbar_back.png  | Bin 1358 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_back.png      | Bin 1077 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_back_dark.png | Bin 1426 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_back_ime.png  | Bin 1037 -> 0 bytes
- .../drawable-mdpi/ic_sysbar_back_ime_dark.png | Bin 1413 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_home.png      | Bin 1169 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_home_dark.png | Bin 1528 -> 0 bytes
- .../res/drawable-mdpi/ic_sysbar_recent.png    | Bin 703 -> 0 bytes
- .../drawable-mdpi/ic_sysbar_recent_dark.png   | Bin 1217 -> 0 bytes
- .../drawable-sw900dp-hdpi/ic_sysbar_back.png  | Bin 1910 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 1764 -> 0 bytes
- .../ic_sysbar_back_ime.png                    | Bin 2022 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 1833 -> 0 bytes
- .../drawable-sw900dp-hdpi/ic_sysbar_home.png  | Bin 2399 -> 0 bytes
- .../ic_sysbar_home_dark.png                   | Bin 2153 -> 0 bytes
- .../ic_sysbar_recent.png                      | Bin 1151 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 1083 -> 0 bytes
- .../drawable-sw900dp-mdpi/ic_sysbar_back.png  | Bin 1121 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 1011 -> 0 bytes
- .../ic_sysbar_back_ime.png                    | Bin 1160 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 1063 -> 0 bytes
- .../drawable-sw900dp-mdpi/ic_sysbar_home.png  | Bin 1212 -> 0 bytes
- .../ic_sysbar_home_dark.png                   | Bin 1070 -> 0 bytes
- .../ic_sysbar_recent.png                      | Bin 594 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 595 -> 0 bytes
- .../drawable-sw900dp-xhdpi/ic_sysbar_back.png | Bin 2843 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 2583 -> 0 bytes
- .../ic_sysbar_back_ime.png                    | Bin 3036 -> 0 bytes
- .../drawable-sw900dp-xhdpi/ic_sysbar_home.png | Bin 3256 -> 0 bytes
- .../ic_sysbar_home_dark.png                   | Bin 2952 -> 0 bytes
- .../ic_sysbar_recent.png                      | Bin 1535 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 1461 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 4703 -> 0 bytes
- .../ic_sysbar_back_ime.png                    | Bin 5369 -> 0 bytes
- .../ic_sysbar_back_light_old.png              | Bin 5152 -> 0 bytes
- .../ic_sysbar_home.png                        | Bin 6025 -> 0 bytes
- .../ic_sysbar_home_dark.png                   | Bin 5635 -> 0 bytes
- .../ic_sysbar_recent.png                      | Bin 2674 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 2574 -> 0 bytes
- .../ic_sysbar_back.png                        | Bin 7856 -> 0 bytes
- .../ic_sysbar_back_dark.png                   | Bin 7338 -> 0 bytes
- .../ic_sysbar_back_ime.png                    | Bin 8288 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 7537 -> 0 bytes
- .../ic_sysbar_home.png                        | Bin 9666 -> 0 bytes
- .../ic_sysbar_home_dark.png                   | Bin 8971 -> 0 bytes
- .../ic_sysbar_recent.png                      | Bin 4269 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 4108 -> 0 bytes
- .../res/drawable-xhdpi/ic_sysbar_back.png     | Bin 1933 -> 0 bytes
- .../drawable-xhdpi/ic_sysbar_back_dark.png    | Bin 1814 -> 0 bytes
- .../res/drawable-xhdpi/ic_sysbar_back_ime.png | Bin 1864 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 1790 -> 0 bytes
- .../res/drawable-xhdpi/ic_sysbar_home.png     | Bin 2470 -> 0 bytes
- .../drawable-xhdpi/ic_sysbar_home_dark.png    | Bin 2165 -> 0 bytes
- .../res/drawable-xhdpi/ic_sysbar_recent.png   | Bin 840 -> 0 bytes
- .../drawable-xhdpi/ic_sysbar_recent_dark.png  | Bin 1345 -> 0 bytes
- .../res/drawable-xxhdpi/ic_sysbar_back.png    | Bin 2934 -> 0 bytes
- .../drawable-xxhdpi/ic_sysbar_back_dark.png   | Bin 2382 -> 0 bytes
- .../drawable-xxhdpi/ic_sysbar_back_ime.png    | Bin 2999 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 2324 -> 0 bytes
- .../res/drawable-xxhdpi/ic_sysbar_home.png    | Bin 3748 -> 0 bytes
- .../drawable-xxhdpi/ic_sysbar_home_dark.png   | Bin 2910 -> 0 bytes
- .../res/drawable-xxhdpi/ic_sysbar_recent.png  | Bin 1063 -> 0 bytes
- .../drawable-xxhdpi/ic_sysbar_recent_dark.png | Bin 1488 -> 0 bytes
- .../res/drawable-xxxhdpi/ic_sysbar_back.png   | Bin 3313 -> 0 bytes
- .../drawable-xxxhdpi/ic_sysbar_back_dark.png  | Bin 2248 -> 0 bytes
- .../drawable-xxxhdpi/ic_sysbar_back_ime.png   | Bin 3419 -> 0 bytes
- .../ic_sysbar_back_ime_dark.png               | Bin 2277 -> 0 bytes
- .../res/drawable-xxxhdpi/ic_sysbar_home.png   | Bin 4428 -> 0 bytes
- .../drawable-xxxhdpi/ic_sysbar_home_dark.png  | Bin 2624 -> 0 bytes
- .../res/drawable-xxxhdpi/ic_sysbar_recent.png | Bin 1675 -> 0 bytes
- .../ic_sysbar_recent_dark.png                 | Bin 1356 -> 0 bytes
- .../SystemUI/res/drawable/ic_sysbar_back.xml  |  27 +++++++++++++++
- .../res/drawable/ic_sysbar_back_dark.xml      |  27 +++++++++++++++
- .../res/drawable/ic_sysbar_back_ime.xml       |  25 ++++++++++++++
- .../res/drawable/ic_sysbar_back_ime_dark.xml  |  25 ++++++++++++++
- .../SystemUI/res/drawable/ic_sysbar_home.xml  |  29 ++++++++++++++++
- .../res/drawable/ic_sysbar_home_dark.xml      |  29 ++++++++++++++++
- .../res/drawable/ic_sysbar_recent.xml         |  25 ++++++++++++++
- .../res/drawable/ic_sysbar_recent_dark.xml    |  25 ++++++++++++++
- .../SystemUI/res/values/custom_colors.xml     |  31 ++++++++++++++++++
+ .../SystemUI/res/drawable-hdpi/ic_sysbar_back.png  | Bin 1412 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_back_dark.png      | Bin 1630 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_back_ime.png       | Bin 1468 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_back_ime_dark.png  | Bin 1614 -> 0 bytes
+ .../SystemUI/res/drawable-hdpi/ic_sysbar_home.png  | Bin 1777 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_home_dark.png      | Bin 1848 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_recent.png         | Bin 803 -> 0 bytes
+ .../res/drawable-hdpi/ic_sysbar_recent_dark.png    | Bin 1302 -> 0 bytes
+ .../res/drawable-ldrtl-hdpi/ic_sysbar_back.png     | Bin 1535 -> 0 bytes
+ .../res/drawable-ldrtl-mdpi/ic_sysbar_back.png     | Bin 965 -> 0 bytes
+ .../drawable-ldrtl-sw900dp-hdpi/ic_sysbar_back.png | Bin 1906 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 1715 -> 0 bytes
+ .../drawable-ldrtl-sw900dp-mdpi/ic_sysbar_back.png | Bin 1081 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 994 -> 0 bytes
+ .../ic_sysbar_back.png                             | Bin 2739 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 2496 -> 0 bytes
+ .../ic_sysbar_back.png                             | Bin 4954 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 4592 -> 0 bytes
+ .../ic_sysbar_back.png                             | Bin 7747 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 7152 -> 0 bytes
+ .../res/drawable-ldrtl-xhdpi/ic_sysbar_back.png    | Bin 2084 -> 0 bytes
+ .../res/drawable-ldrtl-xxhdpi/ic_sysbar_back.png   | Bin 1358 -> 0 bytes
+ .../SystemUI/res/drawable-mdpi/ic_sysbar_back.png  | Bin 1077 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_back_dark.png      | Bin 1426 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_back_ime.png       | Bin 1037 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_back_ime_dark.png  | Bin 1413 -> 0 bytes
+ .../SystemUI/res/drawable-mdpi/ic_sysbar_home.png  | Bin 1169 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_home_dark.png      | Bin 1528 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_recent.png         | Bin 703 -> 0 bytes
+ .../res/drawable-mdpi/ic_sysbar_recent_dark.png    | Bin 1217 -> 0 bytes
+ .../res/drawable-sw900dp-hdpi/ic_sysbar_back.png   | Bin 1910 -> 0 bytes
+ .../drawable-sw900dp-hdpi/ic_sysbar_back_dark.png  | Bin 1764 -> 0 bytes
+ .../drawable-sw900dp-hdpi/ic_sysbar_back_ime.png   | Bin 2022 -> 0 bytes
+ .../ic_sysbar_back_ime_dark.png                    | Bin 1833 -> 0 bytes
+ .../res/drawable-sw900dp-hdpi/ic_sysbar_home.png   | Bin 2399 -> 0 bytes
+ .../drawable-sw900dp-hdpi/ic_sysbar_home_dark.png  | Bin 2153 -> 0 bytes
+ .../res/drawable-sw900dp-hdpi/ic_sysbar_recent.png | Bin 1151 -> 0 bytes
+ .../ic_sysbar_recent_dark.png                      | Bin 1083 -> 0 bytes
+ .../res/drawable-sw900dp-mdpi/ic_sysbar_back.png   | Bin 1121 -> 0 bytes
+ .../drawable-sw900dp-mdpi/ic_sysbar_back_dark.png  | Bin 1011 -> 0 bytes
+ .../drawable-sw900dp-mdpi/ic_sysbar_back_ime.png   | Bin 1160 -> 0 bytes
+ .../ic_sysbar_back_ime_dark.png                    | Bin 1063 -> 0 bytes
+ .../res/drawable-sw900dp-mdpi/ic_sysbar_home.png   | Bin 1212 -> 0 bytes
+ .../drawable-sw900dp-mdpi/ic_sysbar_home_dark.png  | Bin 1070 -> 0 bytes
+ .../res/drawable-sw900dp-mdpi/ic_sysbar_recent.png | Bin 594 -> 0 bytes
+ .../ic_sysbar_recent_dark.png                      | Bin 595 -> 0 bytes
+ .../res/drawable-sw900dp-xhdpi/ic_sysbar_back.png  | Bin 2843 -> 0 bytes
+ .../drawable-sw900dp-xhdpi/ic_sysbar_back_dark.png | Bin 2583 -> 0 bytes
+ .../drawable-sw900dp-xhdpi/ic_sysbar_back_ime.png  | Bin 3036 -> 0 bytes
+ .../res/drawable-sw900dp-xhdpi/ic_sysbar_home.png  | Bin 3256 -> 0 bytes
+ .../drawable-sw900dp-xhdpi/ic_sysbar_home_dark.png | Bin 2952 -> 0 bytes
+ .../drawable-sw900dp-xhdpi/ic_sysbar_recent.png    | Bin 1535 -> 0 bytes
+ .../ic_sysbar_recent_dark.png                      | Bin 1461 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 4703 -> 0 bytes
+ .../drawable-sw900dp-xxhdpi/ic_sysbar_back_ime.png | Bin 5369 -> 0 bytes
+ .../ic_sysbar_back_light_old.png                   | Bin 5152 -> 0 bytes
+ .../res/drawable-sw900dp-xxhdpi/ic_sysbar_home.png | Bin 6025 -> 0 bytes
+ .../ic_sysbar_home_dark.png                        | Bin 5635 -> 0 bytes
+ .../drawable-sw900dp-xxhdpi/ic_sysbar_recent.png   | Bin 2674 -> 0 bytes
+ .../ic_sysbar_recent_dark.png                      | Bin 2574 -> 0 bytes
+ .../drawable-sw900dp-xxxhdpi/ic_sysbar_back.png    | Bin 7856 -> 0 bytes
+ .../ic_sysbar_back_dark.png                        | Bin 7338 -> 0 bytes
+ .../ic_sysbar_back_ime.png                         | Bin 8288 -> 0 bytes
+ .../ic_sysbar_back_ime_dark.png                    | Bin 7537 -> 0 bytes
+ .../drawable-sw900dp-xxxhdpi/ic_sysbar_home.png    | Bin 9666 -> 0 bytes
+ .../ic_sysbar_home_dark.png                        | Bin 8971 -> 0 bytes
+ .../drawable-sw900dp-xxxhdpi/ic_sysbar_recent.png  | Bin 4269 -> 0 bytes
+ .../ic_sysbar_recent_dark.png                      | Bin 4108 -> 0 bytes
+ .../SystemUI/res/drawable-xhdpi/ic_sysbar_back.png | Bin 1933 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_back_dark.png     | Bin 1814 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_back_ime.png      | Bin 1864 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_back_ime_dark.png | Bin 1790 -> 0 bytes
+ .../SystemUI/res/drawable-xhdpi/ic_sysbar_home.png | Bin 2470 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_home_dark.png     | Bin 2165 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_recent.png        | Bin 840 -> 0 bytes
+ .../res/drawable-xhdpi/ic_sysbar_recent_dark.png   | Bin 1345 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_back.png         | Bin 2934 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_back_dark.png    | Bin 2382 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_back_ime.png     | Bin 2999 -> 0 bytes
+ .../drawable-xxhdpi/ic_sysbar_back_ime_dark.png    | Bin 2324 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_home.png         | Bin 3748 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_home_dark.png    | Bin 2910 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_recent.png       | Bin 1063 -> 0 bytes
+ .../res/drawable-xxhdpi/ic_sysbar_recent_dark.png  | Bin 1488 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_back.png        | Bin 3313 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_back_dark.png   | Bin 2248 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_back_ime.png    | Bin 3419 -> 0 bytes
+ .../drawable-xxxhdpi/ic_sysbar_back_ime_dark.png   | Bin 2277 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_home.png        | Bin 4428 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_home_dark.png   | Bin 2624 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_recent.png      | Bin 1675 -> 0 bytes
+ .../res/drawable-xxxhdpi/ic_sysbar_recent_dark.png | Bin 1356 -> 0 bytes
+ packages/SystemUI/res/drawable/ic_sysbar_back.xml  |  27 ++++++++++++++++++
+ .../SystemUI/res/drawable/ic_sysbar_back_dark.xml  |  27 ++++++++++++++++++
+ .../SystemUI/res/drawable/ic_sysbar_back_ime.xml   |  25 +++++++++++++++++
+ .../res/drawable/ic_sysbar_back_ime_dark.xml       |  25 +++++++++++++++++
+ packages/SystemUI/res/drawable/ic_sysbar_home.xml  |  29 +++++++++++++++++++
+ .../SystemUI/res/drawable/ic_sysbar_home_dark.xml  |  29 +++++++++++++++++++
+ .../SystemUI/res/drawable/ic_sysbar_recent.xml     |  25 +++++++++++++++++
+ .../res/drawable/ic_sysbar_recent_dark.xml         |  25 +++++++++++++++++
+ packages/SystemUI/res/values/custom_colors.xml     |  31 +++++++++++++++++++++
  101 files changed, 243 insertions(+)
  delete mode 100644 packages/SystemUI/res/drawable-hdpi/ic_sysbar_back.png
  delete mode 100644 packages/SystemUI/res/drawable-hdpi/ic_sysbar_back_dark.png
@@ -5627,7 +5627,7 @@ pczWN9**E7t{bY%JW~w<`go)FK!~F**%l!Xaw5~q#<!i}z{s;R%*U|t0
 
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_back.xml b/packages/SystemUI/res/drawable/ic_sysbar_back.xml
 new file mode 100644
-index 00000000000..97b8aeb79fb
+index 0000000..97b8aeb
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_back.xml
 @@ -0,0 +1,27 @@
@@ -5660,7 +5660,7 @@ index 00000000000..97b8aeb79fb
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_back_dark.xml b/packages/SystemUI/res/drawable/ic_sysbar_back_dark.xml
 new file mode 100644
-index 00000000000..9d77bd9d2cd
+index 0000000..9d77bd9
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_back_dark.xml
 @@ -0,0 +1,27 @@
@@ -5693,7 +5693,7 @@ index 00000000000..9d77bd9d2cd
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_back_ime.xml b/packages/SystemUI/res/drawable/ic_sysbar_back_ime.xml
 new file mode 100644
-index 00000000000..9c38ac8cb68
+index 0000000..9c38ac8
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_back_ime.xml
 @@ -0,0 +1,25 @@
@@ -5724,7 +5724,7 @@ index 00000000000..9c38ac8cb68
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_back_ime_dark.xml b/packages/SystemUI/res/drawable/ic_sysbar_back_ime_dark.xml
 new file mode 100644
-index 00000000000..0182236c47b
+index 0000000..0182236
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_back_ime_dark.xml
 @@ -0,0 +1,25 @@
@@ -5755,7 +5755,7 @@ index 00000000000..0182236c47b
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_home.xml b/packages/SystemUI/res/drawable/ic_sysbar_home.xml
 new file mode 100644
-index 00000000000..890b7d210df
+index 0000000..890b7d2
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_home.xml
 @@ -0,0 +1,29 @@
@@ -5790,7 +5790,7 @@ index 00000000000..890b7d210df
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_home_dark.xml b/packages/SystemUI/res/drawable/ic_sysbar_home_dark.xml
 new file mode 100644
-index 00000000000..0e23dd588c3
+index 0000000..0e23dd5
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_home_dark.xml
 @@ -0,0 +1,29 @@
@@ -5825,7 +5825,7 @@ index 00000000000..0e23dd588c3
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_recent.xml b/packages/SystemUI/res/drawable/ic_sysbar_recent.xml
 new file mode 100644
-index 00000000000..78338e3856a
+index 0000000..78338e3
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_recent.xml
 @@ -0,0 +1,25 @@
@@ -5856,7 +5856,7 @@ index 00000000000..78338e3856a
 +</vector>
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_recent_dark.xml b/packages/SystemUI/res/drawable/ic_sysbar_recent_dark.xml
 new file mode 100644
-index 00000000000..fbad1dd2373
+index 0000000..fbad1dd
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_recent_dark.xml
 @@ -0,0 +1,25 @@
@@ -5887,7 +5887,7 @@ index 00000000000..fbad1dd2373
 +</vector>
 diff --git a/packages/SystemUI/res/values/custom_colors.xml b/packages/SystemUI/res/values/custom_colors.xml
 new file mode 100644
-index 00000000000..2e1e76d74c1
+index 0000000..2e1e76d
 --- /dev/null
 +++ b/packages/SystemUI/res/values/custom_colors.xml
 @@ -0,0 +1,31 @@
@@ -5923,5 +5923,5 @@ index 00000000000..2e1e76d74c1
 +    <color name="icon_color_overview_dark">@android:color/black</color>
 +</resources>
 -- 
-2.20.1
+2.7.4
 

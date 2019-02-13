@@ -1,7 +1,7 @@
-From 583dc01b83ee8f81ebdd0a740fd358f6f9dddef8 Mon Sep 17 00:00:00 2001
+From e0f95ae6e02cb0ea76106b55e47c9d5480ecca65 Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 12:59:51 -0400
-Subject: [PATCH 17/37] Use Cloudflare DNS as the default fallback
+Subject: [PATCH 17/34] Use Cloudflare DNS as the default fallback
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -13,7 +13,7 @@ Change-Id: I102b3e268f10257a4f0be45e77d222780d7273be
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index 9d84c94df18..f1547158f16 100644
+index 9d84c94..f154715 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
 @@ -1651,7 +1651,7 @@
@@ -26,5 +26,5 @@ index 9d84c94df18..f1547158f16 100644
      <!-- The default mobile provisioning apn. Empty by default, maybe overridden by
           an mcc/mnc specific config.xml -->
 -- 
-2.20.1
+2.7.4
 

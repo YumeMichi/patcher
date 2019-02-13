@@ -1,7 +1,7 @@
-From ce1f585c1d0dfe6d3804580ea4f8a2eeef85d041 Mon Sep 17 00:00:00 2001
+From ea35f767e64a1e1174649a23bd3c0e1e6a355e91 Mon Sep 17 00:00:00 2001
 From: Vijay Kumar Tumati <vtumati@codeaurora.org>
 Date: Wed, 22 Apr 2015 12:50:02 +0530
-Subject: [PATCH 33/37] Camera: Longshot with Burst Functionality
+Subject: [PATCH 26/34] Camera: Longshot with Burst Functionality
 
 New Longshot stop command is sent after receiving all the required YUV
 callbacks or releasing the shutter before reaching Max number.
@@ -13,7 +13,7 @@ Change-Id: I264d94cde624b5f2ead88236bdff8d6db41e12e6
  2 files changed, 30 insertions(+), 3 deletions(-)
 
 diff --git a/core/java/android/hardware/Camera.java b/core/java/android/hardware/Camera.java
-index 0e3738f3573..142f1131a39 100644
+index 0e3738f..142f113 100644
 --- a/core/java/android/hardware/Camera.java
 +++ b/core/java/android/hardware/Camera.java
 @@ -2217,6 +2217,15 @@ public class Camera {
@@ -33,7 +33,7 @@ index 0e3738f3573..142f1131a39 100644
       * Handles the Touch Co-ordinate.
       */
 diff --git a/core/jni/android_hardware_Camera.cpp b/core/jni/android_hardware_Camera.cpp
-index fac42470216..0c8a4df22b2 100644
+index fac4247..0c8a4df 100644
 --- a/core/jni/android_hardware_Camera.cpp
 +++ b/core/jni/android_hardware_Camera.cpp
 @@ -520,6 +520,21 @@ static void android_hardware_Camera_setLongshot(JNIEnv *env, jobject thiz, jbool
@@ -75,5 +75,5 @@ index fac42470216..0c8a4df22b2 100644
      "(Ljava/lang/String;)V",
      (void *)android_hardware_Camera_setParameters },
 -- 
-2.20.1
+2.7.4
 

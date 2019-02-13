@@ -1,23 +1,23 @@
-From a84212035cd263484d782858e3e0aef03115973e Mon Sep 17 00:00:00 2001
+From 32a95f8f5753f681c3ac52f3c54cf24999484687 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 00:38:01 +0200
-Subject: [PATCH 10/37] SystemUI: Hide QS expand image on bigger column counts
+Subject: [PATCH 10/34] SystemUI: Hide QS expand image on bigger column counts
 
 we neeeeed space
 
 Change-Id: I207d781e7e1094a8425de9f545a53a57d7001d5a
 ---
- .../systemui/plugins/qs/QSTileView.java       |  3 +++
- .../android/systemui/qs/PagedTileLayout.java  |  5 ++++
- .../src/com/android/systemui/qs/QSPanel.java  | 11 ++++++++-
- .../com/android/systemui/qs/QuickQSPanel.java |  5 ++++
- .../com/android/systemui/qs/TileLayout.java   |  5 ++++
- .../systemui/qs/customize/QSCustomizer.java   |  1 +
- .../systemui/qs/tileimpl/QSTileView.java      | 23 +++++++++++++------
+ .../android/systemui/plugins/qs/QSTileView.java    |  3 +++
+ .../com/android/systemui/qs/PagedTileLayout.java   |  5 +++++
+ .../src/com/android/systemui/qs/QSPanel.java       | 11 ++++++++++-
+ .../src/com/android/systemui/qs/QuickQSPanel.java  |  5 +++++
+ .../src/com/android/systemui/qs/TileLayout.java    |  5 +++++
+ .../systemui/qs/customize/QSCustomizer.java        |  1 +
+ .../android/systemui/qs/tileimpl/QSTileView.java   | 23 +++++++++++++++-------
  7 files changed, 45 insertions(+), 8 deletions(-)
 
 diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
-index 18d27bb419d..7beb64cda61 100644
+index 18d27bb..7beb64c 100644
 --- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
 +++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
 @@ -38,4 +38,7 @@ public abstract class QSTileView extends LinearLayout {
@@ -29,7 +29,7 @@ index 18d27bb419d..7beb64cda61 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
-index 1c397561f8f..a7a31c172a0 100644
+index 1c39756..a7a31c1 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 @@ -331,4 +331,9 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
@@ -43,7 +43,7 @@ index 1c397561f8f..a7a31c172a0 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-index 3fd3cd24200..60c71c4c9b0 100644
+index 3fd3cd2..60c71c4 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 @@ -27,6 +27,7 @@ import android.os.Handler;
@@ -100,7 +100,7 @@ index 3fd3cd24200..60c71c4c9b0 100644
      }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
-index eb28ddef060..c66c0cad82a 100644
+index eb28dde..c66c0ca 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 @@ -256,5 +256,10 @@ public class QuickQSPanel extends QSPanel {
@@ -115,7 +115,7 @@ index eb28ddef060..c66c0cad82a 100644
      }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
-index b5906b88058..447fa628ad8 100644
+index b5906b8..447fa62 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 @@ -157,4 +157,9 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
@@ -129,7 +129,7 @@ index b5906b88058..447fa628ad8 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
-index 793af36ee83..7e61bffed9f 100644
+index 793af36..7e61bff 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 @@ -143,6 +143,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
@@ -141,7 +141,7 @@ index 793af36ee83..7e61bffed9f 100644
  
      @Override
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
-index 263dac0f44e..99584db01bd 100644
+index 263dac0..99584db 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
 @@ -43,6 +43,8 @@ public class QSTileView extends QSTileBaseView {
@@ -188,5 +188,5 @@ index 263dac0f44e..99584db01bd 100644
 +    }
  }
 -- 
-2.20.1
+2.7.4
 

@@ -1,7 +1,7 @@
-From 51a3644026688d5e80312478ad305dd95d076727 Mon Sep 17 00:00:00 2001
+From 76b25ce348cc0a0f81fc18b299ffc3b07f34e97c Mon Sep 17 00:00:00 2001
 From: "xinwei.lin" <linxinwei@vivo.corp-partner.google.com>
 Date: Tue, 26 Jun 2018 17:41:40 +0800
-Subject: [PATCH 35/37] Speed up the speed of computer MTP query
+Subject: [PATCH 28/34] Speed up the speed of computer MTP query
 
 Old flow, the first time computer MTP shows files is too slow, most of
 the time is cost by JVM. Because it needs to call JVM to call
@@ -13,11 +13,11 @@ flow it takes about 4s.
 Change-Id: I20ff43f86289e1cdaf1caf47a64907d8cbd88aec
 ---
  media/jni/Android.bp                  |   1 +
- media/jni/android_mtp_MtpDatabase.cpp | 843 ++++++++++++++++++++++++++
+ media/jni/android_mtp_MtpDatabase.cpp | 843 ++++++++++++++++++++++++++++++++++
  2 files changed, 844 insertions(+)
 
 diff --git a/media/jni/Android.bp b/media/jni/Android.bp
-index 02667ca070a..b85e00dcd82 100644
+index 02667ca..b85e00d 100644
 --- a/media/jni/Android.bp
 +++ b/media/jni/Android.bp
 @@ -56,6 +56,7 @@ cc_library_shared {
@@ -29,7 +29,7 @@ index 02667ca070a..b85e00dcd82 100644
  
      header_libs: ["libhardware_headers"],
 diff --git a/media/jni/android_mtp_MtpDatabase.cpp b/media/jni/android_mtp_MtpDatabase.cpp
-index 47ec4648f12..a2b6ebcbc0e 100644
+index 47ec464..a2b6ebc 100644
 --- a/media/jni/android_mtp_MtpDatabase.cpp
 +++ b/media/jni/android_mtp_MtpDatabase.cpp
 @@ -49,6 +49,10 @@ extern "C" {
@@ -946,5 +946,5 @@ index 47ec4648f12..a2b6ebcbc0e 100644
  
  static void
 -- 
-2.20.1
+2.7.4
 

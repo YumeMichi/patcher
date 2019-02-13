@@ -1,7 +1,7 @@
-From a93e60e763308ffa7245670e4bc076f1b33c0d08 Mon Sep 17 00:00:00 2001
+From 3f5eff5b15625175c321257386f0ed0c5cee35e5 Mon Sep 17 00:00:00 2001
 From: ezio84 <brabus84@gmail.com>
 Date: Thu, 22 Mar 2018 13:02:07 +0100
-Subject: [PATCH 15/37] base: Use Auto brightness for Ambient Display
+Subject: [PATCH 15/34] base: Use Auto brightness for Ambient Display
 
 this works well now
 
@@ -11,7 +11,7 @@ Change-Id: I3354b623404fe05bd67586ad39864c6bf8d20542
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index 01b272186d5..9d84c94df18 100644
+index 01b2721..9d84c94 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
 @@ -1185,7 +1185,7 @@
@@ -24,5 +24,5 @@ index 01b272186d5..9d84c94df18 100644
      <!-- Stability requirements in milliseconds for accepting a new brightness level.  This is used
           for debouncing the light sensor.  Different constants are used to debounce the light sensor
 -- 
-2.20.1
+2.7.4
 

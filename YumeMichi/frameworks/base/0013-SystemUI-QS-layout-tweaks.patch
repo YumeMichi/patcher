@@ -1,7 +1,7 @@
-From 445aa9da0e3297b6b880057023111157cce78fb9 Mon Sep 17 00:00:00 2001
+From 21b400862c9a59137656ef7d986b9dae4de92286 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 23:07:39 +0200
-Subject: [PATCH 13/37] SystemUI: QS layout tweaks
+Subject: [PATCH 13/34] SystemUI: QS layout tweaks
 
 make it more compact
 
@@ -12,7 +12,7 @@ Change-Id: I12810fd87ec1971416afec390de6116a67622457
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/packages/SystemUI/res/layout/qs_page_indicator.xml b/packages/SystemUI/res/layout/qs_page_indicator.xml
-index 583753a362f..ff07c113b1c 100644
+index 583753a..ff07c11 100644
 --- a/packages/SystemUI/res/layout/qs_page_indicator.xml
 +++ b/packages/SystemUI/res/layout/qs_page_indicator.xml
 @@ -18,9 +18,9 @@
@@ -28,7 +28,7 @@ index 583753a362f..ff07c113b1c 100644
      android:gravity="center"
      android:importantForAccessibility="yes"
 diff --git a/packages/SystemUI/res/layout/qs_panel.xml b/packages/SystemUI/res/layout/qs_panel.xml
-index 5541f3de8e7..fd70b397f29 100644
+index 5541f3d..fd70b39 100644
 --- a/packages/SystemUI/res/layout/qs_panel.xml
 +++ b/packages/SystemUI/res/layout/qs_panel.xml
 @@ -25,7 +25,7 @@
@@ -41,5 +41,5 @@ index 5541f3de8e7..fd70b397f29 100644
          android:layout_height="wrap_content"
          android:layout_marginBottom="48dp" />
 -- 
-2.20.1
+2.7.4
 

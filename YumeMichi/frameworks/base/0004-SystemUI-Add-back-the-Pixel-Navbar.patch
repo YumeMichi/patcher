@@ -1,7 +1,7 @@
-From faf7d5822f29d9deaf7c71020065bae456e361d2 Mon Sep 17 00:00:00 2001
+From c5bd6380e757f635babf8692c69b59e211a590de Mon Sep 17 00:00:00 2001
 From: Jacob McSwain <jacob.a.mcswain@gmail.com>
 Date: Fri, 25 Nov 2016 21:54:23 -0600
-Subject: [PATCH 04/37] SystemUI: Add back the Pixel Navbar
+Subject: [PATCH 04/34] SystemUI: Add back the Pixel Navbar
 
 - Shoutout to bigrushdog for providing a decompiled form used
   to verify the smali and as a guideline for the more obsure
@@ -18,16 +18,16 @@ mydongistiny: Squashed with:
 
 Change-Id: I6ed0979441bd7048b71a2d2edebe0bbc90bf3829
 ---
- packages/SystemUI/res/drawable/halo.xml       |   6 +
- .../res/drawable/ic_sysbar_opa_blue.xml       |   6 +
- .../res/drawable/ic_sysbar_opa_green.xml      |   6 +
- .../res/drawable/ic_sysbar_opa_red.xml        |   6 +
- .../res/drawable/ic_sysbar_opa_yellow.xml     |   6 +
- packages/SystemUI/res/layout/home.xml         |  26 +-
- .../SystemUI/res/values/custom_config.xml     |  24 +
- .../SystemUI/res/values/custom_dimens.xml     |  35 +
- .../SystemUI/res/values/custom_styles.xml     |  27 +
- .../google/android/systemui/OpaLayout.java    | 607 ++++++++++++++++++
+ packages/SystemUI/res/drawable/halo.xml            |   6 +
+ .../SystemUI/res/drawable/ic_sysbar_opa_blue.xml   |   6 +
+ .../SystemUI/res/drawable/ic_sysbar_opa_green.xml  |   6 +
+ .../SystemUI/res/drawable/ic_sysbar_opa_red.xml    |   6 +
+ .../SystemUI/res/drawable/ic_sysbar_opa_yellow.xml |   6 +
+ packages/SystemUI/res/layout/home.xml              |  26 +-
+ packages/SystemUI/res/values/custom_config.xml     |  24 +
+ packages/SystemUI/res/values/custom_dimens.xml     |  35 ++
+ packages/SystemUI/res/values/custom_styles.xml     |  27 +
+ .../src/com/google/android/systemui/OpaLayout.java | 607 +++++++++++++++++++++
  10 files changed, 735 insertions(+), 14 deletions(-)
  create mode 100644 packages/SystemUI/res/drawable/halo.xml
  create mode 100644 packages/SystemUI/res/drawable/ic_sysbar_opa_blue.xml
@@ -41,7 +41,7 @@ Change-Id: I6ed0979441bd7048b71a2d2edebe0bbc90bf3829
 
 diff --git a/packages/SystemUI/res/drawable/halo.xml b/packages/SystemUI/res/drawable/halo.xml
 new file mode 100644
-index 00000000000..e6ff45fca6a
+index 0000000..e6ff45f
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/halo.xml
 @@ -0,0 +1,6 @@
@@ -54,7 +54,7 @@ index 00000000000..e6ff45fca6a
 \ No newline at end of file
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_opa_blue.xml b/packages/SystemUI/res/drawable/ic_sysbar_opa_blue.xml
 new file mode 100644
-index 00000000000..a3df91cde20
+index 0000000..a3df91c
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_opa_blue.xml
 @@ -0,0 +1,6 @@
@@ -67,7 +67,7 @@ index 00000000000..a3df91cde20
 \ No newline at end of file
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_opa_green.xml b/packages/SystemUI/res/drawable/ic_sysbar_opa_green.xml
 new file mode 100644
-index 00000000000..6814ba11c94
+index 0000000..6814ba1
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_opa_green.xml
 @@ -0,0 +1,6 @@
@@ -80,7 +80,7 @@ index 00000000000..6814ba11c94
 \ No newline at end of file
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_opa_red.xml b/packages/SystemUI/res/drawable/ic_sysbar_opa_red.xml
 new file mode 100644
-index 00000000000..5d44c611ef6
+index 0000000..5d44c61
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_opa_red.xml
 @@ -0,0 +1,6 @@
@@ -93,7 +93,7 @@ index 00000000000..5d44c611ef6
 \ No newline at end of file
 diff --git a/packages/SystemUI/res/drawable/ic_sysbar_opa_yellow.xml b/packages/SystemUI/res/drawable/ic_sysbar_opa_yellow.xml
 new file mode 100644
-index 00000000000..e56b8c818c7
+index 0000000..e56b8c8
 --- /dev/null
 +++ b/packages/SystemUI/res/drawable/ic_sysbar_opa_yellow.xml
 @@ -0,0 +1,6 @@
@@ -105,7 +105,7 @@ index 00000000000..e56b8c818c7
 +</shape>
 \ No newline at end of file
 diff --git a/packages/SystemUI/res/layout/home.xml b/packages/SystemUI/res/layout/home.xml
-index 95863272b9b..f833e8c3c5a 100644
+index 9586327..f833e8c 100644
 --- a/packages/SystemUI/res/layout/home.xml
 +++ b/packages/SystemUI/res/layout/home.xml
 @@ -13,17 +13,15 @@
@@ -140,7 +140,7 @@ index 95863272b9b..f833e8c3c5a 100644
 +</com.google.android.systemui.OpaLayout>
 diff --git a/packages/SystemUI/res/values/custom_config.xml b/packages/SystemUI/res/values/custom_config.xml
 new file mode 100644
-index 00000000000..f2c203a837f
+index 0000000..f2c203a
 --- /dev/null
 +++ b/packages/SystemUI/res/values/custom_config.xml
 @@ -0,0 +1,24 @@
@@ -170,7 +170,7 @@ index 00000000000..f2c203a837f
 +</resources>
 diff --git a/packages/SystemUI/res/values/custom_dimens.xml b/packages/SystemUI/res/values/custom_dimens.xml
 new file mode 100644
-index 00000000000..ea2a851a419
+index 0000000..ea2a851
 --- /dev/null
 +++ b/packages/SystemUI/res/values/custom_dimens.xml
 @@ -0,0 +1,35 @@
@@ -211,7 +211,7 @@ index 00000000000..ea2a851a419
 +</resources>
 diff --git a/packages/SystemUI/res/values/custom_styles.xml b/packages/SystemUI/res/values/custom_styles.xml
 new file mode 100644
-index 00000000000..358fae4c83d
+index 0000000..358fae4c
 --- /dev/null
 +++ b/packages/SystemUI/res/values/custom_styles.xml
 @@ -0,0 +1,27 @@
@@ -244,7 +244,7 @@ index 00000000000..358fae4c83d
 +</resources>
 diff --git a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 new file mode 100644
-index 00000000000..b42c56b0fe3
+index 0000000..b42c56b
 --- /dev/null
 +++ b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 @@ -0,0 +1,607 @@
@@ -856,5 +856,5 @@ index 00000000000..b42c56b0fe3
 +
 +}
 -- 
-2.20.1
+2.7.4
 

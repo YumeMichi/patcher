@@ -1,7 +1,7 @@
-From 42dbf203553bdc17997251b72d1215f9bd6b9e27 Mon Sep 17 00:00:00 2001
+From 4ee33db619fddc8b4bddb6c865038eaf21656dcc Mon Sep 17 00:00:00 2001
 From: Daniel Micay <danielmicay@gmail.com>
 Date: Mon, 2 Apr 2018 12:55:28 -0400
-Subject: [PATCH 18/37] Use Cloudflare DNS servers as defaults for tethering
+Subject: [PATCH 18/34] Use Cloudflare DNS servers as defaults for tethering
 
 Cloudflare DNS has a better privacy policy than Google Public DNS and
 has DNS-over-TLS and DNS-over-HTTPS so it won't be a downgrade when
@@ -9,11 +9,11 @@ Android ships one of them.
 
 Change-Id: I29511960f286a49cf8c9899fa373690458940d87
 ---
- .../server/connectivity/tethering/TetheringConfiguration.java   | 2 +-
+ .../android/server/connectivity/tethering/TetheringConfiguration.java   | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/services/core/java/com/android/server/connectivity/tethering/TetheringConfiguration.java b/services/core/java/com/android/server/connectivity/tethering/TetheringConfiguration.java
-index acbc10b9dc4..6dd661bfdb8 100644
+index acbc10b..6dd661b 100644
 --- a/services/core/java/com/android/server/connectivity/tethering/TetheringConfiguration.java
 +++ b/services/core/java/com/android/server/connectivity/tethering/TetheringConfiguration.java
 @@ -65,7 +65,7 @@ public class TetheringConfiguration {
@@ -26,5 +26,5 @@ index acbc10b9dc4..6dd661bfdb8 100644
      public final String[] tetherableUsbRegexs;
      public final String[] tetherableWifiRegexs;
 -- 
-2.20.1
+2.7.4
 

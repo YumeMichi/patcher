@@ -1,7 +1,7 @@
-From 31af93d0582b7eed24d2c76235f3da2fe296005c Mon Sep 17 00:00:00 2001
+From 3ddfb284442fdd7124113b1eb8e056264c6d0ad2 Mon Sep 17 00:00:00 2001
 From: Elvice Wu <elvicew@codeaurora.org>
 Date: Tue, 21 Jul 2015 16:52:33 -0700
-Subject: [PATCH 32/37] Camera: Extend face detection
+Subject: [PATCH 25/34] Camera: Extend face detection
 
 This change is the combination of following commits,
 plus moving face detection related classes out from
@@ -26,9 +26,9 @@ org.codeaurora.performance.jar to org.codeaurora.camer.jar.
 
 Change-Id: I259c80fb9c7f768097d67be493db40b24cd2eda9
 ---
- core/java/org/codeaurora/camera/Android.mk    |  30 +++
- .../org/codeaurora/camera/ExtendedFace.java   | 211 ++++++++++++++++++
- .../camera/org.codeaurora.camera.xml          |  35 +++
+ core/java/org/codeaurora/camera/Android.mk         |  30 +++
+ core/java/org/codeaurora/camera/ExtendedFace.java  | 211 +++++++++++++++++++++
+ .../codeaurora/camera/org.codeaurora.camera.xml    |  35 ++++
  3 files changed, 276 insertions(+)
  create mode 100644 core/java/org/codeaurora/camera/Android.mk
  create mode 100644 core/java/org/codeaurora/camera/ExtendedFace.java
@@ -36,7 +36,7 @@ Change-Id: I259c80fb9c7f768097d67be493db40b24cd2eda9
 
 diff --git a/core/java/org/codeaurora/camera/Android.mk b/core/java/org/codeaurora/camera/Android.mk
 new file mode 100644
-index 00000000000..2e005f79eef
+index 0000000..2e005f7
 --- /dev/null
 +++ b/core/java/org/codeaurora/camera/Android.mk
 @@ -0,0 +1,30 @@
@@ -72,7 +72,7 @@ index 00000000000..2e005f79eef
 +include $(BUILD_PREBUILT)
 diff --git a/core/java/org/codeaurora/camera/ExtendedFace.java b/core/java/org/codeaurora/camera/ExtendedFace.java
 new file mode 100644
-index 00000000000..afda0b64b14
+index 0000000..afda0b6
 --- /dev/null
 +++ b/core/java/org/codeaurora/camera/ExtendedFace.java
 @@ -0,0 +1,211 @@
@@ -289,7 +289,7 @@ index 00000000000..afda0b64b14
 +}
 diff --git a/core/java/org/codeaurora/camera/org.codeaurora.camera.xml b/core/java/org/codeaurora/camera/org.codeaurora.camera.xml
 new file mode 100644
-index 00000000000..20b2aa05822
+index 0000000..20b2aa0
 --- /dev/null
 +++ b/core/java/org/codeaurora/camera/org.codeaurora.camera.xml
 @@ -0,0 +1,35 @@
@@ -329,5 +329,5 @@ index 00000000000..20b2aa05822
 +            file="/system/framework/org.codeaurora.camera.jar" />
 +</permissions>
 -- 
-2.20.1
+2.7.4
 

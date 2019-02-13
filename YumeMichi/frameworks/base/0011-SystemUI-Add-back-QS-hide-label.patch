@@ -1,49 +1,48 @@
-From 4519fb499043f3c408bf4753e5ec0be5ed02c908 Mon Sep 17 00:00:00 2001
+From 46e6928ea1bcb23d482bfd7bed21140978daded6 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 03:29:56 +0200
-Subject: [PATCH 11/37] SystemUI: Add back QS hide label
+Subject: [PATCH 11/34] SystemUI: Add back QS hide label
 
 if enabled label click (secondary) will be reassigned to long click
 for dual target tiles
 
 Change-Id: I440362ab38057cbfba7750d75825179bd830c4e8
 ---
- core/java/android/provider/Settings.java      | 11 +++-
- .../android/systemui/plugins/qs/QSTile.java   |  1 +
- .../systemui/plugins/qs/QSTileView.java       |  3 +
- .../SystemUI/res/menu/qs_customize_menu.xml   |  9 +++
- .../SystemUI/res/values/custom_dimens.xml     |  2 +
- .../SystemUI/res/values/custom_strings.xml    |  1 +
- .../android/systemui/qs/PagedTileLayout.java  |  5 ++
- .../src/com/android/systemui/qs/QSPanel.java  | 26 ++++++++-
- .../com/android/systemui/qs/QuickQSPanel.java |  5 ++
- .../com/android/systemui/qs/TileLayout.java   | 25 +++++++--
- .../systemui/qs/customize/QSCustomizer.java   | 55 +++++++++++++------
- .../systemui/qs/customize/TileAdapter.java    |  9 +++
- .../systemui/qs/tileimpl/QSTileImpl.java      | 11 +++-
- .../systemui/qs/tileimpl/QSTileView.java      |  5 ++
- .../systemui/qs/tiles/BluetoothTile.java      |  5 ++
- .../android/systemui/qs/tiles/DndTile.java    |  5 ++
- .../android/systemui/qs/tiles/WifiTile.java   |  5 ++
+ core/java/android/provider/Settings.java           | 11 ++++-
+ .../com/android/systemui/plugins/qs/QSTile.java    |  1 +
+ .../android/systemui/plugins/qs/QSTileView.java    |  3 ++
+ packages/SystemUI/res/menu/qs_customize_menu.xml   |  9 ++++
+ packages/SystemUI/res/values/custom_dimens.xml     |  2 +
+ packages/SystemUI/res/values/custom_strings.xml    |  1 +
+ .../com/android/systemui/qs/PagedTileLayout.java   |  5 ++
+ .../src/com/android/systemui/qs/QSPanel.java       | 26 ++++++++--
+ .../src/com/android/systemui/qs/QuickQSPanel.java  |  5 ++
+ .../src/com/android/systemui/qs/TileLayout.java    | 25 ++++++++--
+ .../systemui/qs/customize/QSCustomizer.java        | 55 +++++++++++++++-------
+ .../android/systemui/qs/customize/TileAdapter.java |  9 ++++
+ .../android/systemui/qs/tileimpl/QSTileImpl.java   | 11 ++++-
+ .../android/systemui/qs/tileimpl/QSTileView.java   |  5 ++
+ .../android/systemui/qs/tiles/BluetoothTile.java   |  5 ++
+ .../src/com/android/systemui/qs/tiles/DndTile.java |  5 ++
+ .../com/android/systemui/qs/tiles/WifiTile.java    |  5 ++
  17 files changed, 154 insertions(+), 29 deletions(-)
 
 diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
-index a3ac2a2b620..4f394911e26 100755
+index 44f572a..71b2814 100755
 --- a/core/java/android/provider/Settings.java
 +++ b/core/java/android/provider/Settings.java
-@@ -3959,6 +3959,11 @@ public final class Settings {
-           */
+@@ -3977,15 +3977,21 @@ public final class Settings {
           public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
  
-+        /**
+         /**
 +         * @hide
 +         */
 +        public static final String QS_LAYOUT_COLUMNS = "qs_layout_columns";
 +
-         /**
++        /**
           * Number of qs columns on landscape orientation
           * @hide
-@@ -3966,9 +3971,10 @@ public final class Settings {
+          */
          public static final String QS_LAYOUT_COLUMNS_LANDSCAPE = "qs_layout_columns_landscape";
  
          /**
@@ -55,7 +54,7 @@ index a3ac2a2b620..4f394911e26 100755
  
          /**
           * Settings to backup. This is here so that it's in the same place as the settings
-@@ -4136,6 +4142,9 @@ public final class Settings {
+@@ -4153,6 +4159,9 @@ public final class Settings {
              PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
              PRIVATE_SETTINGS.add(EGG_MODE);
              PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
@@ -66,7 +65,7 @@ index a3ac2a2b620..4f394911e26 100755
  
          /**
 diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
-index 4700187d502..3c349e1bcce 100644
+index 4700187..3c349e1 100644
 --- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
 +++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTile.java
 @@ -67,6 +67,7 @@ public interface QSTile {
@@ -78,7 +77,7 @@ index 4700187d502..3c349e1bcce 100644
      default LogMaker populate(LogMaker logMaker) {
          return logMaker;
 diff --git a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
-index 7beb64cda61..e60f1d243f9 100644
+index 7beb64c..e60f1d2 100644
 --- a/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
 +++ b/packages/SystemUI/plugin/src/com/android/systemui/plugins/qs/QSTileView.java
 @@ -41,4 +41,7 @@ public abstract class QSTileView extends LinearLayout {
@@ -90,7 +89,7 @@ index 7beb64cda61..e60f1d243f9 100644
 +    }
  }
 diff --git a/packages/SystemUI/res/menu/qs_customize_menu.xml b/packages/SystemUI/res/menu/qs_customize_menu.xml
-index 33e76ce617d..2681d8f9a91 100644
+index 33e76ce..2681d8f 100644
 --- a/packages/SystemUI/res/menu/qs_customize_menu.xml
 +++ b/packages/SystemUI/res/menu/qs_customize_menu.xml
 @@ -27,11 +27,17 @@ limitations under the License.
@@ -122,7 +121,7 @@ index 33e76ce617d..2681d8f9a91 100644
                android:title="@string/qs_menu_item_reset"/>
  </menu>
 diff --git a/packages/SystemUI/res/values/custom_dimens.xml b/packages/SystemUI/res/values/custom_dimens.xml
-index ea2a851a419..efc26a3ab42 100644
+index ea2a851..efc26a3 100644
 --- a/packages/SystemUI/res/values/custom_dimens.xml
 +++ b/packages/SystemUI/res/values/custom_dimens.xml
 @@ -32,4 +32,6 @@
@@ -133,7 +132,7 @@ index ea2a851a419..efc26a3ab42 100644
 +    <dimen name="qs_tile_height_wo_label">48dp</dimen>
  </resources>
 diff --git a/packages/SystemUI/res/values/custom_strings.xml b/packages/SystemUI/res/values/custom_strings.xml
-index 16f964b34e8..8d7aa55f133 100644
+index 16f964b..8d7aa55f 100644
 --- a/packages/SystemUI/res/values/custom_strings.xml
 +++ b/packages/SystemUI/res/values/custom_strings.xml
 @@ -28,4 +28,5 @@
@@ -143,7 +142,7 @@ index 16f964b34e8..8d7aa55f133 100644
 +    <string name="qs_menu_item_titles">Show labels</string>
  </resources>
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
-index a7a31c172a0..2dfa6744be6 100644
+index a7a31c1..2dfa674 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 @@ -336,4 +336,9 @@ public class PagedTileLayout extends ViewPager implements QSTileLayout {
@@ -157,7 +156,7 @@ index a7a31c172a0..2dfa6744be6 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
-index 60c71c4c9b0..65f3d810bd3 100644
+index 60c71c4..65f3d81 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSPanel.java
 @@ -445,11 +445,11 @@ public class QSPanel extends LinearLayout implements Tunable, Callback, Brightne
@@ -214,7 +213,7 @@ index 60c71c4c9b0..65f3d810bd3 100644
          }
      }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
-index c66c0cad82a..95796e0845e 100644
+index c66c0ca..95796e0 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QuickQSPanel.java
 @@ -261,5 +261,10 @@ public class QuickQSPanel extends QSPanel {
@@ -229,7 +228,7 @@ index c66c0cad82a..95796e0845e 100644
      }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
-index 447fa628ad8..de7fb3551b3 100644
+index 447fa62..de7fb35 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/TileLayout.java
 @@ -25,7 +25,7 @@ public class TileLayout extends ViewGroup implements QSTileLayout {
@@ -284,7 +283,7 @@ index 447fa628ad8..de7fb3551b3 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
-index 7e61bffed9f..3cf46ccf8b9 100644
+index 7e61bff..3cf46cc 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 @@ -92,7 +92,6 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
@@ -415,7 +414,7 @@ index 7e61bffed9f..3cf46ccf8b9 100644
          MenuItem menuItemSeven = mToolbar.getMenu().findItem(R.id.menu_item_columns_landscape_seven);
          menuItemSeven.setChecked(columnsLandscape == 7);
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
-index 31a79cf21af..65bbb861a23 100644
+index 31a79cf..65bbb86 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 @@ -85,6 +85,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
@@ -447,7 +446,7 @@ index 31a79cf21af..65bbb861a23 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
-index 576a447447b..9d05f36faab 100644
+index 576a447..9d05f36 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileImpl.java
 @@ -89,6 +89,11 @@ public abstract class QSTileImpl<TState extends State> implements QSTile {
@@ -476,7 +475,7 @@ index 576a447447b..9d05f36faab 100644
  
      public abstract Intent getLongClickIntent();
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
-index 99584db01bd..4c0b9d7a481 100644
+index 99584db..4c0b9d7 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tileimpl/QSTileView.java
 @@ -19,6 +19,7 @@ import android.content.res.Configuration;
@@ -497,23 +496,23 @@ index 99584db01bd..4c0b9d7a481 100644
 +    }
  }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
-index ac3326a8f63..10074756cc3 100644
+index ac3326a..1007475 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/BluetoothTile.java
-@@ -64,6 +64,11 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
-         mDetailAdapter = (BluetoothDetailAdapter) createDetailAdapter();
+@@ -65,6 +65,11 @@ public class BluetoothTile extends QSTileImpl<BooleanState> {
      }
  
-+    @Override
+     @Override
 +    public boolean isDualTarget() {
 +        return true;
 +    }
 +
-     @Override
++    @Override
      public DetailAdapter getDetailAdapter() {
          return mDetailAdapter;
+     }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
-index f725657437b..71cf0148f30 100644
+index f725657..71cf014 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/DndTile.java
 @@ -97,6 +97,11 @@ public class DndTile extends QSTileImpl<BooleanState> {
@@ -529,21 +528,21 @@ index f725657437b..71cf0148f30 100644
          Prefs.putBoolean(context, Prefs.Key.DND_TILE_VISIBLE, visible);
      }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
-index fdbb260f39b..2f9d248b8b9 100644
+index fdbb260..2f9d248 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/tiles/WifiTile.java
-@@ -69,6 +69,11 @@ public class WifiTile extends QSTileImpl<SignalState> {
-         mActivityStarter = Dependency.get(ActivityStarter.class);
+@@ -70,6 +70,11 @@ public class WifiTile extends QSTileImpl<SignalState> {
      }
  
-+    @Override
+     @Override
 +    public boolean isDualTarget() {
 +        return true;
 +    }
 +
-     @Override
++    @Override
      public SignalState newTileState() {
          return new SignalState();
+     }
 -- 
-2.20.1
+2.7.4
 

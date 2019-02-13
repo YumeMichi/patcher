@@ -1,15 +1,15 @@
-From 00325c79a14748d0484a5b55e7896a0a0e386bb4 Mon Sep 17 00:00:00 2001
+From f03ec4cd5736969b44e24eb4f48229b84395321f Mon Sep 17 00:00:00 2001
 From: mydongistiny <jaysonedson@gmail.com>
 Date: Mon, 30 Oct 2017 04:23:23 -0700
-Subject: [PATCH 06/37] Pixel Navbar: Fix colors for light colored navbar
+Subject: [PATCH 06/34] Pixel Navbar: Fix colors for light colored navbar
 
 Change-Id: I68e2a55f6f02f03802af099a36706b3636e10125
 ---
- .../google/android/systemui/OpaLayout.java    | 42 ++++++++++++++++++-
+ .../src/com/google/android/systemui/OpaLayout.java | 42 ++++++++++++++++++++--
  1 file changed, 40 insertions(+), 2 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
-index f2c5a860a06..8ad1da7020b 100644
+index f2c5a86..8ad1da7 100644
 --- a/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 +++ b/packages/SystemUI/src/com/google/android/systemui/OpaLayout.java
 @@ -4,6 +4,9 @@ import android.animation.Animator;
@@ -129,5 +129,5 @@ index f2c5a860a06..8ad1da7020b 100644
      }
  }
 -- 
-2.20.1
+2.7.4
 

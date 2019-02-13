@@ -1,7 +1,7 @@
-From 8ece4333ca6d39507c96d276e0bffc633d35e520 Mon Sep 17 00:00:00 2001
+From a0ed93b044609f675eba362320518b202310b049 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Wed, 9 Sep 2015 19:34:21 -0700
-Subject: [PATCH 27/37] StrictMode: Disable all strict mode functions when
+Subject: [PATCH 23/34] StrictMode: Disable all strict mode functions when
  disable prop is set
 
 Strict mode can still be used to produce red border flashes even when the
@@ -17,7 +17,7 @@ Signed-off-by: Sultanxda <sultanxda@gmail.com>
  1 file changed, 17 insertions(+), 1 deletion(-)
 
 diff --git a/core/java/android/os/StrictMode.java b/core/java/android/os/StrictMode.java
-index 3b6df5df13a..5b165f0c94b 100644
+index 3b6df5d..5b165f0 100644
 --- a/core/java/android/os/StrictMode.java
 +++ b/core/java/android/os/StrictMode.java
 @@ -1188,7 +1188,7 @@ public final class StrictMode {
@@ -74,5 +74,5 @@ index 3b6df5df13a..5b165f0c94b 100644
          StringWriter sw = new StringWriter();
          sw.append("# via Binder call with stack:\n");
 -- 
-2.20.1
+2.7.4
 

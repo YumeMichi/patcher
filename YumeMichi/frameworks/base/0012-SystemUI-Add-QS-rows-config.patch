@@ -1,36 +1,36 @@
-From 60849b3893de8a0d4fd868d37b1ba0a834e7e16a Mon Sep 17 00:00:00 2001
+From 36565849b810bb16e90d6a0574ba045a7b873b36 Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Thu, 21 Sep 2017 13:15:18 +0200
-Subject: [PATCH 12/37] SystemUI: Add QS rows config
+Subject: [PATCH 12/34] SystemUI: Add QS rows config
 
 with inspiration from ezio84
 
 Change-Id: I980a1ab2ed024f467367b222ab408ccfe1e1882f
 ---
- core/java/android/provider/Settings.java      |  6 +++
- .../SystemUI/res/menu/qs_customize_menu.xml   | 17 ++++++++
- .../SystemUI/res/values/custom_strings.xml    |  5 +++
- .../android/systemui/qs/PagedTileLayout.java  | 22 ++++++-----
- .../systemui/qs/customize/QSCustomizer.java   | 39 ++++++++++++++++++-
+ core/java/android/provider/Settings.java           |  6 ++++
+ packages/SystemUI/res/menu/qs_customize_menu.xml   | 17 ++++++++++
+ packages/SystemUI/res/values/custom_strings.xml    |  5 +++
+ .../com/android/systemui/qs/PagedTileLayout.java   | 22 ++++++------
+ .../systemui/qs/customize/QSCustomizer.java        | 39 ++++++++++++++++++++--
  5 files changed, 77 insertions(+), 12 deletions(-)
 
 diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
-index 4f394911e26..47cee742c48 100755
+index 71b2814..3f05f97 100755
 --- a/core/java/android/provider/Settings.java
 +++ b/core/java/android/provider/Settings.java
-@@ -3976,6 +3976,11 @@ public final class Settings {
-          */
+@@ -3994,6 +3994,11 @@ public final class Settings {
          public static final String QS_TILE_TITLE_VISIBILITY = "qs_tile_title_visibility";
  
-+        /**
+         /**
 +         * @hide
 +         */
 +        public static final String QS_LAYOUT_ROWS = "qs_layout_rows";
 +
-         /**
++        /**
           * Settings to backup. This is here so that it's in the same place as the settings
           * keys and easy to update.
-@@ -4145,6 +4150,7 @@ public final class Settings {
+          *
+@@ -4162,6 +4167,7 @@ public final class Settings {
              PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS);
              PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS_LANDSCAPE);
              PRIVATE_SETTINGS.add(QS_TILE_TITLE_VISIBILITY);
@@ -39,7 +39,7 @@ index 4f394911e26..47cee742c48 100755
  
          /**
 diff --git a/packages/SystemUI/res/menu/qs_customize_menu.xml b/packages/SystemUI/res/menu/qs_customize_menu.xml
-index 2681d8f9a91..9d52b6fcf43 100644
+index 2681d8f..9d52b6f 100644
 --- a/packages/SystemUI/res/menu/qs_customize_menu.xml
 +++ b/packages/SystemUI/res/menu/qs_customize_menu.xml
 @@ -55,6 +55,23 @@ limitations under the License.
@@ -67,7 +67,7 @@ index 2681d8f9a91..9d52b6fcf43 100644
                android:title="@string/qs_menu_item_titles"
                android:checkable="true" />
 diff --git a/packages/SystemUI/res/values/custom_strings.xml b/packages/SystemUI/res/values/custom_strings.xml
-index 8d7aa55f133..eb22f1655d6 100644
+index 8d7aa55f..eb22f16 100644
 --- a/packages/SystemUI/res/values/custom_strings.xml
 +++ b/packages/SystemUI/res/values/custom_strings.xml
 @@ -29,4 +29,9 @@
@@ -81,7 +81,7 @@ index 8d7aa55f133..eb22f1655d6 100644
 +    <string name="qs_menu_item_rows_four">4</string>
  </resources>
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
-index 2dfa6744be6..3bc732b3ef6 100644
+index 2dfa674..3bc732b 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/PagedTileLayout.java
 @@ -3,6 +3,8 @@ package com.android.systemui.qs;
@@ -148,7 +148,7 @@ index 2dfa6744be6..3bc732b3ef6 100644
          postDistributeTiles();
      }
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
-index 3cf46ccf8b9..1210f7bf1dc 100644
+index 3cf46cc..1210f7b 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/QSCustomizer.java
 @@ -94,6 +94,7 @@ public class QSCustomizer extends LinearLayout implements OnMenuItemClickListene
@@ -234,5 +234,5 @@ index 3cf46ccf8b9..1210f7bf1dc 100644
      }
  }
 -- 
-2.20.1
+2.7.4
 

@@ -1,7 +1,7 @@
-From 0679df93230b0fede2b02928803b6071cd134f54 Mon Sep 17 00:00:00 2001
+From 80123b58e6592f3fcf35b11f618ae67c0fd7acb0 Mon Sep 17 00:00:00 2001
 From: Simon Polack <simonpolack@googlemail.com>
 Date: Fri, 11 Aug 2017 11:32:22 +0200
-Subject: [PATCH 26/37] base: Support UnifiedNlp (microG)
+Subject: [PATCH 22/34] base: Support UnifiedNlp (microG)
 
 * Add UnifiedNlp standalone to nlp lookup list
 
@@ -13,7 +13,7 @@ Change-Id: Ibba6d51fdde5aafa465df181f4ff29f6a561f7e6
  1 file changed, 2 insertions(+)
 
 diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
-index f1547158f16..222521ac858 100644
+index f154715..222521a 100644
 --- a/core/res/res/values/config.xml
 +++ b/core/res/res/values/config.xml
 @@ -1509,6 +1509,8 @@
@@ -26,5 +26,5 @@ index f1547158f16..222521ac858 100644
  
      <!-- This string array can be overriden to enable test location providers initially. -->
 -- 
-2.20.1
+2.7.4
 

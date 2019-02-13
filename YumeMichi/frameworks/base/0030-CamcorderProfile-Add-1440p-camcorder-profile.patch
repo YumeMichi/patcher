@@ -1,7 +1,7 @@
-From 1357604dca7ec11b7735b63f879fb963b96e52f5 Mon Sep 17 00:00:00 2001
+From fa4fd4416e606eda18e7bf0da133cc004775fe78 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Sat, 15 Aug 2015 19:28:35 -0700
-Subject: [PATCH 37/37] CamcorderProfile: Add 1440p camcorder profile
+Subject: [PATCH 30/34] CamcorderProfile: Add 1440p camcorder profile
 
 Add encoding constants (regular and timelapse) for 2.5k 1440p resolution.
 
@@ -13,7 +13,7 @@ Change-Id: I0ce1dd33458f0c837f4bb1d9e8d07c1649cf338d
  1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/media/java/android/media/CamcorderProfile.java b/media/java/android/media/CamcorderProfile.java
-index 6785670d192..6f2de46ef17 100644
+index 6785670..6f2de46 100644
 --- a/media/java/android/media/CamcorderProfile.java
 +++ b/media/java/android/media/CamcorderProfile.java
 @@ -273,9 +273,21 @@ public class CamcorderProfile
@@ -40,5 +40,5 @@ index 6785670d192..6f2de46ef17 100644
      /**
       * Default recording duration in seconds before the session is terminated.
 -- 
-2.20.1
+2.7.4
 
