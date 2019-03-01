@@ -1,0 +1,27 @@
+From 2644543d1635093a5e45e60e954628f01a9d93c2 Mon Sep 17 00:00:00 2001
+From: Chris <chris@cypheros.co>
+Date: Tue, 28 Aug 2018 13:46:45 -0400
+Subject: [PATCH 1/2] overlay: Enable smart replies for Pre-P applications
+
+Allows using smart replies feature on applications targeting below Pie
+
+Change-Id: I989e30479ab8cd0eeeac4db82db6da3750271659
+---
+ overlay/common/frameworks/base/packages/SystemUI/res/values/config.xml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/overlay/common/frameworks/base/packages/SystemUI/res/values/config.xml b/overlay/common/frameworks/base/packages/SystemUI/res/values/config.xml
+index 363e254..98576ac 100644
+--- a/overlay/common/frameworks/base/packages/SystemUI/res/values/config.xml
++++ b/overlay/common/frameworks/base/packages/SystemUI/res/values/config.xml
+@@ -31,4 +31,7 @@
+          does not work well, particularly with noisy touchscreens. Note that disabling it may
+          increase the rate of unintentional unlocks. -->
+     <bool name="config_lockscreenAntiFalsingClassifierEnabled">false</bool>
++
++    <!-- Smart replies in notifications: Whether we disable the feature unless the app targets P -->
++    <bool name="config_smart_replies_in_notifications_requires_targeting_p">false</bool>
+ </resources>
+-- 
+2.7.4
+

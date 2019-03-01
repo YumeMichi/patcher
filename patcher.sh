@@ -7,6 +7,7 @@ REPOSITORIES=(
     'packages/apps/LockClock'
     'packages/apps/Settings'
     'system/core'
+    'vendor/lineage'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
