@@ -5,6 +5,7 @@ REPOSITORIES=(
     'build/make'
     'frameworks/av'
     'packages/apps/LockClock'
+    'packages/apps/Settings'
     'system/core'
 )
 
