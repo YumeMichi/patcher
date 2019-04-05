@@ -1,0 +1,110 @@
+From 5d23e34325d7e80d41208640f615f924c8197918 Mon Sep 17 00:00:00 2001
+From: xoomdev <xoomdevnet@gmail.com>
+Date: Fri, 19 Oct 2018 22:48:58 -0500
+Subject: [PATCH] Show full /proc/version information
+
+*DU Edits*
+- Adapted to P. This has to be moved and rewritten in the dialog controller
+since this is the direction Google is headed.
+
+- Added click listener, used Firmware Verison dialog controller as reference.
+https://github.com/DirtyUnicorns/android_packages_apps_Settings/blob/p9x/src/com/android/settings/deviceinfo/firmwareversion/FirmwareVersionDialogController.java
+
+- Included my commit from Oreo to toggle this as many times as we want.
+https://github.com/DirtyUnicorns/android_packages_apps_Settings/commit/291aac8e1ee6ff5f5e919ca5b0e63dd605149aab
+
+Change-Id: Id0d04e43ce5c3ac7af81a7ad19f4c6c375d94b82
+---
+ .../KernelVersionDialogController.java             | 57 +++++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/settings/deviceinfo/firmwareversion/KernelVersionDialogController.java b/src/com/android/settings/deviceinfo/firmwareversion/KernelVersionDialogController.java
+index d583e04..8c88141 100644
+--- a/src/com/android/settings/deviceinfo/firmwareversion/KernelVersionDialogController.java
++++ b/src/com/android/settings/deviceinfo/firmwareversion/KernelVersionDialogController.java
+@@ -17,26 +17,81 @@
+ package com.android.settings.deviceinfo.firmwareversion;
+ 
+ import android.support.annotation.VisibleForTesting;
++import android.util.Log;
++import android.view.View;
+ 
+ import com.android.settings.R;
+ import com.android.settingslib.DeviceInfoUtils;
+ 
+-public class KernelVersionDialogController {
++import java.io.BufferedReader;
++import java.io.FileReader;
++import java.io.IOException;
++
++public class KernelVersionDialogController implements View.OnClickListener {
+ 
+     @VisibleForTesting
+     static int KERNEL_VERSION_VALUE_ID = R.id.kernel_version_value;
+ 
++    private static final String FILENAME_PROC_VERSION = "/proc/version";
++    private static final String LOG_TAG = "KernelVersionPreferenceController";
++    private boolean fullKernelVersion = false;
++
+     private final FirmwareVersionDialogFragment mDialog;
+ 
+     public KernelVersionDialogController(FirmwareVersionDialogFragment dialog) {
+         mDialog = dialog;
+     }
+ 
++    @Override
++    public void onClick(View v) {
++        if (fullKernelVersion) {
++            mDialog.setText(KERNEL_VERSION_VALUE_ID,
++                    DeviceInfoUtils.getFormattedKernelVersion(mDialog.getContext()));
++            fullKernelVersion = false;
++        } else {
++            mDialog.setText(KERNEL_VERSION_VALUE_ID,
++                    getFullKernelVersion());
++            fullKernelVersion = true;
++        }
++    }
++
+     /**
+      * Updates kernel version to the dialog.
+      */
+     public void initialize() {
++        registerClickListener();
+         mDialog.setText(KERNEL_VERSION_VALUE_ID,
+                 DeviceInfoUtils.getFormattedKernelVersion(mDialog.getContext()));
+     }
++
++    private void registerClickListener() {
++        mDialog.registerClickListener(KERNEL_VERSION_VALUE_ID, this /* listener */);
++    }
++
++    private String getFullKernelVersion() {
++        String procVersionStr;
++        try {
++            procVersionStr = readLine(FILENAME_PROC_VERSION);
++            return procVersionStr;
++        } catch (IOException e) {
++            Log.e(LOG_TAG,
++            "IO Exception when getting kernel version for Device Info screen", e);
++            return "Unavailable";
++        }
++    }
++
++    /**
++     * Reads a line from the specified file.
++     * @param filename the file to read from
++     * @return the first line, if any.
++     * @throws IOException if the file couldn't be read
++     */
++    private static String readLine(String filename) throws IOException {
++        BufferedReader reader = new BufferedReader(new FileReader(filename), 256);
++        try {
++            return reader.readLine();
++        } finally {
++            reader.close();
++        }
++    }
+ }
+-- 
+2.7.4
+

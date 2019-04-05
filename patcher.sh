@@ -2,12 +2,8 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
-    'build/make'
-    'frameworks/av'
-    'packages/apps/LockClock'
+    'frameworks/base'
     'packages/apps/Settings'
-    'system/core'
-    'vendor/lineage'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
