@@ -1,7 +1,7 @@
 From 9e943da775f6be2590f9ce26792ef18c1d6985c1 Mon Sep 17 00:00:00 2001
 From: Joe Maples <joe@frap129.org>
 Date: Sun, 27 Aug 2017 17:24:37 -0400
-Subject: [PATCH 10/10] QS: Hide Tuner icon
+Subject: [PATCH 10/12] QS: Hide Tuner icon
 
 Change-Id: Ifb6f8beec1bf4feeb30bda4d8ba55c413e51528b
 Signed-off-by: Joe Maples <joe@frap129.org>

@@ -1,7 +1,7 @@
 From 12db5cb86bb1f0d34a406ba2557efc7ff41b78bc Mon Sep 17 00:00:00 2001
 From: Christian Oder <myself5@carbonrom.org>
 Date: Mon, 29 Aug 2016 00:49:52 +0200
-Subject: [PATCH 09/10] SystemUI: Show Tuner by default
+Subject: [PATCH 09/12] SystemUI: Show Tuner by default
 
 Change-Id: I7f2bc92656af85e73d623b70466f214706990726
 ---

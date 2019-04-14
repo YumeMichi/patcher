@@ -1,7 +1,7 @@
 From 4cfc722d40c8022e22296458721dac174a8b410d Mon Sep 17 00:00:00 2001
 From: Ali B <abittin@gmail.com>
 Date: Mon, 2 Jul 2018 00:26:10 +0300
-Subject: [PATCH 03/10] SystemUI: Add List and Switch Preferences
+Subject: [PATCH 03/12] SystemUI: Add List and Switch Preferences
 
 Change-Id: I0cf7c2113efec7080e4bfd0300aee4fc2f897ff3
 ---

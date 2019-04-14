@@ -1,7 +1,7 @@
 From 8046db4172af440b1117816e1ac8e8aa9739d16b Mon Sep 17 00:00:00 2001
 From: xyyx <xyyx@mail.ru>
 Date: Fri, 7 Sep 2018 10:33:50 +0800
-Subject: [PATCH 07/10] SettingsProvider: Turn on development settings by
+Subject: [PATCH 07/12] SettingsProvider: Turn on development settings by
  default
 
 Change-Id: I0dd472ecfecbac600a98615f67ed0fa21d13c2e6

@@ -1,7 +1,7 @@
 From 4098f9e8585c77257897f441e92e108615a0575d Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 10 Dec 2016 10:51:32 +0000
-Subject: [PATCH 01/10] Connectivity: Fucking GFW
+Subject: [PATCH 01/12] Connectivity: Fucking GFW
 
 Change-Id: Ic1160c8b394191abfd212c65e0ce039acd44825d
 ---
