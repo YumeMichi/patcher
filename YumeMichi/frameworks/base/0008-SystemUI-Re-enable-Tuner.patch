@@ -1,0 +1,29 @@
+From 69b7fde0104d5f015b33e43b8ca94b4568293d89 Mon Sep 17 00:00:00 2001
+From: Joe Maples <joe@frap129.org>
+Date: Mon, 6 Aug 2018 18:36:55 -0400
+Subject: [PATCH 08/10] SystemUI: Re-enable Tuner
+
+Change-Id: I43cdaa87e8e542663b2d3264eeba71857e37711d
+Signed-off-by: Joe Maples <joe@frap129.org>
+---
+ .../src/com/android/systemui/tuner/TunerServiceImpl.java      | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/tuner/TunerServiceImpl.java b/packages/SystemUI/src/com/android/systemui/tuner/TunerServiceImpl.java
+index 1bdb7ad3c3f..52174336e23 100644
+--- a/packages/SystemUI/src/com/android/systemui/tuner/TunerServiceImpl.java
++++ b/packages/SystemUI/src/com/android/systemui/tuner/TunerServiceImpl.java
+@@ -113,9 +113,7 @@ public class TunerServiceImpl extends TunerService {
+                         TextUtils.join(",", iconBlacklist), mCurrentUser);
+             }
+         }
+-        if (oldVersion < 2) {
+-            setTunerEnabled(mContext, false);
+-        }
++        // 2 Removed because we want tuner.
+         // 3 Removed because of a revert.
+         if (oldVersion < 4) {
+             // Delay this so that we can wait for everything to be registered first.
+-- 
+2.17.1
+

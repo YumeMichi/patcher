@@ -1,7 +1,7 @@
 From b55828f1f0a1aa336899823503bd5687bb5eeb5c Mon Sep 17 00:00:00 2001
 From: SagarMakhar <sagarmakhar@gmail.com>
 Date: Sat, 6 Apr 2019 08:21:09 +0000
-Subject: [PATCH 6/6] Add VOLTE icon toggle
+Subject: [PATCH 06/10] Add VOLTE icon toggle
 
 Change-Id: I28a981517213509c0a40a815c6e40c695fea6c68
 ---

@@ -1,7 +1,7 @@
 From ffbf6969263c601540cb40b2c3bafff5f55b709d Mon Sep 17 00:00:00 2001
 From: Pranav Vashi <neobuddy89@gmail.com>
 Date: Thu, 22 Nov 2018 16:48:29 +0100
-Subject: [PATCH 5/6] Allow using 4G icon instead LTE
+Subject: [PATCH 05/10] Allow using 4G icon instead LTE
 
 Change-Id: I7ba6f730fc5f16abdd0633224e9eaeff3674d850
 ---

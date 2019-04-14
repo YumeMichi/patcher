@@ -1,7 +1,7 @@
 From 00e782b768c3f79374e8131a4d2760a7fa340bd2 Mon Sep 17 00:00:00 2001
 From: Adarsh-MR <adarshmr1998@gmail.com>
 Date: Fri, 19 Oct 2018 11:51:38 +0000
-Subject: [PATCH 4/6] Fix VOLTE icon color on Light statusbar
+Subject: [PATCH 04/10] Fix VOLTE icon color on Light statusbar
 
 Change-Id: I96803c61311e8fafe8a395c0afe03c9a33d07feb
 Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
