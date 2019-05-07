@@ -1,7 +1,7 @@
-From 9e943da775f6be2590f9ce26792ef18c1d6985c1 Mon Sep 17 00:00:00 2001
+From 7ebd479bee10ac908029f316f2eeab210a6fad04 Mon Sep 17 00:00:00 2001
 From: Joe Maples <joe@frap129.org>
 Date: Sun, 27 Aug 2017 17:24:37 -0400
-Subject: [PATCH 10/12] QS: Hide Tuner icon
+Subject: [PATCH 7/9] QS: Hide Tuner icon
 
 Change-Id: Ifb6f8beec1bf4feeb30bda4d8ba55c413e51528b
 Signed-off-by: Joe Maples <joe@frap129.org>
@@ -10,10 +10,10 @@ Signed-off-by: Joe Maples <joe@frap129.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java b/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
-index 0a26d2b8c09..1482d9b6c97 100644
+index 6441cc1..f4a9d80 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
-@@ -279,8 +279,6 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
+@@ -277,8 +277,6 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
  
      private void updateVisibilities() {
          mSettingsContainer.setVisibility(mQsDisabled ? View.GONE : View.VISIBLE);
@@ -23,5 +23,5 @@ index 0a26d2b8c09..1482d9b6c97 100644
          mMultiUserSwitch.setVisibility(showUserSwitcher(isDemo) ? View.VISIBLE : View.INVISIBLE);
          mEdit.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
 -- 
-2.17.1
+2.7.4
 
