@@ -2,6 +2,7 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
+    'bionic'
     'build/make'
     'frameworks/av'
     'packages/apps/LockClock'
