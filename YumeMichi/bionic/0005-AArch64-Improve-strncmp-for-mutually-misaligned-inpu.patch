@@ -1,0 +1,339 @@
+From f3a74a68ac19c4becaa966c72e544d8b112d7303 Mon Sep 17 00:00:00 2001
+From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
+Date: Fri, 22 Jun 2018 15:30:03 -0300
+Subject: [PATCH 5/6] [AArch64] Improve strncmp for mutually misaligned inputs
+
+This patch was originally written by Siddhesh Poyarekar and pushed on
+cortex-strings [1]. The mutually misaligned inputs on aarch64 are
+compared with a simple byte copy, which is not very efficient.
+This patch enhances the comparison similar to strcmp by loading a
+double-word at a time.
+
+Comparison on the default bionic and proposed optimized routines
+shows the following performance improvements on A54 (using the
+new proposed memcmp input data from test_strncmp.xml):
+
+  - No noticeable change on aligned inputs or with same alignment.
+
+  - Large improvements on unaligned inputs from sizes larger than
+    16 bytes.
+
+Benchmark                               Time             CPU      Time Old      Time New       CPU Old       CPU New
+--------------------------------------------------------------------------------------------------------------------
+BM_string_strncmp/1/0/0              -0.0954         -0.0954            19            17            19            17
+BM_string_strncmp/2/0/0              -0.0344         -0.0344            19            18            19            18
+BM_string_strncmp/3/0/0              +0.1768         +0.1768            15            18            15            18
+BM_string_strncmp/4/0/0              -0.0344         -0.0344            19            18            19            18
+BM_string_strncmp/5/0/0              -0.0344         -0.0344            19            18            19            18
+BM_string_strncmp/6/0/0              +0.1589         +0.1589            15            18            15            18
+BM_string_strncmp/7/0/0              -0.0344         -0.0344            19            18            19            18
+BM_string_strncmp/8/0/0              -0.0998         -0.0998            19            17            19            17
+BM_string_strncmp/9/0/0              -0.0277         -0.0277            23            22            23            22
+BM_string_strncmp/10/0/0             -0.0270         -0.0270            23            22            23            22
+BM_string_strncmp/11/0/0             -0.0331         -0.0331            23            22            23            22
+BM_string_strncmp/12/0/0             -0.0270         -0.0270            23            22            23            22
+BM_string_strncmp/13/0/0             -0.0284         -0.0284            23            22            23            22
+BM_string_strncmp/14/0/0             +0.1042         +0.1042            20            22            20            22
+BM_string_strncmp/15/0/0             -0.0277         -0.0277            23            22            23            22
+BM_string_strncmp/16/0/0             +0.0214         +0.0215            22            22            22            22
+BM_string_strncmp/24/0/0             -0.1291         -0.1291            24            21            24            21
+BM_string_strncmp/32/0/0             -0.0470         -0.0470            27            26            27            26
+BM_string_strncmp/40/0/0             -0.0433         -0.0433            29            28            29            28
+BM_string_strncmp/48/0/0             -0.0301         -0.0301            31            30            31            30
+BM_string_strncmp/56/0/0             -0.0800         -0.0800            33            31            33            31
+BM_string_strncmp/64/0/0             +0.0188         +0.0188            34            34            34            34
+BM_string_strncmp/72/0/0             -0.0334         -0.0334            38            37            38            37
+BM_string_strncmp/80/0/0             -0.0000         -0.0000            40            40            40            40
+BM_string_strncmp/88/0/0             +0.0413         +0.0413            61            64            61            64
+BM_string_strncmp/96/0/0             -0.0215         -0.0216            69            67            69            67
+BM_string_strncmp/104/0/0            -0.0208         -0.0208            72            70            72            70
+BM_string_strncmp/112/0/0            -0.0173         -0.0173            75            74            75            74
+BM_string_strncmp/120/0/0            -0.0166         -0.0166            78            77            78            77
+BM_string_strncmp/128/0/0            -0.0158         -0.0158            81            80            81            80
+BM_string_strncmp/136/0/0            -0.0149         -0.0149            84            83            84            83
+BM_string_strncmp/144/0/0            -0.0201         -0.0201            88            86            88            86
+BM_string_strncmp/160/0/0            -0.0136         -0.0136            94            93            94            93
+BM_string_strncmp/176/0/0            +0.0224         +0.0224            96            98            96            98
+BM_string_strncmp/192/0/0            +0.0289         +0.0289           102           105           102           105
+BM_string_strncmp/208/0/0            +0.0101         +0.0101           111           112           111           112
+BM_string_strncmp/224/0/0            -0.0107         -0.0107           119           118           119           118
+BM_string_strncmp/240/0/0            -0.0088         -0.0088           126           125           126           125
+BM_string_strncmp/256/0/0            -0.0101         -0.0101           132           131           132           131
+BM_string_strncmp/512/0/0            -0.0056         -0.0056           235           233           235           233
+BM_string_strncmp/1024/0/0           -0.0030         -0.0030           439           437           439           437
+BM_string_strncmp/8192/0/0           -0.0431         -0.0431          3799          3635          3799          3635
+BM_string_strncmp/16384/0/0          -0.0069         -0.0069          6778          6732          6779          6732
+BM_string_strncmp/32768/0/0          -0.0001         -0.0002         13405         13403         13405         13403
+BM_string_strncmp/65536/0/0          +0.0005         +0.0005         26968         26981         26968         26981
+BM_string_strncmp/131072/0/0         -0.0057         -0.0057         53959         53650         53958         53650
+BM_string_strncmp/1/4/0              -0.1352         -0.1352            12            10            12            10
+BM_string_strncmp/2/4/0              +0.0020         +0.0020            15            15            15            15
+BM_string_strncmp/3/4/0              -0.1560         -0.1560            20            17            20            17
+BM_string_strncmp/4/4/0              +0.0296         +0.0296            22            22            22            22
+BM_string_strncmp/5/4/0              +0.0573         +0.0573            22            23            22            23
+BM_string_strncmp/6/4/0              -0.0340         -0.0340            25            24            25            24
+BM_string_strncmp/7/4/0              +0.0185         +0.0185            26            26            26            26
+BM_string_strncmp/8/4/0              -0.0050         -0.0050            27            27            27            27
+BM_string_strncmp/9/4/0              -0.1294         -0.1294            28            24            28            24
+BM_string_strncmp/10/4/0             +0.0109         +0.0109            29            29            29            29
+BM_string_strncmp/11/4/0             -0.0000         -0.0001            30            30            30            30
+BM_string_strncmp/12/4/0             +0.0055         +0.0055            50            50            50            50
+BM_string_strncmp/13/4/0             -0.0249         -0.0249            51            50            51            50
+BM_string_strncmp/14/4/0             -0.0289         -0.0289            53            52            53            52
+BM_string_strncmp/15/4/0             -0.0205         -0.0205            55            54            55            54
+BM_string_strncmp/16/4/0             -0.4616         -0.4616            57            31            57            31
+BM_string_strncmp/24/4/0             -0.4871         -0.4871            72            37            72            37
+BM_string_strncmp/32/4/0             -0.5549         -0.5549            87            39            87            39
+BM_string_strncmp/40/4/0             -0.5964         -0.5964           103            42           103            42
+BM_string_strncmp/48/4/0             -0.6647         -0.6647           118            40           118            40
+BM_string_strncmp/56/4/0             -0.6551         -0.6551           134            46           134            46
+BM_string_strncmp/64/4/0             -0.6609         -0.6609           145            49           145            49
+BM_string_strncmp/72/4/0             -0.5709         -0.5710           164            70           164            70
+BM_string_strncmp/80/4/0             -0.5929         -0.5929           180            73           180            73
+BM_string_strncmp/88/4/0             -0.6051         -0.6051           195            77           195            77
+BM_string_strncmp/96/4/0             -0.6160         -0.6160           210            81           210            81
+BM_string_strncmp/104/4/0            -0.6199         -0.6199           223            85           223            85
+BM_string_strncmp/112/4/0            -0.6293         -0.6293           240            89           240            89
+BM_string_strncmp/120/4/0            -0.6439         -0.6439           255            91           255            91
+BM_string_strncmp/128/4/0            -0.6493         -0.6493           271            95           271            95
+BM_string_strncmp/136/4/0            -0.6704         -0.6704           287            95           287            95
+BM_string_strncmp/144/4/0            -0.6744         -0.6744           302            98           302            98
+BM_string_strncmp/160/4/0            -0.6700         -0.6700           333           110           333           110
+BM_string_strncmp/176/4/0            -0.6821         -0.6821           364           116           364           116
+BM_string_strncmp/192/4/0            -0.6887         -0.6887           394           123           394           123
+BM_string_strncmp/208/4/0            -0.6949         -0.6949           425           130           425           130
+BM_string_strncmp/224/4/0            -0.7069         -0.7069           456           134           456           134
+BM_string_strncmp/240/4/0            -0.7042         -0.7042           486           144           486           144
+BM_string_strncmp/256/4/0            -0.7043         -0.7043           514           152           514           152
+BM_string_strncmp/1/0/4              +0.0227         +0.0227            14            14            14            14
+BM_string_strncmp/2/0/4              +0.0442         +0.0442            15            16            15            16
+BM_string_strncmp/3/0/4              +0.5829         +0.5829            17            27            17            27
+BM_string_strncmp/4/0/4              -0.1593         -0.1593            22            19            22            19
+BM_string_strncmp/5/0/4              -0.0516         -0.0516            23            22            23            22
+BM_string_strncmp/6/0/4              -0.1684         -0.1684            25            20            25            20
+BM_string_strncmp/7/0/4              +0.0170         +0.0170            26            26            26            26
+BM_string_strncmp/8/0/4              +0.0006         +0.0006            27            27            27            27
+BM_string_strncmp/9/0/4              +0.1272         +0.1272            25            28            25            28
+BM_string_strncmp/10/0/4             +0.0108         +0.0108            29            29            29            29
+BM_string_strncmp/11/0/4             -0.0001         -0.0001            30            30            30            30
+BM_string_strncmp/12/0/4             -0.3557         -0.3557            50            32            50            32
+BM_string_strncmp/13/0/4             -0.3370         -0.3370            51            34            51            34
+BM_string_strncmp/14/0/4             -0.3444         -0.3444            53            35            53            35
+BM_string_strncmp/15/0/4             +0.0946         +0.0946            51            56            51            56
+BM_string_strncmp/16/0/4             -0.5203         -0.5203            53            25            53            25
+BM_string_strncmp/24/0/4             -0.6109         -0.6109            72            28            72            28
+BM_string_strncmp/32/0/4             -0.6934         -0.6934            88            27            88            27
+BM_string_strncmp/40/0/4             -0.6833         -0.6833           103            33           103            33
+BM_string_strncmp/48/0/4             -0.6973         -0.6973           118            36           118            36
+BM_string_strncmp/56/0/4             -0.7116         -0.7116           134            39           134            39
+BM_string_strncmp/64/0/4             -0.6017         -0.6018           149            59           149            59
+BM_string_strncmp/72/0/4             -0.6268         -0.6268           164            61           164            61
+BM_string_strncmp/80/0/4             -0.6409         -0.6409           179            64           179            64
+BM_string_strncmp/88/0/4             -0.6465         -0.6465           195            69           195            69
+BM_string_strncmp/96/0/4             -0.6551         -0.6551           210            72           210            72
+BM_string_strncmp/104/0/4            -0.6662         -0.6662           227            76           227            76
+BM_string_strncmp/112/0/4            -0.6700         -0.6700           240            79           240            79
+BM_string_strncmp/120/0/4            -0.6740         -0.6740           256            83           256            83
+BM_string_strncmp/128/0/4            -0.6862         -0.6862           271            85           271            85
+BM_string_strncmp/136/0/4            -0.6883         -0.6883           287            89           287            89
+BM_string_strncmp/144/0/4            -0.7031         -0.7031           297            88           297            88
+BM_string_strncmp/160/0/4            -0.6985         -0.6985           333           100           333           100
+BM_string_strncmp/176/0/4            -0.7082         -0.7082           364           106           364           106
+BM_string_strncmp/192/0/4            -0.7223         -0.7223           396           110           396           110
+BM_string_strncmp/208/0/4            -0.7135         -0.7135           421           121           421           121
+BM_string_strncmp/224/0/4            -0.7194         -0.7194           455           128           455           128
+BM_string_strncmp/240/0/4            -0.7233         -0.7233           487           135           487           135
+BM_string_strncmp/256/0/4            -0.7239         -0.7239           516           143           516           143
+BM_string_strncmp/1/4/4              +0.0224         +0.0225            21            22            21            22
+BM_string_strncmp/2/4/4              -0.0001         -0.0001            22            22            22            22
+BM_string_strncmp/3/4/4              -0.0001         -0.0001            22            22            22            22
+BM_string_strncmp/4/4/4              -0.0435         -0.0435            22            21            22            21
+BM_string_strncmp/5/4/4              -0.0118         -0.0118            27            27            27            27
+BM_string_strncmp/6/4/4              -0.0118         -0.0118            27            27            27            27
+BM_string_strncmp/7/4/4              -0.0117         -0.0117            27            27            27            27
+BM_string_strncmp/8/4/4              -0.0118         -0.0118            27            27            27            27
+BM_string_strncmp/9/4/4              -0.0117         -0.0117            27            27            27            27
+BM_string_strncmp/10/4/4             +0.1447         +0.1447            23            27            23            27
+BM_string_strncmp/11/4/4             -0.0062         -0.0062            27            27            27            27
+BM_string_strncmp/12/4/4             -0.0454         -0.0454            28            27            28            27
+BM_string_strncmp/13/4/4             -0.1507         -0.1507            29            24            29            24
+BM_string_strncmp/14/4/4             -0.0003         -0.0003            29            29            29            29
+BM_string_strncmp/15/4/4             -0.0002         -0.0003            29            29            29            29
+BM_string_strncmp/16/4/4             +0.0047         +0.0047            29            29            29            29
+BM_string_strncmp/24/4/4             -0.0104         -0.0104            31            30            31            30
+BM_string_strncmp/32/4/4             -0.0290         -0.0290            33            32            33            32
+BM_string_strncmp/40/4/4             -0.0189         -0.0189            34            33            34            33
+BM_string_strncmp/48/4/4             -0.0059         -0.0059            36            36            36            36
+BM_string_strncmp/56/4/4             +0.0000         +0.0000            39            39            39            39
+BM_string_strncmp/64/4/4             +0.0000         +0.0000            42            42            42            42
+BM_string_strncmp/72/4/4             +0.0000         +0.0000            45            45            45            45
+BM_string_strncmp/80/4/4             +0.0391         +0.0392            65            68            65            68
+BM_string_strncmp/88/4/4             -0.0090         -0.0090            71            70            71            70
+BM_string_strncmp/96/4/4             -0.0034         -0.0034            74            74            74            74
+BM_string_strncmp/104/4/4            -0.0482         -0.0482            77            73            77            73
+BM_string_strncmp/112/4/4            +0.0387         +0.0387            77            80            77            80
+BM_string_strncmp/120/4/4            -0.0072         -0.0073            84            83            84            83
+BM_string_strncmp/128/4/4            -0.0071         -0.0071            87            86            87            86
+BM_string_strncmp/136/4/4            +0.0366         +0.0366            86            89            86            89
+BM_string_strncmp/144/4/4            -0.0068         -0.0068            93            93            93            93
+BM_string_strncmp/160/4/4            -0.0064         -0.0064           100            99           100            99
+BM_string_strncmp/176/4/4            -0.0063         -0.0063           106           105           106           105
+BM_string_strncmp/192/4/4            -0.0012         -0.0012           112           112           112           112
+BM_string_strncmp/208/4/4            -0.0098         -0.0098           119           118           119           118
+BM_string_strncmp/224/4/4            -0.0050         -0.0050           125           125           125           125
+BM_string_strncmp/240/4/4            -0.0060         -0.0060           132           131           132           131
+BM_string_strncmp/256/4/4            -0.0046         -0.0046           138           137           138           137
+
+[1] Commit id: 26cc4faec37a55529e5d0a39949f7b6ec81008f9
+
+Test: bionic tests and benchmarks on aarch64.
+Change-Id: Ied579d2044b4092fc95fad486af6541d1eb71dc3
+---
+ libc/arch-arm64/generic/bionic/strncmp.S | 93 ++++++++++++++++++++----
+ 1 file changed, 78 insertions(+), 15 deletions(-)
+
+diff --git a/libc/arch-arm64/generic/bionic/strncmp.S b/libc/arch-arm64/generic/bionic/strncmp.S
+index 267f663ed..b81f43aa2 100644
+--- a/libc/arch-arm64/generic/bionic/strncmp.S
++++ b/libc/arch-arm64/generic/bionic/strncmp.S
+@@ -58,6 +58,7 @@
+ #define limit_wd	x13
+ #define mask		x14
+ #define endloop		x15
++#define count		mask
+ 
+ 	.text
+ 	.p2align 6
+@@ -69,9 +70,9 @@ ENTRY(strncmp)
+ 	eor	tmp1, src1, src2
+ 	mov	zeroones, #REP8_01
+ 	tst	tmp1, #7
++	and	count, src1, #7
+ 	b.ne	.Lmisaligned8
+-	ands	tmp1, src1, #7
+-	b.ne	.Lmutual_align
++	cbnz	count, .Lmutual_align
+ 	/* Calculate the number of full and partial words -1.  */
+ 	sub	limit_wd, limit, #1	/* limit != 0, so no underflow.  */
+ 	lsr	limit_wd, limit_wd, #3	/* Convert to Dwords.  */
+@@ -176,42 +177,104 @@ ENTRY(strncmp)
+ 	bic	src1, src1, #7
+ 	bic	src2, src2, #7
+ 	ldr	data1, [src1], #8
+-	neg	tmp3, tmp1, lsl #3	/* 64 - bits(bytes beyond align). */
++	neg	tmp3, count, lsl #3	/* 64 - bits(bytes beyond align). */
+ 	ldr	data2, [src2], #8
+ 	mov	tmp2, #~0
+ 	sub	limit_wd, limit, #1	/* limit != 0, so no underflow.  */
+ #ifdef __AARCH64EB__
+ 	/* Big-endian.  Early bytes are at MSB.  */
+-	lsl	tmp2, tmp2, tmp3	/* Shift (tmp1 & 63).  */
++	lsl	tmp2, tmp2, tmp3	/* Shift (count & 63).  */
+ #else
+ 	/* Little-endian.  Early bytes are at LSB.  */
+-	lsr	tmp2, tmp2, tmp3	/* Shift (tmp1 & 63).  */
++	lsr	tmp2, tmp2, tmp3	/* Shift (count & 63).  */
+ #endif
+ 	and	tmp3, limit_wd, #7
+ 	lsr	limit_wd, limit_wd, #3
+ 	/* Adjust the limit. Only low 3 bits used, so overflow irrelevant.  */
+-	add	limit, limit, tmp1
+-	add	tmp3, tmp3, tmp1
++	add	limit, limit, count
++	add	tmp3, tmp3, count
+ 	orr	data1, data1, tmp2
+ 	orr	data2, data2, tmp2
+ 	add	limit_wd, limit_wd, tmp3, lsr #3
+ 	b	.Lstart_realigned
+ 
+-.Lret0:
+-	mov	result, #0
+-	ret
+-
+ 	.p2align 6
++	/* Don't bother with dwords for up to 16 bytes.  */
+ .Lmisaligned8:
+-	sub	limit, limit, #1
+-1:
++	cmp	limit, #16
++	b.hs	.Ltry_misaligned_words
++
++.Lbyte_loop:
+ 	/* Perhaps we can do better than this.  */
+ 	ldrb	data1w, [src1], #1
+ 	ldrb	data2w, [src2], #1
+ 	subs	limit, limit, #1
+-	ccmp	data1w, #1, #0, cs	/* NZCV = 0b0000.  */
++	ccmp	data1w, #1, #0, hi	/* NZCV = 0b0000.  */
+ 	ccmp	data1w, data2w, #0, cs	/* NZCV = 0b0000.  */
+-	b.eq	1b
++	b.eq	.Lbyte_loop
++.Ldone:
+ 	sub	result, data1, data2
+ 	ret
++	/* Align the SRC1 to a dword by doing a bytewise compare and then do
++	   the dword loop.  */
++.Ltry_misaligned_words:
++	lsr	limit_wd, limit, #3
++	cbz	count, .Ldo_misaligned
++
++	neg	count, count
++	and	count, count, #7
++	sub	limit, limit, count
++	lsr	limit_wd, limit, #3
++
++.Lpage_end_loop:
++	ldrb	data1w, [src1], #1
++	ldrb	data2w, [src2], #1
++	cmp	data1w, #1
++	ccmp	data1w, data2w, #0, cs	/* NZCV = 0b0000.  */
++	b.ne	.Ldone
++	subs	count, count, #1
++	b.hi	.Lpage_end_loop
++
++.Ldo_misaligned:
++	/* Prepare ourselves for the next page crossing.  Unlike the aligned
++	   loop, we fetch 1 less dword because we risk crossing bounds on
++	   SRC2.  */
++	mov	count, #8
++	subs	limit_wd, limit_wd, #1
++	b.lo	.Ldone_loop
++.Lloop_misaligned:
++	and	tmp2, src2, #0xff8
++	eor	tmp2, tmp2, #0xff8
++	cbz	tmp2, .Lpage_end_loop
++
++	ldr	data1, [src1], #8
++	ldr	data2, [src2], #8
++	sub	tmp1, data1, zeroones
++	orr	tmp2, data1, #REP8_7f
++	eor	diff, data1, data2	/* Non-zero if differences found.  */
++	bics	has_nul, tmp1, tmp2	/* Non-zero if NUL terminator.  */
++	ccmp	diff, #0, #0, eq
++	b.ne	.Lnot_limit
++	subs	limit_wd, limit_wd, #1
++	b.pl	.Lloop_misaligned
++
++.Ldone_loop:
++	/* We found a difference or a NULL before the limit was reached.  */
++	and	limit, limit, #7
++	cbz	limit, .Lnot_limit
++	/* Read the last word.  */
++	sub	src1, src1, 8
++	sub	src2, src2, 8
++	ldr	data1, [src1, limit]
++	ldr	data2, [src2, limit]
++	sub	tmp1, data1, zeroones
++	orr	tmp2, data1, #REP8_7f
++	eor	diff, data1, data2	/* Non-zero if differences found.  */
++	bics	has_nul, tmp1, tmp2	/* Non-zero if NUL terminator.  */
++	ccmp	diff, #0, #0, eq
++	b.ne	.Lnot_limit
++
++.Lret0:
++	mov	result, #0
++	ret
+ END(strncmp)
+-- 
+2.17.1
+

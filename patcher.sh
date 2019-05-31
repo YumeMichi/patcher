@@ -2,6 +2,7 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
+    'bionic'
     'frameworks/base'
     'packages/apps/Settings'
 )
