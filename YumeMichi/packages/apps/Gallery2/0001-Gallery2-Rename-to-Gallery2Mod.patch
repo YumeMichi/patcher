@@ -1,0 +1,29 @@
+From 6115939b9bca33dbeef0374f063932b4199d82bd Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Fri, 31 May 2019 22:15:55 +0800
+Subject: [PATCH] Gallery2: Rename to Gallery2Mod
+
+ * Google Photo will override Gallery2 building.
+
+Change-Id: Id434cd8df156d9100f0ad699d86221a6e93ab0e3
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ Android.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Android.mk b/Android.mk
+index bf16e4e..4f1c824 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -28,7 +28,7 @@ LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/res
+ 
+ LOCAL_USE_AAPT2 := true
+ 
+-LOCAL_PACKAGE_NAME := Gallery2
++LOCAL_PACKAGE_NAME := Gallery2Mod
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_CERTIFICATE := platform
+ 
+-- 
+2.7.4
+
