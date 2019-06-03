@@ -1,0 +1,33 @@
+From 46fc5dea9345065c657fc221fc69e77ccb0da2ce Mon Sep 17 00:00:00 2001
+From: Adarsh-MR <adarshmr1998@gmail.com>
+Date: Wed, 12 Dec 2018 02:00:22 +0530
+Subject: [PATCH] chre/host/msm: Stop building on devices with prebuilt
+ vendorimage
+
+Change-Id: I58a1c8697b8f21b5b2849126b3cda81c4df3dcc1
+Signed-off-by: Adarsh-MR <adarshmr1998@gmail.com>
+---
+ host/msm/Android.mk | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/host/msm/Android.mk b/host/msm/Android.mk
+index 2b0183c..9067959 100644
+--- a/host/msm/Android.mk
++++ b/host/msm/Android.mk
+@@ -14,7 +14,7 @@
+ # limitations under the License.
+ #
+ 
+-
++ifneq ($(BUILD_WITHOUT_VENDOR),true)
+ ifeq ($(call is-vendor-board-platform,QCOM),true)
+ ifeq ($(call is-board-platform-in-list,sdm845 sdm710), true)
+ 
+@@ -63,3 +63,4 @@ include $(BUILD_EXECUTABLE)
+ 
+ endif
+ endif
++endif
+-- 
+2.17.1
+
