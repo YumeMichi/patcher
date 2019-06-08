@@ -8,6 +8,7 @@ REPOSITORIES=(
     'packages/apps/Settings'
     'system/core'
 	'vendor/lineage'
+	'device/onyx'
 )
 
 echo Reverting patches from patcher
