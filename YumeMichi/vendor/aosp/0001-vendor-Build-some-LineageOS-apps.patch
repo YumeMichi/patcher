@@ -1,7 +1,7 @@
 From 0950c140c07e5818b8d5fea328d1ac7d24d0ae02 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Thu, 20 Jun 2019 23:16:24 +0800
-Subject: [PATCH] vendor: Build some LineageOS apps
+Subject: [PATCH 1/2] vendor: Build some LineageOS apps
 
  * They are useful.
 
