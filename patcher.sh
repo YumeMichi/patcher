@@ -7,6 +7,7 @@ REPOSITORIES=(
     'packages/apps/Gallery2'
     'packages/apps/Settings'
     'system/chre'
+    'vendor/aosp'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
