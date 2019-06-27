@@ -1,0 +1,35 @@
+From 4764561759c793190a910b944adeaa0e8721c9a7 Mon Sep 17 00:00:00 2001
+From: Jinguang Dong <dongjinguang@huawei.com>
+Date: Fri, 21 Dec 2018 15:36:24 +0800
+Subject: [PATCH 3/6] Fix parameter checking logic error in tokenize
+
+Tokenize requires 4 to 6 arguments. If this condition is not met,
+the program will return. But the judgment logic is always false.
+It should to change the '||' to '&&' operation.
+
+Bug: none
+Test: sqlite unit tests
+
+Change-Id: Id4238ee2ac0b8f3fde1eedaa09d5340b5937fde1
+Signed-off-by: Jizhong Wang <wangjizhong@huawei.com>
+Signed-off-by: mydongistiny <jaysonedson@gmail.com>
+---
+ android/sqlite3_android.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/android/sqlite3_android.cpp b/android/sqlite3_android.cpp
+index 659ee6c..9a8db55 100644
+--- a/android/sqlite3_android.cpp
++++ b/android/sqlite3_android.cpp
+@@ -267,7 +267,7 @@ static void tokenize(sqlite3_context * context, int argc, sqlite3_value ** argv)
+     int useTokenIndex = 0;
+     int useDataTag = 0;
+ 
+-    if (!(argc >= 4 || argc <= 6)) {
++    if (!(argc >= 4 && argc <= 6)) {
+         ALOGE("Tokenize requires 4 to 6 arguments");
+         sqlite3_result_null(context);
+         return;
+-- 
+2.17.1
+
