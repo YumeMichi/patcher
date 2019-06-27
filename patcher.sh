@@ -3,6 +3,7 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'bionic'
+    'external/sqlite'
     'frameworks/base'
     'packages/apps/Gallery2'
     'packages/apps/Settings'
