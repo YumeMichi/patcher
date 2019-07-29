@@ -7,7 +7,6 @@ REPOSITORIES=(
     'frameworks/base'
     'packages/apps/Gallery2'
     'packages/apps/Settings'
-    'system/chre'
     'vendor/aosp'
 )
 

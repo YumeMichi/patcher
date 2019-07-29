@@ -1,4 +1,4 @@
-From e5be60d644fde773f2cfa8dae14734a1d64ab028 Mon Sep 17 00:00:00 2001
+From 5c0033462c7542190ed9fc24edadee879cd07614 Mon Sep 17 00:00:00 2001
 From: xyyx <xyyx@mail.ru>
 Date: Fri, 7 Sep 2018 10:33:50 +0800
 Subject: [PATCH 04/10] SettingsProvider: Turn on development settings by
@@ -6,29 +6,29 @@ Subject: [PATCH 04/10] SettingsProvider: Turn on development settings by
 
 Change-Id: I0dd472ecfecbac600a98615f67ed0fa21d13c2e6
 ---
- packages/SettingsProvider/res/values/defaults.xml              | 3 +++
- .../src/com/android/providers/settings/DatabaseHelper.java     | 3 +++
+ packages/SettingsProvider/res/values/defaults.xml                      | 3 +++
+ .../src/com/android/providers/settings/DatabaseHelper.java             | 3 +++
  2 files changed, 6 insertions(+)
 
 diff --git a/packages/SettingsProvider/res/values/defaults.xml b/packages/SettingsProvider/res/values/defaults.xml
-index b2b58f00506..7e4633929cc 100644
+index e1a602b..0936735 100644
 --- a/packages/SettingsProvider/res/values/defaults.xml
 +++ b/packages/SettingsProvider/res/values/defaults.xml
-@@ -220,4 +220,7 @@
+@@ -217,4 +217,7 @@
  
-     <!-- Default for Settings.Global.NTP_SERVER_2's property name -->
-     <string name="def_ntp_server_2" translatable="false">persist.vendor.ntp.svr_2</string>
+     <!-- Default for Settings.System.VIBRATE_WHEN_RINGING -->
+     <bool name="def_vibrate_when_ringing">false</bool>
 +
 +    <!-- Default for Settings.Global.DEVELOPMENT_SETTINGS_ENABLED -->
 +    <integer  name="def_development_settings">1</integer>
  </resources>
 diff --git a/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java b/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
-index 67bacf050a8..843e9c982c9 100644
+index e853399..2b368ff 100644
 --- a/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
 +++ b/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
-@@ -2634,6 +2634,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
- 	    loadStringSetting(stmt, Settings.Global.NTP_SERVER_2,
-                     R.string.def_ntp_server_2);
+@@ -2631,6 +2631,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
+ 
+             loadSetting(stmt, Settings.Global.DEVICE_NAME, getDefaultDeviceName());
  
 +            loadIntegerSetting(stmt, Global.DEVELOPMENT_SETTINGS_ENABLED,
 +                    R.integer.def_development_settings);
@@ -37,5 +37,5 @@ index 67bacf050a8..843e9c982c9 100644
               * IMPORTANT: Do not add any more upgrade steps here as the global,
               * secure, and system settings are no longer stored in a database
 -- 
-2.17.1
+2.7.4
 

@@ -1,4 +1,4 @@
-From 57fc676f9e8cb0f0b84b5a504af920e7fa3a9163 Mon Sep 17 00:00:00 2001
+From 921d15de20f827b669449b6ea8a0cea324cc4f13 Mon Sep 17 00:00:00 2001
 From: SpiritCroc <spiritcroc@gmail.com>
 Date: Thu, 28 Dec 2017 10:18:29 +0100
 Subject: [PATCH 09/10] Toast Icon: Update padding properly for 8.1
@@ -9,7 +9,7 @@ Change-Id: I3309e067accca24d4eead750a50dea1e06d9b5b6
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/core/res/res/layout/transient_notification.xml b/core/res/res/layout/transient_notification.xml
-index 223875f82d0..813d84b37d9 100644
+index 223875f..813d84b 100644
 --- a/core/res/res/layout/transient_notification.xml
 +++ b/core/res/res/layout/transient_notification.xml
 @@ -28,8 +28,8 @@
@@ -24,5 +24,5 @@ index 223875f82d0..813d84b37d9 100644
          android:layout_marginTop="-16dp"
          android:layout_marginStart="-16dp"
 -- 
-2.17.1
+2.7.4
 

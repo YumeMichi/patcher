@@ -1,4 +1,4 @@
-From b4786c4368b15d2a43a80bf40e311588820c4a7c Mon Sep 17 00:00:00 2001
+From b7eb939658f44b220d7bb2b4943aa0614d611935 Mon Sep 17 00:00:00 2001
 From: d34d <clark@cyngn.com>
 Date: Tue, 25 Aug 2015 19:13:46 -0700
 Subject: [PATCH 08/10] Show icon of package associated with Toast
@@ -9,12 +9,12 @@ top left corner of the Toast to show the app's icon the Toast belongs to
 
 Change-Id: I578698b2a9aa499c6d06c2bc8f8ccd3b1ef635ba
 ---
- core/java/android/widget/Toast.java           | 14 ++++++++++++++
- .../res/res/layout/transient_notification.xml | 19 +++++++++++++++----
+ core/java/android/widget/Toast.java            | 14 ++++++++++++++
+ core/res/res/layout/transient_notification.xml | 19 +++++++++++++++----
  2 files changed, 29 insertions(+), 4 deletions(-)
 
 diff --git a/core/java/android/widget/Toast.java b/core/java/android/widget/Toast.java
-index d74a60e483e..2fa9eb3d18b 100644
+index d74a60e..2fa9eb3 100644
 --- a/core/java/android/widget/Toast.java
 +++ b/core/java/android/widget/Toast.java
 @@ -23,9 +23,11 @@ import android.annotation.StringRes;
@@ -49,7 +49,7 @@ index d74a60e483e..2fa9eb3d18b 100644
                  // We can resolve the Gravity here by using the Locale for getting
                  // the layout direction
 diff --git a/core/res/res/layout/transient_notification.xml b/core/res/res/layout/transient_notification.xml
-index 23432c5b3ea..223875f82d0 100644
+index 23432c5..223875f 100644
 --- a/core/res/res/layout/transient_notification.xml
 +++ b/core/res/res/layout/transient_notification.xml
 @@ -18,22 +18,33 @@
@@ -91,5 +91,5 @@ index 23432c5b3ea..223875f82d0 100644
 +
 +</RelativeLayout>
 -- 
-2.17.1
+2.7.4
 

@@ -1,24 +1,24 @@
-From 34a19806f5141bac28c364ab9dff6ed6647edf9d Mon Sep 17 00:00:00 2001
+From d2cf3acf2dc2b4f374f04adc28cf410a85c4cac1 Mon Sep 17 00:00:00 2001
 From: sYYLG <932961454@qq.com>
 Date: Tue, 18 Jun 2019 21:33:33 +0800
 Subject: [PATCH 10/10] Add Brevent
 
 Change-Id: Id7bfff605ba243ae725004368f3c5a28155db10c
 ---
- .../com/android/server/IntentResolver.java    |   4 +-
- .../server/am/ActivityManagerService.java     |  93 ++++++++++-
- .../com/android/server/am/ActivityStack.java  |   3 +
- .../server/am/ActivityStackSupervisor.java    |  11 ++
- .../com/android/server/am/PreventRunning.java | 155 ++++++++++++++++++
- .../android/server/am/PreventRunningHook.java |  29 ++++
- .../server/am/PreventRunningUtils.java        | 101 ++++++++++++
+ .../java/com/android/server/IntentResolver.java    |   4 +-
+ .../android/server/am/ActivityManagerService.java  |  93 ++++++++++++-
+ .../java/com/android/server/am/ActivityStack.java  |   3 +
+ .../android/server/am/ActivityStackSupervisor.java |  11 ++
+ .../java/com/android/server/am/PreventRunning.java | 155 +++++++++++++++++++++
+ .../com/android/server/am/PreventRunningHook.java  |  29 ++++
+ .../com/android/server/am/PreventRunningUtils.java | 101 ++++++++++++++
  7 files changed, 393 insertions(+), 3 deletions(-)
  create mode 100644 services/core/java/com/android/server/am/PreventRunning.java
  create mode 100644 services/core/java/com/android/server/am/PreventRunningHook.java
  create mode 100644 services/core/java/com/android/server/am/PreventRunningUtils.java
 
 diff --git a/services/core/java/com/android/server/IntentResolver.java b/services/core/java/com/android/server/IntentResolver.java
-index ea80ac1aece..df940f28666 100644
+index ea80ac1..df940f2 100644
 --- a/services/core/java/com/android/server/IntentResolver.java
 +++ b/services/core/java/com/android/server/IntentResolver.java
 @@ -727,7 +727,7 @@ public abstract class IntentResolver<F extends IntentFilter, R extends Object> {
@@ -40,10 +40,10 @@ index ea80ac1aece..df940f28666 100644
                  if (debug) Slog.v(TAG, "  Filter matched!  match=0x" +
                          Integer.toHexString(match) + " hasDefault="
 diff --git a/services/core/java/com/android/server/am/ActivityManagerService.java b/services/core/java/com/android/server/am/ActivityManagerService.java
-index b4bc39cc7bd..1b10fe33a46 100644
+index 2782c58..e88441e 100644
 --- a/services/core/java/com/android/server/am/ActivityManagerService.java
 +++ b/services/core/java/com/android/server/am/ActivityManagerService.java
-@@ -4119,6 +4119,20 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -4106,6 +4106,20 @@ public class ActivityManagerService extends IActivityManager.Stub
              boolean knownToBeDead, int intentFlags, String hostingType, ComponentName hostingName,
              boolean allowWhileBooting, boolean isolated, int isolatedUid, boolean keepIfLarge,
              String abiOverride, String entryPoint, String[] entryPointArgs, Runnable crashHandler) {
@@ -64,7 +64,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
          long startTime = SystemClock.elapsedRealtime();
          ProcessRecord app;
          if (!isolated) {
-@@ -5139,6 +5153,14 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -5113,6 +5127,14 @@ public class ActivityManagerService extends IActivityManager.Stub
      public final int startActivity(IApplicationThread caller, String callingPackage,
              Intent intent, String resolvedType, IBinder resultTo, String resultWho, int requestCode,
              int startFlags, ProfilerInfo profilerInfo, Bundle bOptions) {
@@ -79,7 +79,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
          return startActivityAsUser(caller, callingPackage, intent, resolvedType, resultTo,
                  resultWho, requestCode, startFlags, profilerInfo, bOptions,
                  UserHandle.getCallingUserId());
-@@ -5980,6 +6002,14 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -5919,6 +5941,14 @@ public class ActivityManagerService extends IActivityManager.Stub
      @GuardedBy("this")
      private final void handleAppDiedLocked(ProcessRecord app,
              boolean restarting, boolean allowRestart) {
@@ -92,9 +92,9 @@ index b4bc39cc7bd..1b10fe33a46 100644
 +    private final void handleAppDiedLocked$Pr(ProcessRecord app,
 +            boolean restarting, boolean allowRestart) {
          int pid = app.pid;
+         final boolean clearLaunchStartTime = !restarting && app.removed && app.foregroundActivities;
          boolean kept = cleanUpApplicationRecordLocked(app, restarting, allowRestart, -1,
-                 false /*replacingPid*/);
-@@ -7211,8 +7241,9 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -7148,8 +7178,9 @@ public class ActivityManagerService extends IActivityManager.Stub
                  // that match it.  We need to qualify this by the processes
                  // that are running under the specified app and user ID.
                  } else {
@@ -105,7 +105,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
                      if (!isDep && UserHandle.getAppId(app.uid) != appId) {
                          continue;
                      }
-@@ -11291,6 +11322,15 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -11225,6 +11256,15 @@ public class ActivityManagerService extends IActivityManager.Stub
       */
      @Override
      public boolean moveActivityTaskToBack(IBinder token, boolean nonRoot) {
@@ -121,7 +121,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
          enforceNotIsolatedCaller("moveActivityTaskToBack");
          synchronized(this) {
              final long origId = Binder.clearCallingIdentity();
-@@ -20508,6 +20548,20 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -20442,6 +20482,20 @@ public class ActivityManagerService extends IActivityManager.Stub
      public ComponentName startService(IApplicationThread caller, Intent service,
              String resolvedType, boolean requireForeground, String callingPackage, int userId)
              throws TransactionTooLargeException {
@@ -142,7 +142,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
          enforceNotIsolatedCaller("startService");
          // Refuse possible leaked file descriptors
          if (service != null && service.hasFileDescriptors() == true) {
-@@ -20658,6 +20712,22 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -20592,6 +20646,22 @@ public class ActivityManagerService extends IActivityManager.Stub
      public int bindService(IApplicationThread caller, IBinder token, Intent service,
              String resolvedType, IServiceConnection connection, int flags, String callingPackage,
              int userId) throws TransactionTooLargeException {
@@ -165,7 +165,7 @@ index b4bc39cc7bd..1b10fe33a46 100644
          enforceNotIsolatedCaller("bindService");
  
          // Refuse possible leaked file descriptors
-@@ -22097,6 +22167,27 @@ public class ActivityManagerService extends IActivityManager.Stub
+@@ -22031,6 +22101,27 @@ public class ActivityManagerService extends IActivityManager.Stub
              int resultCode, String resultData, Bundle resultExtras,
              String[] requiredPermissions, int appOp, Bundle bOptions,
              boolean serialized, boolean sticky, int userId) {
@@ -194,10 +194,10 @@ index b4bc39cc7bd..1b10fe33a46 100644
          synchronized(this) {
              intent = verifyBroadcastLocked(intent);
 diff --git a/services/core/java/com/android/server/am/ActivityStack.java b/services/core/java/com/android/server/am/ActivityStack.java
-index a31582d6fe9..1d9de1b1a32 100644
+index 30e4296..b1bb927 100644
 --- a/services/core/java/com/android/server/am/ActivityStack.java
 +++ b/services/core/java/com/android/server/am/ActivityStack.java
-@@ -1481,6 +1481,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
+@@ -1462,6 +1462,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
                  mService.getLifecycleManager().scheduleTransaction(prev.app.thread, prev.appToken,
                          PauseActivityItem.obtain(prev.finishing, userLeaving,
                                  prev.configChangeFlags, pauseImmediately));
@@ -205,7 +205,7 @@ index a31582d6fe9..1d9de1b1a32 100644
              } catch (Exception e) {
                  // Ignore exception, if process died other code will cleanup.
                  Slog.w(TAG, "Exception thrown during pause", e);
-@@ -2757,6 +2758,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
+@@ -2717,6 +2718,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
                              ResumeActivityItem.obtain(next.app.repProcState,
                                      mService.isNextTransitionForward()));
                      mService.getLifecycleManager().scheduleTransaction(transaction);
@@ -213,7 +213,7 @@ index a31582d6fe9..1d9de1b1a32 100644
  
                      if (DEBUG_STATES) Slog.d(TAG_STATES, "resumeTopActivityLocked: Resumed "
                              + next);
-@@ -4409,6 +4411,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
+@@ -4335,6 +4337,7 @@ class ActivityStack<T extends StackWindowController> extends ConfigurationContai
                  if (DEBUG_SWITCH) Slog.i(TAG_SWITCH, "Destroying: " + r);
                  mService.getLifecycleManager().scheduleTransaction(r.app.thread, r.appToken,
                          DestroyActivityItem.obtain(r.finishing, r.configChangeFlags));
@@ -222,10 +222,10 @@ index a31582d6fe9..1d9de1b1a32 100644
                  // We can just ignore exceptions here...  if the process
                  // has crashed, our death notification will clean things
 diff --git a/services/core/java/com/android/server/am/ActivityStackSupervisor.java b/services/core/java/com/android/server/am/ActivityStackSupervisor.java
-index ee8733400af..ee0de76a708 100644
+index 737e791..4adb724 100644
 --- a/services/core/java/com/android/server/am/ActivityStackSupervisor.java
 +++ b/services/core/java/com/android/server/am/ActivityStackSupervisor.java
-@@ -1544,6 +1544,7 @@ public class ActivityStackSupervisor extends ConfigurationContainer implements D
+@@ -1524,6 +1524,7 @@ public class ActivityStackSupervisor extends ConfigurationContainer implements D
                          r.launchedFromPackage, task.voiceInteractor, app.repProcState, r.icicle,
                          r.persistentState, results, newIntents, mService.isNextTransitionForward(),
                          profilerInfo));
@@ -233,7 +233,7 @@ index ee8733400af..ee0de76a708 100644
  
                  // Set desired final state.
                  final ActivityLifecycleItem lifecycleItem;
-@@ -3109,6 +3110,16 @@ public class ActivityStackSupervisor extends ConfigurationContainer implements D
+@@ -3079,6 +3080,16 @@ public class ActivityStackSupervisor extends ConfigurationContainer implements D
      }
  
      void cleanUpRemovedTaskLocked(TaskRecord tr, boolean killProcess, boolean removeFromRecents) {
@@ -252,7 +252,7 @@ index ee8733400af..ee0de76a708 100644
          }
 diff --git a/services/core/java/com/android/server/am/PreventRunning.java b/services/core/java/com/android/server/am/PreventRunning.java
 new file mode 100644
-index 00000000000..50959f8e8d6
+index 0000000..50959f8
 --- /dev/null
 +++ b/services/core/java/com/android/server/am/PreventRunning.java
 @@ -0,0 +1,155 @@
@@ -413,7 +413,7 @@ index 00000000000..50959f8e8d6
 +}
 diff --git a/services/core/java/com/android/server/am/PreventRunningHook.java b/services/core/java/com/android/server/am/PreventRunningHook.java
 new file mode 100644
-index 00000000000..345c21aa80a
+index 0000000..345c21a
 --- /dev/null
 +++ b/services/core/java/com/android/server/am/PreventRunningHook.java
 @@ -0,0 +1,29 @@
@@ -448,7 +448,7 @@ index 00000000000..345c21aa80a
 +}
 diff --git a/services/core/java/com/android/server/am/PreventRunningUtils.java b/services/core/java/com/android/server/am/PreventRunningUtils.java
 new file mode 100644
-index 00000000000..7678a24b292
+index 0000000..7678a24
 --- /dev/null
 +++ b/services/core/java/com/android/server/am/PreventRunningUtils.java
 @@ -0,0 +1,101 @@
@@ -554,5 +554,5 @@ index 00000000000..7678a24b292
 +    }
 +}
 -- 
-2.17.1
+2.7.4
 

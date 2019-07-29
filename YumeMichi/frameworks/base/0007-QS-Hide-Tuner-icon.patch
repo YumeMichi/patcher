@@ -1,4 +1,4 @@
-From b9dd9c47a7449808050b4757d1ca922d503c9a45 Mon Sep 17 00:00:00 2001
+From c2f0e2a8a6ab403187e91e224495c99b9eef9e78 Mon Sep 17 00:00:00 2001
 From: Joe Maples <joe@frap129.org>
 Date: Sun, 27 Aug 2017 17:24:37 -0400
 Subject: [PATCH 07/10] QS: Hide Tuner icon
@@ -10,7 +10,7 @@ Signed-off-by: Joe Maples <joe@frap129.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java b/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
-index 6441cc18ce2..f4a9d80bc29 100644
+index 52b1761..d7b4a5d 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/QSFooterImpl.java
 @@ -277,8 +277,6 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
@@ -23,5 +23,5 @@ index 6441cc18ce2..f4a9d80bc29 100644
          mMultiUserSwitch.setVisibility(showUserSwitcher(isDemo) ? View.VISIBLE : View.INVISIBLE);
          mEdit.setVisibility(isDemo || !mExpanded ? View.INVISIBLE : View.VISIBLE);
 -- 
-2.17.1
+2.7.4
 

@@ -1,4 +1,4 @@
-From 35b7603ac0e5fd174f91594a5e6339809c5a1e21 Mon Sep 17 00:00:00 2001
+From 24a054eb9e8e1dada3bf08f8dd0e9de589d83419 Mon Sep 17 00:00:00 2001
 From: Andrzej Ressel <jereksel@gmail.com>
 Date: Wed, 9 Aug 2017 00:11:16 +0200
 Subject: [PATCH 02/10] SystemUI: Allow user to add/remove QS with one click
@@ -7,11 +7,11 @@ Demo: https://www.youtube.com/watch?v=SlnRKLa4K7o
 
 Change-Id: I9250fe5fd6a3edf567f1f4d30fd86838f5ef4610
 ---
- .../src/com/android/systemui/qs/customize/TileAdapter.java | 7 ++++++-
+ .../src/com/android/systemui/qs/customize/TileAdapter.java         | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
-index 5adeec3cbab..d5630acd191 100644
+index 5adeec3..d5630ac 100644
 --- a/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 +++ b/packages/SystemUI/src/com/android/systemui/qs/customize/TileAdapter.java
 @@ -280,8 +280,13 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
@@ -30,5 +30,5 @@ index 5adeec3cbab..d5630acd191 100644
              holder.mTileView.setFocusable(selectable);
              holder.mTileView.setImportantForAccessibility(selectable
 -- 
-2.17.1
+2.7.4
 

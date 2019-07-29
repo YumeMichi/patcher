@@ -1,4 +1,4 @@
-From c96cc14367cfdc796cc42618773393170ada56da Mon Sep 17 00:00:00 2001
+From 5473a92bd22eb3b89df463fe4e211f45a0db487a Mon Sep 17 00:00:00 2001
 From: Christian Oder <myself5@carbonrom.org>
 Date: Mon, 29 Aug 2016 00:49:52 +0200
 Subject: [PATCH 06/10] SystemUI: Show Tuner by default
@@ -9,10 +9,10 @@ Change-Id: I7f2bc92656af85e73d623b70466f214706990726
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/packages/SystemUI/AndroidManifest.xml b/packages/SystemUI/AndroidManifest.xml
-index 08c616a3a67..59ce3c6445f 100644
+index 0a1fed3..1a747f3 100644
 --- a/packages/SystemUI/AndroidManifest.xml
 +++ b/packages/SystemUI/AndroidManifest.xml
-@@ -298,7 +298,7 @@
+@@ -297,7 +297,7 @@
                  android:exported="true" />
  
          <activity android:name=".tuner.TunerActivity"
@@ -22,5 +22,5 @@ index 08c616a3a67..59ce3c6445f 100644
                    android:theme="@style/TunerSettings"
                    android:label="@string/system_ui_tuner"
 -- 
-2.17.1
+2.7.4
 
