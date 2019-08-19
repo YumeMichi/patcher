@@ -1,7 +1,7 @@
-From f3a74a68ac19c4becaa966c72e544d8b112d7303 Mon Sep 17 00:00:00 2001
+From e9328bf8f45307c3197d7c06289bc138efa1ec7d Mon Sep 17 00:00:00 2001
 From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
 Date: Fri, 22 Jun 2018 15:30:03 -0300
-Subject: [PATCH 5/6] [AArch64] Improve strncmp for mutually misaligned inputs
+Subject: [PATCH 5/9] Improve strncmp for mutually misaligned inputs
 
 This patch was originally written by Siddhesh Poyarekar and pushed on
 cortex-strings [1]. The mutually misaligned inputs on aarch64 are
@@ -189,11 +189,11 @@ BM_string_strncmp/256/4/4            -0.0046         -0.0046           138      
 Test: bionic tests and benchmarks on aarch64.
 Change-Id: Ied579d2044b4092fc95fad486af6541d1eb71dc3
 ---
- libc/arch-arm64/generic/bionic/strncmp.S | 93 ++++++++++++++++++++----
+ libc/arch-arm64/generic/bionic/strncmp.S | 93 ++++++++++++++++++++++++++------
  1 file changed, 78 insertions(+), 15 deletions(-)
 
 diff --git a/libc/arch-arm64/generic/bionic/strncmp.S b/libc/arch-arm64/generic/bionic/strncmp.S
-index 267f663ed..b81f43aa2 100644
+index 267f663..b81f43a 100644
 --- a/libc/arch-arm64/generic/bionic/strncmp.S
 +++ b/libc/arch-arm64/generic/bionic/strncmp.S
 @@ -58,6 +58,7 @@
@@ -335,5 +335,5 @@ index 267f663ed..b81f43aa2 100644
 +	ret
  END(strncmp)
 -- 
-2.17.1
+2.7.4
 

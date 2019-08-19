@@ -1,4 +1,4 @@
-From 44e960d2c4c448c06b317913f4c5ba5a3c93cd27 Mon Sep 17 00:00:00 2001
+From 84d071dd6eef146f6a0e2d8310b3db3ddff5859a Mon Sep 17 00:00:00 2001
 From: Manikanta Kanamarlapudi <kmanikan@codeaurora.org>
 Date: Thu, 6 Apr 2017 14:55:50 +0530
 Subject: [PATCH 2/3] CamcorderProfiles: Add new camcorder profiles
@@ -19,7 +19,7 @@ Change-Id: Iacd8537f62112171ee611a7534f9d432f45d5d3f
  2 files changed, 31 insertions(+), 2 deletions(-)
 
 diff --git a/media/libmedia/MediaProfiles.cpp b/media/libmedia/MediaProfiles.cpp
-index aade69a09..4de43c57a 100644
+index aade69a..4de43c5 100644
 --- a/media/libmedia/MediaProfiles.cpp
 +++ b/media/libmedia/MediaProfiles.cpp
 @@ -91,6 +91,19 @@ const MediaProfiles::NameToTagMap MediaProfiles::sCamcorderQualityNameMap[] = {
@@ -56,7 +56,7 @@ index aade69a09..4de43c57a 100644
  
  static bool isTimelapseProfile(camcorder_quality quality) {
 diff --git a/media/libmedia/include/media/MediaProfiles.h b/media/libmedia/include/media/MediaProfiles.h
-index 6975581f4..b3ab08dd8 100644
+index 0feb4f3..10a2632 100644
 --- a/media/libmedia/include/media/MediaProfiles.h
 +++ b/media/libmedia/include/media/MediaProfiles.h
 @@ -56,6 +56,20 @@ enum camcorder_quality {
@@ -81,5 +81,5 @@ index 6975581f4..b3ab08dd8 100644
  
  enum video_decoder {
 -- 
-2.20.1
+2.7.4
 

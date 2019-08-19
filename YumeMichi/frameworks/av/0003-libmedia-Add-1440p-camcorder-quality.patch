@@ -1,4 +1,4 @@
-From 8482a0638474e5090ec0ffa0baf83ea16bab23dd Mon Sep 17 00:00:00 2001
+From ad1522ae5339149ca8b55f14c1b8c16ceb9b5bb4 Mon Sep 17 00:00:00 2001
 From: Sultanxda <sultanxda@gmail.com>
 Date: Sat, 15 Aug 2015 19:17:58 -0700
 Subject: [PATCH 3/3] libmedia: Add 1440p camcorder quality
@@ -15,7 +15,7 @@ Signed-off-by: Kshitij Gupta <kshitijgm@gmail.com>
  2 files changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/media/libmedia/MediaProfiles.cpp b/media/libmedia/MediaProfiles.cpp
-index 4de43c57a..9df31747e 100644
+index 4de43c5..9df3174 100644
 --- a/media/libmedia/MediaProfiles.cpp
 +++ b/media/libmedia/MediaProfiles.cpp
 @@ -104,6 +104,8 @@ const MediaProfiles::NameToTagMap MediaProfiles::sCamcorderQualityNameMap[] = {
@@ -28,7 +28,7 @@ index 4de43c57a..9df31747e 100644
  
  #if LOG_NDEBUG
 diff --git a/media/libmedia/include/media/MediaProfiles.h b/media/libmedia/include/media/MediaProfiles.h
-index b3ab08dd8..976a9a37a 100644
+index 10a2632..b2cdd97 100644
 --- a/media/libmedia/include/media/MediaProfiles.h
 +++ b/media/libmedia/include/media/MediaProfiles.h
 @@ -69,7 +69,9 @@ enum camcorder_quality {
@@ -43,5 +43,5 @@ index b3ab08dd8..976a9a37a 100644
  
  enum video_decoder {
 -- 
-2.20.1
+2.7.4
 

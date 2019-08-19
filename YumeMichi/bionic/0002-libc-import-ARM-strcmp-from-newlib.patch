@@ -1,7 +1,7 @@
-From e2bd947ed4cde2d1aeab7d58bba443356aa806ce Mon Sep 17 00:00:00 2001
+From 12c98bc439666b15edff5ca1646d22752c7d4bd1 Mon Sep 17 00:00:00 2001
 From: Jake Weinstein <xboxlover360@gmail.com>
 Date: Sat, 6 May 2017 23:22:58 -0400
-Subject: [PATCH 2/6] libc: import ARM strcmp from newlib
+Subject: [PATCH 2/9] libc: import ARM strcmp from newlib
 
 * Current version is also based on newlib, but an older revision
 
@@ -86,16 +86,16 @@ Change-Id: Icb3bfb0a381bcc1e10885ca5e9547842c3f620d7
 Signed-off-by: Lennart <lennart.1997@gmx.de>
 ---
  libc/Android.bp                          |  16 -
- libc/NOTICE                              |  28 +
- libc/arch-arm/cortex-a15/bionic/strcmp.S | 711 ++++++++++++-----------
- libc/arch-arm/cortex-a9/bionic/strcmp.S  | 547 -----------------
- libc/arch-arm/krait/bionic/strcmp.S      | 485 ----------------
+ libc/NOTICE                              |  28 ++
+ libc/arch-arm/cortex-a15/bionic/strcmp.S | 711 ++++++++++++++++---------------
+ libc/arch-arm/cortex-a9/bionic/strcmp.S  | 547 ------------------------
+ libc/arch-arm/krait/bionic/strcmp.S      | 485 ---------------------
  5 files changed, 403 insertions(+), 1384 deletions(-)
  delete mode 100644 libc/arch-arm/cortex-a9/bionic/strcmp.S
  delete mode 100644 libc/arch-arm/krait/bionic/strcmp.S
 
 diff --git a/libc/Android.bp b/libc/Android.bp
-index f307980f8..9142822a8 100644
+index f307980..9142822 100644
 --- a/libc/Android.bp
 +++ b/libc/Android.bp
 @@ -934,14 +934,10 @@ cc_library_static {
@@ -168,7 +168,7 @@ index f307980f8..9142822a8 100644
              },
              // Cores not listed above (like cortex-a8, cortex-a15) or
 diff --git a/libc/NOTICE b/libc/NOTICE
-index f9a2affa9..796bce580 100644
+index f9a2aff..796bce5 100644
 --- a/libc/NOTICE
 +++ b/libc/NOTICE
 @@ -5324,6 +5324,34 @@ Copyright (c) 2012-2013, Linaro Limited
@@ -207,7 +207,7 @@ index f9a2affa9..796bce580 100644
       MIPS Technologies, Inc., California.
  
 diff --git a/libc/arch-arm/cortex-a15/bionic/strcmp.S b/libc/arch-arm/cortex-a15/bionic/strcmp.S
-index d8993d55f..cb4e02aae 100644
+index d8993d5..cb4e02a 100644
 --- a/libc/arch-arm/cortex-a15/bionic/strcmp.S
 +++ b/libc/arch-arm/cortex-a15/bionic/strcmp.S
 @@ -1,5 +1,5 @@
@@ -946,7 +946,7 @@ index d8993d55f..cb4e02aae 100644
  END(strcmp)
 diff --git a/libc/arch-arm/cortex-a9/bionic/strcmp.S b/libc/arch-arm/cortex-a9/bionic/strcmp.S
 deleted file mode 100644
-index ba191d60b..000000000
+index ba191d6..0000000
 --- a/libc/arch-arm/cortex-a9/bionic/strcmp.S
 +++ /dev/null
 @@ -1,547 +0,0 @@
@@ -1499,7 +1499,7 @@ index ba191d60b..000000000
 -END(strcmp)
 diff --git a/libc/arch-arm/krait/bionic/strcmp.S b/libc/arch-arm/krait/bionic/strcmp.S
 deleted file mode 100644
-index b871c7622..000000000
+index b871c76..0000000
 --- a/libc/arch-arm/krait/bionic/strcmp.S
 +++ /dev/null
 @@ -1,485 +0,0 @@
@@ -1989,5 +1989,5 @@ index b871c7622..000000000
 -	bx	lr
 -END(strcmp)
 -- 
-2.17.1
+2.7.4
 

@@ -1,0 +1,68 @@
+From 897d7a911c134803880b8c72177efedcc4df7ca2 Mon Sep 17 00:00:00 2001
+From: Jake Weinstein <jake@aospa.co>
+Date: Fri, 10 May 2019 01:15:08 -0500
+Subject: [PATCH 9/9] Revert "Revert "arm64: Use builtin for
+ nearbyintf/nearbyint""
+
+Fixed nearbyintl tests by adding software fenv implementation
+
+This reverts commit b75cc027ffd2fdbb26e63c4eba326bff8c2d1519.
+
+Change-Id: I636fc88307d31b89ed947646f5da48a1615fc86b
+---
+ libm/Android.bp   |  2 ++
+ libm/builtins.cpp | 18 ++++++++++++++++++
+ 2 files changed, 20 insertions(+)
+
+diff --git a/libm/Android.bp b/libm/Android.bp
+index 8609baf..25a71bf 100644
+--- a/libm/Android.bp
++++ b/libm/Android.bp
+@@ -322,6 +322,8 @@ cc_library {
+                 "upstream-freebsd/lib/msun/src/s_llrintf.c",
+                 "upstream-freebsd/lib/msun/src/s_lrint.c",
+                 "upstream-freebsd/lib/msun/src/s_lrintf.c",
++                "upstream-freebsd/lib/msun/src/s_nearbyintf.c",
++                "upstream-freebsd/lib/msun/src/s_nearbyint.c",
+                 "upstream-freebsd/lib/msun/src/s_rint.c",
+                 "upstream-freebsd/lib/msun/src/s_rintf.c",
+                 "upstream-freebsd/lib/msun/src/s_round.c",
+diff --git a/libm/builtins.cpp b/libm/builtins.cpp
+index 3b9228c..8d431e2 100644
+--- a/libm/builtins.cpp
++++ b/libm/builtins.cpp
+@@ -18,6 +18,8 @@
+ 
+ #include "fpmath.h"
+ 
++#include <fenv.h>
++
+ double fabs(double x) {
+ #if __arm__
+   // Both Clang and GCC insist on moving r0/r1 into a double register
+@@ -61,6 +63,22 @@ double fmax(double x, double y) { return __builtin_fmax(x, y); }
+ float fminf(float x, float y) { return __builtin_fminf(x, y); }
+ double fmin(double x, double y) { return __builtin_fmin(x, y); }
+ 
++float nearbyintf(float x) { return __builtin_nearbyintf(x); }
++double nearbyint(double x) { return __builtin_nearbyint(x); }
++
++// msun s_nearbyint.c defines all floating-point version, so we need to
++// redefine the long double one here. For aarch64, clang/compiler-rt
++// soft-float routines does not use single/double floating-point operation,
++// so it should be safe to call rintl directly.
++long double nearbyintl(long double x) {
++    volatile long double ret;
++    fenv_t env;
++    fegetenv(&env);
++    ret = rintl(x);
++    fesetenv(&env);
++    return (ret);
++}
++
+ float rintf(float x) { return __builtin_rintf(x); }
+ double rint(double x) { return __builtin_rint(x); }
+ 
+-- 
+2.7.4
+
