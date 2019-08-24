@@ -1,7 +1,7 @@
-From 2493b5a8b1289e5c197d4ff6d648ed54042bcbb0 Mon Sep 17 00:00:00 2001
+From 8e02bfa27f68fc53d7cd5900f41193075cb0aaf9 Mon Sep 17 00:00:00 2001
 From: Joe Maples <joe@frap129.org>
 Date: Mon, 6 Aug 2018 18:36:55 -0400
-Subject: [PATCH 05/10] SystemUI: Re-enable Tuner
+Subject: [PATCH 4/9] SystemUI: Re-enable Tuner
 
 Change-Id: I43cdaa87e8e542663b2d3264eeba71857e37711d
 Signed-off-by: Joe Maples <joe@frap129.org>

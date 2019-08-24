@@ -1,33 +1,32 @@
-From 0950c140c07e5818b8d5fea328d1ac7d24d0ae02 Mon Sep 17 00:00:00 2001
+From bdc7a22fdfbd0f2e866cfb8fec377d5d2b057786 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Thu, 20 Jun 2019 23:16:24 +0800
-Subject: [PATCH 1/2] vendor: Build some LineageOS apps
+Subject: [PATCH] vendor: Build some LineageOS apps
 
  * They are useful.
 
 Change-Id: Iadb334e9dd281d205073f845c5077908ed469544
 Signed-off-by: YumeMichi <do4suki@gmail.com>
 ---
- config/common.mk | 6 ++++++
- 1 file changed, 6 insertions(+)
+ config/common.mk | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/config/common.mk b/config/common.mk
-index 1bcd401f..429401ab 100644
+index 58f0880..12de17c 100644
 --- a/config/common.mk
 +++ b/config/common.mk
-@@ -134,6 +134,12 @@ PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
+@@ -120,6 +120,11 @@ PRODUCT_MINIMIZE_JAVA_DEBUG_INFO := true
  PRODUCT_PACKAGES += \
      LiveWallpapersPicker
  
 +# LineageOS apps
 +PRODUCT_PACKAGES += \
 +    Eleven \
-+    Gallery2Mod \
-+    Recorder
++    Gallery2Mod
 +
  # Charger
  PRODUCT_PACKAGES += \
      charger_res_images
 -- 
-2.17.1
+2.7.4
 

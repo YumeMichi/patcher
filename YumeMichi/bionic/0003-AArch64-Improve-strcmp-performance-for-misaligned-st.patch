@@ -1,7 +1,7 @@
-From 69bb1c223371d7efb8d83cd13c8f4580a07342f7 Mon Sep 17 00:00:00 2001
+From 1ef61f12581430822aba303801a9f7a91f77b543 Mon Sep 17 00:00:00 2001
 From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
 Date: Fri, 22 Jun 2018 13:35:54 -0300
-Subject: [PATCH 3/6] [AArch64] Improve strcmp performance for misaligned
+Subject: [PATCH 3/7] [AArch64] Improve strcmp performance for misaligned
  strings
 
 This patch was originally written by Siddhesh Poyarekar and pushed on
@@ -190,11 +190,11 @@ BM_string_strcmp/256/4/4            -0.0288         -0.0288           111       
 Test: bionic tests and benchmarks on aarch64.
 Change-Id: I75f8948782b8bd459d21f15e75e1d420905f5e5a
 ---
- libc/arch-arm64/generic/bionic/strcmp.S | 49 ++++++++++++++++++++-----
+ libc/arch-arm64/generic/bionic/strcmp.S | 49 ++++++++++++++++++++++++++-------
  1 file changed, 39 insertions(+), 10 deletions(-)
 
 diff --git a/libc/arch-arm64/generic/bionic/strcmp.S b/libc/arch-arm64/generic/bionic/strcmp.S
-index 271452dd1..fbc215e6d 100644
+index 271452d..fbc215e 100644
 --- a/libc/arch-arm64/generic/bionic/strcmp.S
 +++ b/libc/arch-arm64/generic/bionic/strcmp.S
 @@ -32,6 +32,8 @@
@@ -293,5 +293,5 @@ index 271452dd1..fbc215e6d 100644
  	ret
  END(strcmp)
 -- 
-2.17.1
+2.7.4
 

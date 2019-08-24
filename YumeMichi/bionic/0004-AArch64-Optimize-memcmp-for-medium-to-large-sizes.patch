@@ -1,7 +1,7 @@
-From 173031a314ea23982686fc509c2c8cb9070291f1 Mon Sep 17 00:00:00 2001
+From d2786f3526356884ee63c0a8a2337b86bd52da19 Mon Sep 17 00:00:00 2001
 From: Adhemerval Zanella <adhemerval.zanella@linaro.org>
 Date: Fri, 22 Jun 2018 13:31:34 -0300
-Subject: [PATCH 4/6] [AArch64] Optimize memcmp for medium to large sizes
+Subject: [PATCH 4/7] [AArch64] Optimize memcmp for medium to large sizes
 
 This patch was originally written by Siddhesh Poyarekar and pushed on
 cortex-strings [1]. This improved memcmp provides a fast path for
@@ -167,11 +167,11 @@ BM_string_memcmp/131072/0/4          -0.2029         -0.2029         27699      
 Test: bionic tests and benchmarks on aarch64.
 Change-Id: I2791e2b20d1c0ad429e8e5a41d3e47b1ac02c921
 ---
- libc/arch-arm64/generic/bionic/memcmp.S | 112 ++++++++++++++++--------
+ libc/arch-arm64/generic/bionic/memcmp.S | 112 +++++++++++++++++++++-----------
  1 file changed, 75 insertions(+), 37 deletions(-)
 
 diff --git a/libc/arch-arm64/generic/bionic/memcmp.S b/libc/arch-arm64/generic/bionic/memcmp.S
-index 3a138bf72..bff54aea3 100644
+index 3a138bf..bff54ae 100644
 --- a/libc/arch-arm64/generic/bionic/memcmp.S
 +++ b/libc/arch-arm64/generic/bionic/memcmp.S
 @@ -33,6 +33,8 @@
@@ -346,5 +346,5 @@ index 3a138bf72..bff54aea3 100644
 +
  END(memcmp)
 -- 
-2.17.1
+2.7.4
 

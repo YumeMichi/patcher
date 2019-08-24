@@ -1,7 +1,7 @@
-From 921d15de20f827b669449b6ea8a0cea324cc4f13 Mon Sep 17 00:00:00 2001
+From 77dcc188f2e314216327ba02653f88263e625602 Mon Sep 17 00:00:00 2001
 From: SpiritCroc <spiritcroc@gmail.com>
 Date: Thu, 28 Dec 2017 10:18:29 +0100
-Subject: [PATCH 09/10] Toast Icon: Update padding properly for 8.1
+Subject: [PATCH 8/9] Toast Icon: Update padding properly for 8.1
 
 Change-Id: I3309e067accca24d4eead750a50dea1e06d9b5b6
 ---

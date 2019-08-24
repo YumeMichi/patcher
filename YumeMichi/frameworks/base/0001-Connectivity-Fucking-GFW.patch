@@ -1,7 +1,7 @@
-From 35a51820244ed856cdffa91fd101c3be928d31cc Mon Sep 17 00:00:00 2001
+From 7cad062cdd14d9dcb1679ce83fde244cc77aee85 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 10 Dec 2016 10:51:32 +0000
-Subject: [PATCH 01/10] Connectivity: Fucking GFW
+Subject: [PATCH 1/9] Connectivity: Fucking GFW
 
 Change-Id: Ic1160c8b394191abfd212c65e0ce039acd44825d
 ---
@@ -9,18 +9,18 @@ Change-Id: Ic1160c8b394191abfd212c65e0ce039acd44825d
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/services/core/java/com/android/server/connectivity/NetworkMonitor.java b/services/core/java/com/android/server/connectivity/NetworkMonitor.java
-index 9b9a380..e5c42c0 100644
+index 1dacd37..c348fb1 100644
 --- a/services/core/java/com/android/server/connectivity/NetworkMonitor.java
 +++ b/services/core/java/com/android/server/connectivity/NetworkMonitor.java
-@@ -101,9 +101,9 @@ public class NetworkMonitor extends StateMachine {
+@@ -104,9 +104,9 @@ public class NetworkMonitor extends StateMachine {
      // Default configuration values for captive portal detection probes.
      // TODO: append a random length parameter to the default HTTPS url.
      // TODO: randomize browser version ids in the default User-Agent String.
 -    private static final String DEFAULT_HTTPS_URL     = "https://www.google.com/generate_204";
-+    private static final String DEFAULT_HTTPS_URL     = "https://www.google.cn/generate_204";
++    private static final String DEFAULT_HTTPS_URL     = "https://connect.rom.miui.com/generate_204";
      private static final String DEFAULT_HTTP_URL      =
 -            "http://connectivitycheck.gstatic.com/generate_204";
-+            "http://www.google.cn/generate_204";
++            "http://connect.rom.miui.com/generate_204";
      private static final String DEFAULT_FALLBACK_URL  = "http://www.google.com/gen_204";
      private static final String DEFAULT_OTHER_FALLBACK_URLS =
              "http://play.googleapis.com/generate_204";
