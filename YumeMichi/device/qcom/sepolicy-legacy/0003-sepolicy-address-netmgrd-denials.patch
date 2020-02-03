@@ -1,0 +1,27 @@
+From 80b0fa44e91e6abb0c5fded0ef1bc256bbc14a49 Mon Sep 17 00:00:00 2001
+From: Alessandro Astone <ales.astone@gmail.com>
+Date: Fri, 24 Jan 2020 15:27:10 +0100
+Subject: [PATCH 3/4] sepolicy: address netmgrd denials
+
+Change-Id: I8d085ec7d379436cdcc87d95c3430b7bce4ae3c2
+---
+ common/netmgrd.te | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/common/netmgrd.te b/common/netmgrd.te
+index a3ec9fd..2cb9507 100644
+--- a/common/netmgrd.te
++++ b/common/netmgrd.te
+@@ -94,6 +94,9 @@ allowxperm netmgrd self:socket ioctl msm_sock_ipc_ioctls;
+ 
+ #Allow netmgrd to use netd HAL via HIDL
+ get_prop(netmgrd, hwservicemanager_prop)
++binder_use(netmgrd)
+ hwbinder_use(netmgrd)
+ binder_call(netmgrd, netd)
+ allow netmgrd system_net_netd_hwservice:hwservice_manager find;
++allow netmgrd netd_service:service_manager find;
++allow netmgrd dnsresolver_service:service_manager find;
+-- 
+2.7.4
+

@@ -1,0 +1,41 @@
+From a2a90fdee2fe97d948fe2fba17a60a87109845a5 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Tue, 4 Feb 2020 00:18:56 +0800
+Subject: [PATCH 4/4] sepolicy: Add access policy for charger
+
+ * This is a fork of healthd.te
+
+Change-Id: Ie6df42b3e4301826e256e0a8e515a15cf4a55794
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ common/charger.te | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+ create mode 100644 common/charger.te
+
+diff --git a/common/charger.te b/common/charger.te
+new file mode 100644
+index 0000000..3573527
+--- /dev/null
++++ b/common/charger.te
+@@ -0,0 +1,18 @@
++r_dir_file(charger, sysfs_battery_supply)
++r_dir_file(charger, sysfs_usb_supply)
++r_dir_file(charger, sysfs_thermal);
++r_dir_file(charger, persist_file);
++r_dir_file(charger, sysfs_graphics);
++
++#allow charger read rtc device file
++allow charger rtc_device:chr_file r_file_perms;
++allow charger persist_bms_file:dir rw_dir_perms;
++allow charger persist_bms_file:file create_file_perms;
++
++allow charger {
++    sysfs_battery_supply
++    sysfs_usb_supply
++    sysfs_graphics
++}:file rw_file_perms;
++
++allow charger self:capability2 wake_alarm;
+-- 
+2.7.4
+
