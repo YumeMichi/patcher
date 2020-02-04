@@ -1,0 +1,216 @@
+From 23649f13476cbdd4cee381053b05844d984de4ae Mon Sep 17 00:00:00 2001
+From: Bruno Martins <bgcngm@gmail.com>
+Date: Sun, 25 Nov 2018 18:17:27 +0000
+Subject: [PATCH 2/2] sepolicy: Address denials for legacy last_kmsg file
+
+ * Android's system server still requests access to /proc/last_kmsg
+   as alternative to /sys/fs/pstore/console-ramoops for fs shutdown
+   time logging purposes.
+
+ * Also allow init.rc to chmod/chown the file.
+
+Change-Id: I6beb064778da4af86f8735f663349f6153d4a3f8
+---
+ prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil | 1 +
+ prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil | 1 +
+ prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil | 1 +
+ prebuilts/api/29.0/private/genfs_contexts              | 1 +
+ prebuilts/api/29.0/private/system_server.te            | 1 +
+ prebuilts/api/29.0/public/file.te                      | 1 +
+ prebuilts/api/29.0/public/init.te                      | 2 ++
+ private/compat/26.0/26.0.ignore.cil                    | 1 +
+ private/compat/27.0/27.0.ignore.cil                    | 1 +
+ private/compat/28.0/28.0.ignore.cil                    | 1 +
+ private/genfs_contexts                                 | 1 +
+ private/system_server.te                               | 1 +
+ public/file.te                                         | 1 +
+ public/init.te                                         | 2 ++
+ 14 files changed, 16 insertions(+)
+
+diff --git a/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil b/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
+index 5a908cf..b12f917 100644
+--- a/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/26.0/26.0.ignore.cil
+@@ -134,6 +134,7 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil b/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
+index f4bf3ac..bba68f1 100644
+--- a/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/27.0/27.0.ignore.cil
+@@ -121,6 +121,7 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil b/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
+index 96d649b..1e46f71 100644
+--- a/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
++++ b/prebuilts/api/29.0/private/compat/28.0/28.0.ignore.cil
+@@ -106,6 +106,7 @@
+     postinstall_apex_mnt_dir
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     recovery_socket
+     role_service
+     rollback_service
+diff --git a/prebuilts/api/29.0/private/genfs_contexts b/prebuilts/api/29.0/private/genfs_contexts
+index d9b24d0..c7603a9 100644
+--- a/prebuilts/api/29.0/private/genfs_contexts
++++ b/prebuilts/api/29.0/private/genfs_contexts
+@@ -13,6 +13,7 @@ genfscon proc /interrupts u:object_r:proc_interrupts:s0
+ genfscon proc /iomem u:object_r:proc_iomem:s0
+ genfscon proc /keys u:object_r:proc_keys:s0
+ genfscon proc /kmsg u:object_r:proc_kmsg:s0
++genfscon proc /last_kmsg u:object_r:proc_last_kmsg:s0
+ genfscon proc /loadavg u:object_r:proc_loadavg:s0
+ genfscon proc /meminfo u:object_r:proc_meminfo:s0
+ genfscon proc /misc u:object_r:proc_misc:s0
+diff --git a/prebuilts/api/29.0/private/system_server.te b/prebuilts/api/29.0/private/system_server.te
+index 51cbd28..78c71f7 100644
+--- a/prebuilts/api/29.0/private/system_server.te
++++ b/prebuilts/api/29.0/private/system_server.te
+@@ -847,6 +847,7 @@ r_dir_file(system_server, proc_asound)
+ r_dir_file(system_server, proc_net_type)
+ r_dir_file(system_server, proc_qtaguid_stat)
+ allow system_server {
++  proc_last_kmsg
+   proc_loadavg
+   proc_meminfo
+   proc_pagetypeinfo
+diff --git a/prebuilts/api/29.0/public/file.te b/prebuilts/api/29.0/public/file.te
+index 96c0732..b4c77b1 100644
+--- a/prebuilts/api/29.0/public/file.te
++++ b/prebuilts/api/29.0/public/file.te
+@@ -34,6 +34,7 @@ type proc_interrupts, fs_type, proc_type;
+ type proc_iomem, fs_type, proc_type;
+ type proc_keys, fs_type, proc_type;
+ type proc_kmsg, fs_type, proc_type;
++type proc_last_kmsg, fs_type, proc_type;
+ type proc_loadavg, fs_type, proc_type;
+ type proc_max_map_count, fs_type, proc_type;
+ type proc_meminfo, fs_type, proc_type;
+diff --git a/prebuilts/api/29.0/public/init.te b/prebuilts/api/29.0/public/init.te
+index 770c485..cbb072a 100644
+--- a/prebuilts/api/29.0/public/init.te
++++ b/prebuilts/api/29.0/public/init.te
+@@ -319,6 +319,7 @@ allow init {
+   proc_cmdline
+   proc_diskstats
+   proc_kmsg # Open /proc/kmsg for logd service.
++  proc_last_kmsg
+   proc_meminfo
+   proc_stat # Read /proc/stat for bootchart.
+   proc_uptime
+@@ -351,6 +352,7 @@ allow init {
+ allow init {
+   proc_cmdline
+   proc_kmsg
++  proc_last_kmsg
+   proc_net
+   proc_qtaguid_stat
+   proc_slabinfo
+diff --git a/private/compat/26.0/26.0.ignore.cil b/private/compat/26.0/26.0.ignore.cil
+index 5a908cf..b12f917 100644
+--- a/private/compat/26.0/26.0.ignore.cil
++++ b/private/compat/26.0/26.0.ignore.cil
+@@ -134,6 +134,7 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/private/compat/27.0/27.0.ignore.cil b/private/compat/27.0/27.0.ignore.cil
+index f4bf3ac..bba68f1 100644
+--- a/private/compat/27.0/27.0.ignore.cil
++++ b/private/compat/27.0/27.0.ignore.cil
+@@ -121,6 +121,7 @@
+     perfprofd_service
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     property_info
+     recovery_socket
+     role_service
+diff --git a/private/compat/28.0/28.0.ignore.cil b/private/compat/28.0/28.0.ignore.cil
+index 96d649b..1e46f71 100644
+--- a/private/compat/28.0/28.0.ignore.cil
++++ b/private/compat/28.0/28.0.ignore.cil
+@@ -106,6 +106,7 @@
+     postinstall_apex_mnt_dir
+     proc_cpu_alignment
+     proc_dt_firmware_android
++    proc_last_kmsg
+     recovery_socket
+     role_service
+     rollback_service
+diff --git a/private/genfs_contexts b/private/genfs_contexts
+index d9b24d0..c7603a9 100644
+--- a/private/genfs_contexts
++++ b/private/genfs_contexts
+@@ -13,6 +13,7 @@ genfscon proc /interrupts u:object_r:proc_interrupts:s0
+ genfscon proc /iomem u:object_r:proc_iomem:s0
+ genfscon proc /keys u:object_r:proc_keys:s0
+ genfscon proc /kmsg u:object_r:proc_kmsg:s0
++genfscon proc /last_kmsg u:object_r:proc_last_kmsg:s0
+ genfscon proc /loadavg u:object_r:proc_loadavg:s0
+ genfscon proc /meminfo u:object_r:proc_meminfo:s0
+ genfscon proc /misc u:object_r:proc_misc:s0
+diff --git a/private/system_server.te b/private/system_server.te
+index 51cbd28..78c71f7 100644
+--- a/private/system_server.te
++++ b/private/system_server.te
+@@ -847,6 +847,7 @@ r_dir_file(system_server, proc_asound)
+ r_dir_file(system_server, proc_net_type)
+ r_dir_file(system_server, proc_qtaguid_stat)
+ allow system_server {
++  proc_last_kmsg
+   proc_loadavg
+   proc_meminfo
+   proc_pagetypeinfo
+diff --git a/public/file.te b/public/file.te
+index 96c0732..b4c77b1 100644
+--- a/public/file.te
++++ b/public/file.te
+@@ -34,6 +34,7 @@ type proc_interrupts, fs_type, proc_type;
+ type proc_iomem, fs_type, proc_type;
+ type proc_keys, fs_type, proc_type;
+ type proc_kmsg, fs_type, proc_type;
++type proc_last_kmsg, fs_type, proc_type;
+ type proc_loadavg, fs_type, proc_type;
+ type proc_max_map_count, fs_type, proc_type;
+ type proc_meminfo, fs_type, proc_type;
+diff --git a/public/init.te b/public/init.te
+index 770c485..cbb072a 100644
+--- a/public/init.te
++++ b/public/init.te
+@@ -319,6 +319,7 @@ allow init {
+   proc_cmdline
+   proc_diskstats
+   proc_kmsg # Open /proc/kmsg for logd service.
++  proc_last_kmsg
+   proc_meminfo
+   proc_stat # Read /proc/stat for bootchart.
+   proc_uptime
+@@ -351,6 +352,7 @@ allow init {
+ allow init {
+   proc_cmdline
+   proc_kmsg
++  proc_last_kmsg
+   proc_net
+   proc_qtaguid_stat
+   proc_slabinfo
+-- 
+2.7.4
+
