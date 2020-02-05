@@ -3,9 +3,7 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'bionic'
-    'device/lineage/sepolicy'
     'device/qcom/sepolicy-legacy'
-    'system/sepolicy'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
