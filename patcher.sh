@@ -3,6 +3,9 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'bionic'
+    'hardware/pa/interfaces'
+    'packages/apps/Snap'
+    'packages/services/Telephony'
 )
 
 for repository in "${REPOSITORIES[@]}"; do

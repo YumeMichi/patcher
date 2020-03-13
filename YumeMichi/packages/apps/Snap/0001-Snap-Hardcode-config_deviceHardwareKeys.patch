@@ -1,0 +1,42 @@
+From 241fad98fb61c7c7a0ab10961c82c960949b5805 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Tue, 31 Oct 2017 00:34:40 +0000
+Subject: [PATCH] Snap: Hardcode config_deviceHardwareKeys
+
+Change-Id: I082da2bd1e350e380663848fcf9cb2e019acaa6b
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ Android.mk                                  | 2 --
+ src/com/android/camera/util/CameraUtil.java | 3 +--
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index 927c18907..9c3f72815 100755
+--- a/Android.mk
++++ b/Android.mk
+@@ -34,8 +34,6 @@ LOCAL_STATIC_JAVA_AAR_LIBRARIES += \
+     qreader-core \
+     qreader-zxing
+ 
+-LOCAL_JAVA_LIBRARIES := org.lineageos.platform.internal
+-
+ LOCAL_PACKAGE_NAME := Snap
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_PRIVATE_PLATFORM_APIS := true
+diff --git a/src/com/android/camera/util/CameraUtil.java b/src/com/android/camera/util/CameraUtil.java
+index bbd81e35f..0d5087b72 100755
+--- a/src/com/android/camera/util/CameraUtil.java
++++ b/src/com/android/camera/util/CameraUtil.java
+@@ -248,8 +248,7 @@ public class CameraUtil {
+         sPixelDensity = metrics.density;
+         sImageFileNamer = new ImageFileNamer(
+                 context.getString(R.string.image_file_name_format));
+-        sDeviceKeysPresent = context.getResources().getInteger(
+-                org.lineageos.platform.internal.R.integer.config_deviceHardwareKeys);
++        sDeviceKeysPresent = 0;
+     }
+ 
+     public static int dpToPixel(int dp) {
+-- 
+2.25.0
+

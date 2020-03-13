@@ -1,0 +1,275 @@
+From 0e6db01d01a4d5405335e43c9b73465911faf064 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Fri, 13 Jan 2017 16:44:08 +0100
+Subject: [PATCH] Telephony: Break qti-telephony-framework dependency
+
+Change-Id: I3c09525c3d1fe2c58a7ef2a1521adcd82d7dd6f8
+---
+ .../IccNetworkDepersonalizationPanel.java     | 37 +++++++-----
+ src/com/android/phone/NotificationMgr.java    | 22 +++----
+ src/com/android/phone/PhoneUtils.java         | 57 +++++++++++--------
+ .../telephony/TelecomAccountRegistry.java     | 35 +++++++-----
+ .../telephony/TelephonyConnectionService.java |  5 +-
+ 5 files changed, 96 insertions(+), 60 deletions(-)
+
+diff --git a/src/com/android/phone/IccNetworkDepersonalizationPanel.java b/src/com/android/phone/IccNetworkDepersonalizationPanel.java
+index a1d8235a6..e7bb9ea9d 100644
+--- a/src/com/android/phone/IccNetworkDepersonalizationPanel.java
++++ b/src/com/android/phone/IccNetworkDepersonalizationPanel.java
+@@ -91,8 +91,14 @@ public class IccNetworkDepersonalizationPanel extends IccPanel {
+         SUCCESS
+     }
+ 
+-    private IExtTelephony mExtTelephony = IExtTelephony.Stub.
+-            asInterface(ServiceManager.getService("extphone"));
++    private  IExtTelephony getIExtTelephony() {
++        try {
++            IExtTelephony ex = IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++            return ex;
++        } catch (NoClassDefFoundError ex) {
++            return null;
++        }
++    }
+ 
+     /**
+      * Shows the network depersonalization dialog, but only if it is not already visible.
+@@ -253,17 +259,22 @@ public class IccNetworkDepersonalizationPanel extends IccPanel {
+                 return;
+             }
+ 
+-            int persoState = mPersoSubState.getState();
+-            log("Requesting De-Personalization for subtype " + mPersoSubtype
+-                    + " subtype val " + persoState);
+-
+-            try {
+-                mExtTelephony.supplyIccDepersonalization(pin, Integer.toString(persoState),
+-                        mCallback, mPhone.getPhoneId());
+-            } catch (RemoteException ex) {
+-                log("RemoteException @supplyIccDepersonalization" + ex);
+-            } catch (NullPointerException ex) {
+-                log("NullPointerException @supplyIccDepersonalization" + ex);
++            IExtTelephony mExtTelephony = getIExtTelephony();
++            if (mExtTelephony != null) {
++                int persoState = mPersoSubState.getState();
++                log("Requesting De-Personalization for subtype " + mPersoSubtype
++                        + " subtype val " + persoState);
++                try {
++                    mExtTelephony.supplyIccDepersonalization(pin, Integer.toString(persoState),
++                            mCallback, mPhone.getPhoneId());
++                } catch (RemoteException ex) {
++                    log("RemoteException @supplyIccDepersonalization" + ex);
++                } catch (NullPointerException ex) {
++                    log("NullPointerException @supplyIccDepersonalization" + ex);
++                }
++            } else {
++                mPhone.getIccCard().supplyNetworkDepersonalization(pin,
++                        Message.obtain(mHandler, EVENT_ICC_NTWRK_DEPERSONALIZATION_RESULT));
+             }
+             displayStatus(statusType.IN_PROGRESS.name());
+         }
+diff --git a/src/com/android/phone/NotificationMgr.java b/src/com/android/phone/NotificationMgr.java
+index f7f53162b..95588bf1e 100644
+--- a/src/com/android/phone/NotificationMgr.java
++++ b/src/com/android/phone/NotificationMgr.java
+@@ -942,16 +942,18 @@ public class NotificationMgr {
+         int provisionStatus = INVALID_STATE;
+         IExtTelephony mExtTelephony = IExtTelephony.Stub
+                 .asInterface(ServiceManager.getService("extphone"));
+-        int slotId = SubscriptionController.getInstance().getSlotIndex(subId);
+-        try {
+-            //get current provision state of the SIM.
+-            provisionStatus = mExtTelephony.getCurrentUiccCardProvisioningStatus(slotId);
+-        } catch (RemoteException ex) {
+-            provisionStatus = INVALID_STATE;
+-            if (DBG) log("Failed to get status for slotId: "+ slotId +" Exception: " + ex);
+-        } catch (NullPointerException ex) {
+-            provisionStatus = INVALID_STATE;
+-            if (DBG) log("Failed to get status for slotId: "+ slotId +" Exception: " + ex);
++        if (mExtTelephony != null) {
++            int slotId = SubscriptionController.getInstance().getSlotIndex(subId);
++            try {
++                //get current provision state of the SIM.
++                provisionStatus = mExtTelephony.getCurrentUiccCardProvisioningStatus(slotId);
++            } catch (RemoteException ex) {
++                provisionStatus = INVALID_STATE;
++                if (DBG) log("Failed to get status for slotId: "+ slotId +" Exception: " + ex);
++            } catch (NullPointerException ex) {
++                provisionStatus = INVALID_STATE;
++                if (DBG) log("Failed to get status for slotId: "+ slotId +" Exception: " + ex);
++            }
+         }
+         return provisionStatus == PROVISIONED;
+    }
+diff --git a/src/com/android/phone/PhoneUtils.java b/src/com/android/phone/PhoneUtils.java
+index 24e3eba91..454814956 100644
+--- a/src/com/android/phone/PhoneUtils.java
++++ b/src/com/android/phone/PhoneUtils.java
+@@ -1401,49 +1401,58 @@ public class PhoneUtils {
+     }
+ 
+     private static IExtTelephony getIExtTelephony() {
+-        return IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++        try {
++            IExtTelephony ex = IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++            return ex;
++        } catch (NoClassDefFoundError ex) {
++            return null;
++        }
+     }
+ 
+     public static boolean isLocalEmergencyNumber(String address) {
+-        boolean result = false;
++        IExtTelephony mIExtTelephony = getIExtTelephony();
++        if (mIExtTelephony == null) {
++            return PhoneNumberUtils.isLocalEmergencyNumber(PhoneGlobals.getInstance(), address);
++        }
+         try {
+-            result = getIExtTelephony().isLocalEmergencyNumber(address);
++            return mIExtTelephony.isLocalEmergencyNumber(address);
+         }catch (RemoteException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
+-        } catch (NullPointerException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
++            return PhoneNumberUtils.isLocalEmergencyNumber(PhoneGlobals.getInstance(), address);
+         }
+-        return result;
+     }
+ 
+     public static boolean isPotentialLocalEmergencyNumber(String address) {
+-        boolean result = false;
++        IExtTelephony mIExtTelephony = getIExtTelephony();
++        if (mIExtTelephony == null) {
++            return PhoneNumberUtils.isPotentialLocalEmergencyNumber(PhoneGlobals.getInstance(), address);
++        }
+         try {
+-            result = getIExtTelephony().isPotentialLocalEmergencyNumber(address);
++            return mIExtTelephony.isPotentialLocalEmergencyNumber(address);
+         }catch (RemoteException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
+-        } catch (NullPointerException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
++            return PhoneNumberUtils.isPotentialLocalEmergencyNumber(PhoneGlobals.getInstance(), address);
+         }
+-        return result;
+     }
+ 
+     public static boolean isEmergencyNumber(String address) {
+-        boolean result = false;
++        IExtTelephony mIExtTelephony = getIExtTelephony();
++        if (mIExtTelephony == null) {
++            return PhoneNumberUtils.isEmergencyNumber(address);
++        }
+         try {
+-            result = getIExtTelephony().isEmergencyNumber(address);
++            return mIExtTelephony.isEmergencyNumber(address);
+         }catch (RemoteException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
+-        } catch (NullPointerException ex) {
+-            Log.e("TelephonyConnectionService", "Exception: " + ex);
++            return PhoneNumberUtils.isEmergencyNumber(address);
+         }
+-        return result;
+     }
+ 
+     public static boolean isDeviceInSingleStandBy() {
+         boolean result = false;
++        IExtTelephony mIExtTelephony = getIExtTelephony();
++        if (mIExtTelephony == null) {
++            return result;
++        }
+         try {
+-            result = getIExtTelephony().isDeviceInSingleStandby();
++            result = mIExtTelephony.isDeviceInSingleStandby();
+         } catch (RemoteException ex) {
+             Log.e("TelephonyConnectionService", "Exception : " + ex);
+         } catch (NullPointerException ex) {
+@@ -1454,12 +1463,14 @@ public class PhoneUtils {
+ 
+     public static int getPhoneIdForECall() {
+         int phoneId = 0;
++        IExtTelephony mIExtTelephony = getIExtTelephony();
++        if (mIExtTelephony == null) {
++            return -1;
++        }
+         try {
+-            phoneId = getIExtTelephony().getPhoneIdForECall();
++            phoneId = mIExtTelephony.getPhoneIdForECall();
+         } catch (RemoteException ex) {
+             Log.e("TelephonyConnectionService", "Exceptions : " + ex);
+-        } catch (NullPointerException ex) {
+-            Log.e("TelephonyConnectionService", "Exception : " + ex);
+         }
+         return phoneId;
+     }
+diff --git a/src/com/android/services/telephony/TelecomAccountRegistry.java b/src/com/android/services/telephony/TelecomAccountRegistry.java
+index 0c15d381f..0b540cf84 100644
+--- a/src/com/android/services/telephony/TelecomAccountRegistry.java
++++ b/src/com/android/services/telephony/TelecomAccountRegistry.java
+@@ -1168,6 +1168,15 @@ public class TelecomAccountRegistry {
+         }
+     }
+ 
++    private  IExtTelephony getIExtTelephony() {
++        try {
++            IExtTelephony ex = IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++            return ex;
++        } catch (NoClassDefFoundError ex) {
++            return null;
++        }
++    }
++
+     private void setupAccounts() {
+         // Go through SIM-based phones and register ourselves -- registering an existing account
+         // will cause the existing entry to be replaced.
+@@ -1198,19 +1207,19 @@ public class TelecomAccountRegistry {
+                         boolean isAccountAdded = false;
+ 
+                         if (mTelephonyManager.getPhoneCount() > 1) {
+-                            IExtTelephony mExtTelephony = IExtTelephony.Stub
+-                                    .asInterface(ServiceManager.getService("extphone"));
+-                            try {
+-                                //get current provision state of the SIM.
+-                                provisionStatus =
+-                                        mExtTelephony.getCurrentUiccCardProvisioningStatus(slotId);
+-                            } catch (RemoteException ex) {
+-                                Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
+-                                        + ex);
+-                            } catch (NullPointerException ex) {
+-                                Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
+-                                        + ex);
+-                            }
++                            if (getIExtTelephony() != null) {
++                                try {
++                                    //get current provision state of the SIM.
++                                    provisionStatus =
++                                            getIExtTelephony().getCurrentUiccCardProvisioningStatus(slotId);
++                                } catch (RemoteException ex) {
++                                    Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
++                                            + ex);
++                                } catch (NullPointerException ex) {
++                                    Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
++                                            + ex);
++                                }
++			    }
+                         }
+ 
+                         // In SSR case, UiccCard's would be disposed hence the provision state received as
+diff --git a/src/com/android/services/telephony/TelephonyConnectionService.java b/src/com/android/services/telephony/TelephonyConnectionService.java
+index 508bb1484..b5bd6cfe3 100644
+--- a/src/com/android/services/telephony/TelephonyConnectionService.java
++++ b/src/com/android/services/telephony/TelephonyConnectionService.java
+@@ -1399,7 +1399,10 @@ public class TelephonyConnectionService extends ConnectionService {
+                                      @Nullable String emergencyNumberAddress) {
+         Phone chosenPhone = null;
+         if (isEmergency) {
+-            return PhoneFactory.getPhone(PhoneUtils.getPhoneIdForECall());
++            int phoneId = PhoneUtils.getPhoneIdForECall();
++            if (phoneId != -1) {
++                return PhoneFactory.getPhone(phoneId);
++            }
+         }
+         int subId = PhoneUtils.getSubIdForPhoneAccountHandle(accountHandle);
+         if (subId != SubscriptionManager.INVALID_SUBSCRIPTION_ID) {
+-- 
+2.25.0
+

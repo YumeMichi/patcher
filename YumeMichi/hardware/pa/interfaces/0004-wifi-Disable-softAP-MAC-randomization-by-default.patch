@@ -1,0 +1,51 @@
+From b240553b524dd5af4fcf3c536976b477104a6fb8 Mon Sep 17 00:00:00 2001
+From: Bruno Martins <bgcngm@gmail.com>
+Date: Sat, 5 Oct 2019 00:01:58 +0100
+Subject: [PATCH 4/4] wifi: Disable softAP MAC randomization by default
+
+This is a legacy HAL and as such, the legacy devices using it
+won't really be able to enable this feature. Disable by default
+so to avoid having to explicitly do it in the device trees.
+
+Change-Id: I15173f5d6d1f918e6a463145b4bbbf4e1b310479
+---
+ wifi/1.0-legacy/Android.mk             | 4 ++--
+ wifi/1.0-legacy/wifi_feature_flags.cpp | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/wifi/1.0-legacy/Android.mk b/wifi/1.0-legacy/Android.mk
+index d1cfecc..0d05cff 100644
+--- a/wifi/1.0-legacy/Android.mk
++++ b/wifi/1.0-legacy/Android.mk
+@@ -33,8 +33,8 @@ endif
+ ifdef WIFI_HIDL_FEATURE_DISABLE_AP
+ LOCAL_CPPFLAGS += -DWIFI_HIDL_FEATURE_DISABLE_AP
+ endif
+-ifdef WIFI_HIDL_FEATURE_DISABLE_AP_MAC_RANDOMIZATION
+-LOCAL_CPPFLAGS += -DWIFI_HIDL_FEATURE_DISABLE_AP_MAC_RANDOMIZATION
++ifdef WIFI_HIDL_FEATURE_AP_MAC_RANDOMIZATION
++LOCAL_CPPFLAGS += -DWIFI_HIDL_FEATURE_AP_MAC_RANDOMIZATION
+ endif
+ # Allow implicit fallthroughs in wifi_legacy_hal.cpp until they are fixed.
+ LOCAL_CFLAGS += -Wno-error=implicit-fallthrough
+diff --git a/wifi/1.0-legacy/wifi_feature_flags.cpp b/wifi/1.0-legacy/wifi_feature_flags.cpp
+index 7212cfa..f47dae8 100644
+--- a/wifi/1.0-legacy/wifi_feature_flags.cpp
++++ b/wifi/1.0-legacy/wifi_feature_flags.cpp
+@@ -144,11 +144,11 @@ static const std::vector<IWifiChip::ChipMode> kChipModes{
+ #undef P2P
+ #undef NAN
+ 
+-#ifdef WIFI_HIDL_FEATURE_DISABLE_AP_MAC_RANDOMIZATION
++#ifndef WIFI_HIDL_FEATURE_AP_MAC_RANDOMIZATION
+ static const bool wifiHidlFeatureDisableApMacRandomization = true;
+ #else
+ static const bool wifiHidlFeatureDisableApMacRandomization = false;
+-#endif  // WIFI_HIDL_FEATURE_DISABLE_AP
++#endif  // WIFI_HIDL_FEATURE_AP_MAC_RANDOMIZATION
+ 
+ WifiFeatureFlags::WifiFeatureFlags() {}
+ 
+-- 
+2.25.0
+
