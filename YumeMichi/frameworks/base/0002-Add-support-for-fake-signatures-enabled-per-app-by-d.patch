@@ -1,0 +1,106 @@
+From f7fecc79029b3797c6cd6453edf764b64cafa34e Mon Sep 17 00:00:00 2001
+From: mar-v-in <github@rvin.mooo.com>
+Date: Mon, 21 Dec 2015 22:11:35 +0100
+Subject: [PATCH 2/2] Add support for fake signatures, enabled per app by
+ dynamic perms
+
+Change-Id: I456650338399abcbc22f97fa09fe50eb648b9e2e
+---
+ core/res/AndroidManifest.xml                  |  7 ++++++
+ core/res/res/values/cr_strings.xml            | 24 +++++++++++++++++++
+ .../server/pm/PackageManagerService.java      | 23 ++++++++++++++++--
+ 3 files changed, 52 insertions(+), 2 deletions(-)
+ create mode 100644 core/res/res/values/cr_strings.xml
+
+diff --git a/core/res/AndroidManifest.xml b/core/res/AndroidManifest.xml
+index aa038961a0f..df996b44469 100644
+--- a/core/res/AndroidManifest.xml
++++ b/core/res/AndroidManifest.xml
+@@ -2644,6 +2644,13 @@
+         android:description="@string/permdesc_getPackageSize"
+         android:protectionLevel="normal" />
+ 
++    <!-- @hide Allows an application to change the package signature as
++         seen by applications -->
++    <permission android:name="android.permission.FAKE_PACKAGE_SIGNATURE"
++        android:protectionLevel="dangerous"
++        android:label="@string/permlab_fakePackageSignature"
++        android:description="@string/permdesc_fakePackageSignature" />
++
+     <!-- @deprecated No longer useful, see
+          {@link android.content.pm.PackageManager#addPackageToPreferred}
+          for details. -->
+diff --git a/core/res/res/values/cr_strings.xml b/core/res/res/values/cr_strings.xml
+new file mode 100644
+index 00000000000..bd9b9d9283d
+--- /dev/null
++++ b/core/res/res/values/cr_strings.xml
+@@ -0,0 +1,24 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     Copyright (C) 2017 CarbonROM
++
++     Licensed under the Apache License, Version 2.0 (the "License");
++     you may not use this file except in compliance with the License.
++     You may obtain a copy of the License at
++
++          http://www.apache.org/licenses/LICENSE-2.0
++
++     Unless required by applicable law or agreed to in writing, software
++     distributed under the License is distributed on an "AS IS" BASIS,
++     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++     See the License for the specific language governing permissions and
++     limitations under the License.
++-->
++<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
++
++    <!-- Title of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
++    <string name="permlab_fakePackageSignature">Spoof package signature</string>
++    <!-- Description of an application permission, listed so the user can choose whether they want to allow the application to do this. -->
++    <string name="permdesc_fakePackageSignature">Allows the app to pretend to be a different app. Malicious applications might be able to use this to access private application data. Grant this permission with caution only!</string>
++
++</resources>
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index 9aed9109e24..7ca3f18a2fc 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -4157,8 +4157,9 @@ public class PackageManagerService extends IPackageManager.Stub
+             final Set<String> permissions = ArrayUtils.isEmpty(p.requestedPermissions)
+                     ? Collections.emptySet() : permissionsState.getPermissions(userId);
+ 
+-            PackageInfo packageInfo = PackageParser.generatePackageInfo(p, gids, flags,
+-                    ps.firstInstallTime, ps.lastUpdateTime, permissions, state, userId);
++            PackageInfo packageInfo = mayFakeSignature(p, PackageParser
++                    .generatePackageInfo(p, gids, flags, ps.firstInstallTime,
++                    ps.lastUpdateTime, permissions, state, userId), permissions);
+ 
+             if (packageInfo == null) {
+                 return null;
+@@ -4194,6 +4195,24 @@ public class PackageManagerService extends IPackageManager.Stub
+         }
+     }
+ 
++    private PackageInfo mayFakeSignature(PackageParser.Package p, PackageInfo pi,
++            Set<String> permissions) {
++        try {
++            if (permissions.contains("android.permission.FAKE_PACKAGE_SIGNATURE")
++                    && p.applicationInfo.targetSdkVersion > Build.VERSION_CODES.LOLLIPOP_MR1
++                    && p.mAppMetaData != null) {
++                String sig = p.mAppMetaData.getString("fake-signature");
++                if (sig != null) {
++                    pi.signatures = new Signature[] {new Signature(sig)};
++                }
++            }
++        } catch (Throwable t) {
++            // We should never die because of any failures, this is system code!
++            Log.w("PackageManagerService.FAKE_PACKAGE_SIGNATURE", t);
++        }
++        return pi;
++    }
++
+     @Override
+     public void checkPackageStartable(String packageName, int userId) {
+         final int callingUid = Binder.getCallingUid();
+-- 
+2.25.1
+

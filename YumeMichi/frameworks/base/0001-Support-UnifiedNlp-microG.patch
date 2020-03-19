@@ -1,0 +1,30 @@
+From 5dd6e7924268c6823f0e19f0c4424c27997b3d16 Mon Sep 17 00:00:00 2001
+From: Simon Polack <simonpolack@googlemail.com>
+Date: Fri, 11 Aug 2017 11:32:22 +0200
+Subject: [PATCH 1/2] Support UnifiedNlp (microG)
+
+* Add UnifiedNlp standalone to nlp lookup list
+
+microG Homepage: https://microg.org/
+
+Change-Id: Ibba6d51fdde5aafa465df181f4ff29f6a561f7e6
+---
+ core/res/res/values/config.xml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/core/res/res/values/config.xml b/core/res/res/values/config.xml
+index 131e015f5a1..bcdf715f416 100644
+--- a/core/res/res/values/config.xml
++++ b/core/res/res/values/config.xml
+@@ -1872,6 +1872,8 @@
+     <string-array name="config_locationProviderPackageNames" translatable="false">
+         <!-- The standard AOSP fused location provider -->
+         <item>com.android.location.fused</item>
++        <!-- microG unifiednlp location provider (standalone) -->
++        <item>org.microg.nlp</item>
+     </string-array>
+ 
+     <!-- This string array can be overriden to enable test location providers initially. -->
+-- 
+2.25.1
+
