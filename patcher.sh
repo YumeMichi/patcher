@@ -2,7 +2,9 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
+    'bionic'
     'frameworks/base'
+    'vendor/lineage'
 )
 
 for repository in "${REPOSITORIES[@]}"; do

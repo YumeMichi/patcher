@@ -1,0 +1,49 @@
+From 6d7784961e3ef47edb49fcd7e3a1f52cddc36903 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Mon, 23 Mar 2020 15:39:52 +0800
+Subject: [PATCH] soong: Allow disable memcpy opt for certain targets
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+Change-Id: I15f0db9ac3c0b4211aee9073740b692716ae8c1e
+---
+ build/soong/android/variable.go | 4 ++++
+ build/soong/soong_config.mk     | 1 +
+ 2 files changed, 5 insertions(+)
+
+diff --git a/build/soong/android/variable.go b/build/soong/android/variable.go
+index 32407d6d..2648c3f9 100644
+--- a/build/soong/android/variable.go
++++ b/build/soong/android/variable.go
+@@ -9,6 +9,9 @@ type Product_variables struct {
+ 	Bootloader_message_offset struct {
+ 		Cflags []string
+ 	}
++	Cpu_memcpy_base_opt_disable struct {
++		Cflags []string
++	}
+ 	Has_legacy_camera_hal1 struct {
+ 		Cflags []string
+ 		Overrides []string
+@@ -59,6 +62,7 @@ type ProductVariables struct {
+ 	Additional_gralloc_10_usage_bits  *string `json:",omitempty"`
+ 	Apply_msm8974_1440p_egl_workaround  *bool `json:",omitempty"`
+ 	Bootloader_message_offset  *int `json:",omitempty"`
++	Cpu_memcpy_base_opt_disable  *bool `json:",omitempty"`
+ 	Has_legacy_camera_hal1  *bool `json:",omitempty"`
+ 	Should_wait_for_qsee  *bool `json:",omitempty"`
+ 	Specific_camera_parameter_library  *string `json:",omitempty"`
+diff --git a/build/soong/soong_config.mk b/build/soong/soong_config.mk
+index a72a844c..e024c557 100644
+--- a/build/soong/soong_config.mk
++++ b/build/soong/soong_config.mk
+@@ -7,6 +7,7 @@ _json_contents := $(_json_contents)    "Lineage":{$(newline)
+ $(call add_json_str_omitempty, Additional_gralloc_10_usage_bits, $(TARGET_ADDITIONAL_GRALLOC_10_USAGE_BITS))
+ $(call add_json_bool, Apply_msm8974_1440p_egl_workaround, $(filter true,$(TARGET_MSM8974_1440P_EGL_WORKAROUND)))
+ $(call add_json_val_default, Bootloader_message_offset, $(BOOTLOADER_MESSAGE_OFFSET), 0)
++$(call add_json_bool, Cpu_memcpy_base_opt_disable, $(filter true,$(TARGET_CPU_MEMCPY_BASE_OPT_DISABLE)))
+ $(call add_json_bool, Has_legacy_camera_hal1, $(filter true,$(TARGET_HAS_LEGACY_CAMERA_HAL1)))
+ $(call add_json_bool, Should_wait_for_qsee, $(filter true,$(TARGET_KEYMASTER_WAIT_FOR_QSEE)))
+ $(call add_json_str, Specific_camera_parameter_library, $(TARGET_SPECIFIC_CAMERA_PARAMETER_LIBRARY))
+-- 
+2.25.1
+
