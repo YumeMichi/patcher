@@ -4,7 +4,6 @@ ROOT="${PWD}"
 REPOSITORIES=(
     'bionic'
     'build/make'
-    'external/sqlite'
     'frameworks/av'
     'packages/apps/LockClock'
     'packages/apps/Settings'
