@@ -1,4 +1,4 @@
-From 8908f7fe9a9f8952297c99dc475242317b5f0e9a Mon Sep 17 00:00:00 2001
+From 6ae627dd0b34ffce56674d4ad87f5439c712ef35 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Mon, 23 Mar 2020 15:39:52 +0800
 Subject: [PATCH] soong: Allow disable memcpy opt for certain targets
@@ -11,7 +11,7 @@ Change-Id: I15f0db9ac3c0b4211aee9073740b692716ae8c1e
  2 files changed, 5 insertions(+)
 
 diff --git a/build/soong/android/variable.go b/build/soong/android/variable.go
-index 753c884f..d0c2c097 100644
+index 0a032581..412e2584 100644
 --- a/build/soong/android/variable.go
 +++ b/build/soong/android/variable.go
 @@ -9,6 +9,9 @@ type Product_variables struct {
@@ -24,16 +24,16 @@ index 753c884f..d0c2c097 100644
  	Has_legacy_camera_hal1 struct {
  		Cflags []string
  		Overrides []string
-@@ -65,6 +68,7 @@ type ProductVariables struct {
+@@ -69,6 +72,7 @@ type ProductVariables struct {
  	Additional_gralloc_10_usage_bits  *string `json:",omitempty"`
  	Apply_msm8974_1440p_egl_workaround  *bool `json:",omitempty"`
  	Bootloader_message_offset  *int `json:",omitempty"`
 +	Cpu_memcpy_base_opt_disable  *bool `json:",omitempty"`
  	Has_legacy_camera_hal1  *bool `json:",omitempty"`
- 	Should_wait_for_qsee  *bool `json:",omitempty"`
- 	Specific_camera_parameter_library  *string `json:",omitempty"`
+ 	Qcom_um_soong_namespace  *string `json:",omitempty"`
+ 	Recovery_skip_ev_rel_input  *bool `json:",omitempty"`
 diff --git a/build/soong/soong_config.mk b/build/soong/soong_config.mk
-index 0fca8ed1..a799dc07 100644
+index 62f0d41b..089926e6 100644
 --- a/build/soong/soong_config.mk
 +++ b/build/soong/soong_config.mk
 @@ -7,6 +7,7 @@ _json_contents := $(_json_contents)    "Lineage":{$(newline)
@@ -42,8 +42,8 @@ index 0fca8ed1..a799dc07 100644
  $(call add_json_val_default, Bootloader_message_offset, $(BOOTLOADER_MESSAGE_OFFSET), 0)
 +$(call add_json_bool, Cpu_memcpy_base_opt_disable, $(filter true,$(TARGET_CPU_MEMCPY_BASE_OPT_DISABLE)))
  $(call add_json_bool, Has_legacy_camera_hal1, $(filter true,$(TARGET_HAS_LEGACY_CAMERA_HAL1)))
+ $(call add_json_str_omitempty, Qcom_um_soong_namespace, $(if $(filter $(UM_PLATFORMS),$(TARGET_BOARD_PLATFORM)),$(QCOM_SOONG_NAMESPACE),))
  $(call add_json_bool, Recovery_skip_ev_rel_input, $(filter true,$(TARGET_RECOVERY_SKIP_EV_REL_INPUT)))
- $(call add_json_bool, Should_wait_for_qsee, $(filter true,$(TARGET_KEYMASTER_WAIT_FOR_QSEE)))
 -- 
 2.26.2
 
