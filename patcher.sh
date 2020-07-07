@@ -5,6 +5,7 @@ REPOSITORIES=(
     'bionic'
     'build/soong'
     'frameworks/base'
+    'system/core'
     'vendor/lineage'
 )
 
