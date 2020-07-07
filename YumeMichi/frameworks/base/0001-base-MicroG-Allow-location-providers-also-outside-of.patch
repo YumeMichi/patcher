@@ -1,7 +1,7 @@
-From a5ab19e04c0b1e580932d4bc0f5b552f70a675b1 Mon Sep 17 00:00:00 2001
+From d3d4844d5ff45f6debf6708f344b48adbf4600aa Mon Sep 17 00:00:00 2001
 From: danielegobbetti <d.gobbetti@peer.biz>
 Date: Thu, 3 Nov 2016 08:22:13 +0100
-Subject: [PATCH 3/4] base: [MicroG] Allow location providers also outside of
+Subject: [PATCH 1/2] base: [MicroG] Allow location providers also outside of
  /system
 
 Change-Id: Id90b2e39d391d1c25537727d995c5454610fd719
@@ -25,5 +25,5 @@ index e3dc3b7a984..098d9985ef6 100644
                  HashSet<Signature> set = new HashSet<>();
                  Collections.addAll(set, signatures);
 -- 
-2.25.1
+2.27.0
 

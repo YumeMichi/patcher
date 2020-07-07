@@ -1,7 +1,7 @@
-From 863cd3381844e98ee4e654164289ea99fc69327e Mon Sep 17 00:00:00 2001
+From 7e8c8e13d2a6602510086620da61b75468a855a1 Mon Sep 17 00:00:00 2001
 From: mar-v-in <github@rvin.mooo.com>
 Date: Mon, 21 Dec 2015 22:11:35 +0100
-Subject: [PATCH 4/4] Add support for fake signatures, enabled per app by
+Subject: [PATCH 2/2] Add support for fake signatures, enabled per app by
  dynamic perms
 
 Change-Id: I456650338399abcbc22f97fa09fe50eb648b9e2e
@@ -13,10 +13,10 @@ Change-Id: I456650338399abcbc22f97fa09fe50eb648b9e2e
  create mode 100644 core/res/res/values/revengeos_strings.xml
 
 diff --git a/core/res/AndroidManifest.xml b/core/res/AndroidManifest.xml
-index aa038961a0f..df996b44469 100644
+index 7bcd7a048db..5f7fde41669 100644
 --- a/core/res/AndroidManifest.xml
 +++ b/core/res/AndroidManifest.xml
-@@ -2644,6 +2644,13 @@
+@@ -2655,6 +2655,13 @@
          android:description="@string/permdesc_getPackageSize"
          android:protectionLevel="normal" />
  
@@ -63,10 +63,10 @@ index 00000000000..b1c36b6e6d8
 +
 +</resources>
 diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
-index 28c5b9114a1..4dbda76c6da 100644
+index 179abe958b1..b642e18cee1 100644
 --- a/services/core/java/com/android/server/pm/PackageManagerService.java
 +++ b/services/core/java/com/android/server/pm/PackageManagerService.java
-@@ -4157,8 +4157,9 @@ public class PackageManagerService extends IPackageManager.Stub
+@@ -4186,8 +4186,9 @@ public class PackageManagerService extends IPackageManager.Stub
              final Set<String> permissions = ArrayUtils.isEmpty(p.requestedPermissions)
                      ? Collections.emptySet() : permissionsState.getPermissions(userId);
  
@@ -78,7 +78,7 @@ index 28c5b9114a1..4dbda76c6da 100644
  
              if (packageInfo == null) {
                  return null;
-@@ -4194,6 +4195,24 @@ public class PackageManagerService extends IPackageManager.Stub
+@@ -4223,6 +4224,24 @@ public class PackageManagerService extends IPackageManager.Stub
          }
      }
  
@@ -104,5 +104,5 @@ index 28c5b9114a1..4dbda76c6da 100644
      public void checkPackageStartable(String packageName, int userId) {
          final int callingUid = Binder.getCallingUid();
 -- 
-2.25.1
+2.27.0
 
