@@ -1,0 +1,166 @@
+From 9b59356752cf083f29a7ff34398b00aee3afda9e Mon Sep 17 00:00:00 2001
+From: Sebastian Zeller <SebiderSushi@t-online.de>
+Date: Mon, 22 Jun 2020 20:39:42 +0200
+Subject: [PATCH] Snap: Dirtily replace the HDR with a flash toggle
+
+Add a flash toggle to the video component
+
+Change-Id: I526032ae362834e09c4f8bed4dfdaa4722f2efa2
+---
+ res/values/arrays.xml                    | 10 ++++++++++
+ res/xml/camera_preferences.xml           |  2 ++
+ src/com/android/camera/CameraHolder.java |  4 ++++
+ src/com/android/camera/PhotoMenu.java    | 25 +++++-------------------
+ src/com/android/camera/VideoMenu.java    | 11 +++++++++++
+ 5 files changed, 32 insertions(+), 20 deletions(-)
+
+diff --git a/res/values/arrays.xml b/res/values/arrays.xml
+index 0ee51194e..61122c862 100644
+--- a/res/values/arrays.xml
++++ b/res/values/arrays.xml
+@@ -240,6 +240,16 @@
+         <item>@drawable/ic_flash_redeye_holo_light</item>
+     </array>
+ 
++    <array name="camera_selfie_flashmode_icons" translatable="false">
++        <item>@drawable/ic_flash_off</item>
++        <item>@drawable/ic_flash_on</item>
++    </array>
++
++    <array name="camera_selfie_flashmode_largeicons" translatable="false">
++        <item>@drawable/ic_flash_off</item>
++        <item>@drawable/ic_flash_on</item>
++    </array>
++
+     <!-- Videocamera Preferences flash mode dialog box entries -->
+     <string-array name="pref_camera_video_flashmode_entries" translatable="false">
+         <item>@string/pref_camera_flashmode_entry_off</item>
+diff --git a/res/xml/camera_preferences.xml b/res/xml/camera_preferences.xml
+index 55815ce84..d359b1cda 100755
+--- a/res/xml/camera_preferences.xml
++++ b/res/xml/camera_preferences.xml
+@@ -258,6 +258,8 @@
+             camera:defaultValue="@string/pref_selfie_flash_default"
+             camera:entries="@array/pref_selfie_flash_entries"
+             camera:entryValues="@array/pref_selfie_flash_entryvalues"
++            camera:icons="@array/camera_selfie_flashmode_icons"
++            camera:largeIcons="@array/camera_selfie_flashmode_largeicons"
+             camera:singleIcon="@drawable/ic_settings_flash"
+             camera:title="@string/pref_selfie_flash_title" />
+     <IconListPreference
+diff --git a/src/com/android/camera/CameraHolder.java b/src/com/android/camera/CameraHolder.java
+index 8ecc672f9..f4f32a0cc 100755
+--- a/src/com/android/camera/CameraHolder.java
++++ b/src/com/android/camera/CameraHolder.java
+@@ -349,6 +349,10 @@ public class CameraHolder {
+         mKeepBeforeTime = System.currentTimeMillis() + time;
+     }
+ 
++    public int getCameraId() {
++        return mCameraId;
++    }
++
+     public int getBackCameraId() {
+         return mBackCameraId;
+     }
+diff --git a/src/com/android/camera/PhotoMenu.java b/src/com/android/camera/PhotoMenu.java
+index 4f6c88688..8d1c4ed42 100644
+--- a/src/com/android/camera/PhotoMenu.java
++++ b/src/com/android/camera/PhotoMenu.java
+@@ -171,13 +171,11 @@ public class PhotoMenu extends MenuController
+ 
+         mFrontBackSwitcher.setVisibility(View.INVISIBLE);
+         if(!TsMakeupManager.HAS_TS_MAKEUP) {
+-            // HDR.
+-            if (group.findPreference(CameraSettings.KEY_CAMERA_HDR) != null) {
+-                mHdrSwitcher.setVisibility(View.VISIBLE);
+-                initSwitchItem(CameraSettings.KEY_CAMERA_HDR, mHdrSwitcher);
+-            } else {
+-                mHdrSwitcher.setVisibility(View.INVISIBLE);
+-            }
++            // Flash toggle
++            String flashKey = CameraHolder.instance().getCameraId() == CameraHolder.instance().getFrontCameraId()
++                    ? CameraSettings.KEY_SELFIE_FLASH : CameraSettings.KEY_FLASH_MODE;
++            mHdrSwitcher.setVisibility(View.VISIBLE);
++            initSwitchItem(flashKey, mHdrSwitcher);
+         }
+ 
+         mOtherKeys1 = new String[] {
+@@ -786,13 +784,6 @@ public class PhotoMenu extends MenuController
+             }
+         }
+ 
+-        if ((autohdr != null) && autohdr.equals("enable")) {
+-            mHdrSwitcher.setVisibility(View.GONE);
+-            mUI.getCameraControls().removeFromViewList(mHdrSwitcher);
+-        } else {
+-            mHdrSwitcher.setVisibility(View.VISIBLE);
+-        }
+-
+         if (mListener != null) {
+             mListener.onSharedPreferenceChanged();
+         }
+@@ -1504,12 +1495,6 @@ public class PhotoMenu extends MenuController
+         }
+ 
+         ListPreference autoHdrPref = mPreferenceGroup.findPreference(CameraSettings.KEY_AUTO_HDR);
+-        if (autoHdrPref != null && autoHdrPref.getValue().equalsIgnoreCase("enable")) {
+-            mHdrSwitcher.setVisibility(View.GONE);
+-            mUI.getCameraControls().removeFromViewList(mHdrSwitcher);
+-        } else {
+-            mHdrSwitcher.setVisibility(View.VISIBLE);
+-        }
+ 
+         ListPreference hdrPref = mPreferenceGroup.findPreference(CameraSettings.KEY_CAMERA_HDR);
+         ListPreference scenePref = mPreferenceGroup.findPreference(CameraSettings.KEY_SCENE_MODE);
+diff --git a/src/com/android/camera/VideoMenu.java b/src/com/android/camera/VideoMenu.java
+index 6baa71c24..581dc3bbf 100644
+--- a/src/com/android/camera/VideoMenu.java
++++ b/src/com/android/camera/VideoMenu.java
+@@ -81,6 +81,7 @@ public class VideoMenu extends MenuController
+     private static final int DEVELOPER_MENU_TOUCH_COUNT = 7;
+     private int mSceneStatus;
+     private View mFrontBackSwitcher;
++    private View mFlashSwitcher;
+     private View mFilterModeSwitcher;
+     private int mPopupStatus;
+     private int mPreviewMenuStatus;
+@@ -101,6 +102,7 @@ public class VideoMenu extends MenuController
+         mUI = ui;
+         mActivity = activity;
+         mFrontBackSwitcher = ui.getRootView().findViewById(R.id.front_back_switcher);
++        mFlashSwitcher = ui.getRootView().findViewById(R.id.hdr_switcher);
+         mFilterModeSwitcher = ui.getRootView().findViewById(R.id.filter_mode_switcher);
+     }
+ 
+@@ -111,6 +113,13 @@ public class VideoMenu extends MenuController
+         mPopupStatus = POPUP_NONE;
+         mPreviewMenuStatus = POPUP_NONE;
+         initFilterModeButton(mFilterModeSwitcher);
++        // Flash toggle
++        if (CameraHolder.instance().getCameraId() != CameraHolder.instance().getFrontCameraId()) {
++            mFlashSwitcher.setVisibility(View.VISIBLE);
++            initSwitchItem(CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE, mFlashSwitcher);
++        } else {
++            mFlashSwitcher.setVisibility(View.INVISIBLE);
++        }
+         // settings popup
+         mOtherKeys1 = new String[] {
+                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
+@@ -865,11 +874,13 @@ public class VideoMenu extends MenuController
+ 
+     public void hideUI() {
+         mFrontBackSwitcher.setVisibility(View.INVISIBLE);
++        mFlashSwitcher.setVisibility(View.INVISIBLE);
+         mFilterModeSwitcher.setVisibility(View.INVISIBLE);
+     }
+ 
+     public void showUI() {
+         mFrontBackSwitcher.setVisibility(View.VISIBLE);
++        mFlashSwitcher.setVisibility(View.VISIBLE);
+         final IconListPreference pref = (IconListPreference) mPreferenceGroup
+                 .findPreference(CameraSettings.KEY_FILTER_MODE);
+         if (pref != null) {
+-- 
+2.27.0
+
