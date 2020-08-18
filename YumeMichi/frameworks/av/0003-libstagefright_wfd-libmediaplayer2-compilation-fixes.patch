@@ -1,7 +1,7 @@
-From 269916faf01e49f3f55bc1c6148cb5a3a383d3ca Mon Sep 17 00:00:00 2001
+From 4db2ba702bb5ecfffc44f94679746fd94f7dad8a Mon Sep 17 00:00:00 2001
 From: Vladimir Oltean <olteanv@gmail.com>
 Date: Wed, 9 Jan 2019 01:43:08 +0200
-Subject: [PATCH 03/10] libstagefright_wfd: libmediaplayer2: compilation fixes
+Subject: [PATCH 03/11] libstagefright_wfd: libmediaplayer2: compilation fixes
 
 * Among others, adapt to the ABuffer API changes in
   "f03606d9 Move MediaBufferXXX from foundation to libmediaextractor"

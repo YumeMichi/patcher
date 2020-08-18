@@ -1,7 +1,7 @@
-From d73ffd89608b462e59df464b12b8027db0f12e0c Mon Sep 17 00:00:00 2001
+From 6d5a9b1f79150d93956bc68778bddfad79aa1281 Mon Sep 17 00:00:00 2001
 From: myfluxi <linflux@arcor.de>
 Date: Tue, 22 Nov 2016 23:11:06 +0100
-Subject: [PATCH 09/10] audioflinger: Fix audio for WifiDisplay
+Subject: [PATCH 09/11] audioflinger: Fix audio for WifiDisplay
 
 AudioFlinger is not able to determine the correct
 pid/tid for WifiDisplay and thus we do not pass checks

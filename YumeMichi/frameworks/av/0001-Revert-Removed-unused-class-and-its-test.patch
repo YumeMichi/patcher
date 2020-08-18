@@ -1,7 +1,7 @@
-From 6e72c2a43ba2ec807b3660f2725f4d21cb405b4d Mon Sep 17 00:00:00 2001
+From a393ae9d461fde257e6bce0d8eec93806d8d2226 Mon Sep 17 00:00:00 2001
 From: Vladimir Oltean <olteanv@gmail.com>
 Date: Wed, 9 Jan 2019 02:50:08 +0200
-Subject: [PATCH 01/10] Revert "Removed unused class and its test"
+Subject: [PATCH 01/11] Revert "Removed unused class and its test"
 
 This adds back the SurfaceMediaSource class, needed for WFD.
 
