@@ -1,0 +1,29 @@
+From bb2536fc00e78ce051dcc4701cf10fc98af9c4d7 Mon Sep 17 00:00:00 2001
+From: Vladimir Oltean <olteanv@gmail.com>
+Date: Tue, 22 Jan 2019 03:45:08 +0200
+Subject: [PATCH] common: permit libqdutils operation (linked by mediaserver)
+ during WFD
+
+Change-Id: I9d5b62ea32d825a7e552998b7bc4cf0a8e90c97f
+Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
+---
+ common/mediaserver.te | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/common/mediaserver.te b/common/mediaserver.te
+index 1108551e..ed7babbb 100755
+--- a/common/mediaserver.te
++++ b/common/mediaserver.te
+@@ -30,6 +30,9 @@ allow mediaserver dts_data_file:file create_file_perms;
+ # allow poweroffhandler to binder mediaserver
+ binder_call(mediaserver, poweroffhandler);
+ 
++# Required for libqdutils MDPVersion::updatePanelInfo()
++# during WFD - opens /sys/class/graphics/fb0/msm_fb_type
++allow mediaserver sysfs_graphics:file r_file_perms;
+ 
+ # for thermal sock files
+ #unix_socket_connect(mediaserver, thermal, thermal-engine)
+-- 
+2.27.0
+

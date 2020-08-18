@@ -4,6 +4,7 @@ ROOT="${PWD}"
 REPOSITORIES=(
     'bionic'
     'build/soong'
+    'device/qcom/sepolicy-legacy'
     'frameworks/av'
     'frameworks/base'
     'packages/apps/Snap'
