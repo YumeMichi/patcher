@@ -6,6 +6,7 @@ REPOSITORIES=(
     'build/soong'
     'frameworks/av'
     'frameworks/base'
+    'packages/apps/Snap'
     'system/core'
     'vendor/lineage'
 )
