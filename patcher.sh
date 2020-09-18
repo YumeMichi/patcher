@@ -8,6 +8,7 @@ REPOSITORIES=(
     'frameworks/base'
     'packages/apps/Snap'
     'system/core'
+    'vendor/lineage'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
