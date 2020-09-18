@@ -5,6 +5,7 @@ REPOSITORIES=(
     'build/soong'
     'device/qcom/sepolicy-legacy'
     'frameworks/av'
+    'frameworks/base'
     'packages/apps/Snap'
     'system/core'
 )

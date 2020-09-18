@@ -1,0 +1,31 @@
+From 8eb795012d50e1b2e151bc1a6a2c9f711d87761d Mon Sep 17 00:00:00 2001
+From: Simon Polack <simonpolack@googlemail.com>
+Date: Fri, 11 Aug 2017 11:32:22 +0200
+Subject: [PATCH 2/2] overlay: Support UnifiedNlp (microG)
+
+* Add UnifiedNlp standalone to nlp lookup list
+
+microG Homepage: https://microg.org/
+
+Change-Id: Ibba6d51fdde5aafa465df181f4ff29f6a561f7e6
+Signed-off-by: nysascape <nysadev@raphielgang.org>
+---
+ overlay/common/frameworks/base/core/res/res/values/config.xml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/overlay/common/frameworks/base/core/res/res/values/config.xml b/overlay/common/frameworks/base/core/res/res/values/config.xml
+index 2896eeb5..7071f791 100644
+--- a/overlay/common/frameworks/base/core/res/res/values/config.xml
++++ b/overlay/common/frameworks/base/core/res/res/values/config.xml
+@@ -21,6 +21,8 @@
+         <item>com.google.android.gms</item>
+         <!-- The standard AOSP fused location provider -->
+         <item>com.android.location.fused</item>
++        <!-- microG unifiednlp location provider (standalone) -->
++        <item>org.microg.nlp</item>
+     </string-array>
+ 
+     <bool name="config_cellBroadcastAppLinks">true</bool>
+-- 
+2.27.0
+
