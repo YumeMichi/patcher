@@ -1,0 +1,44 @@
+From 2f236b1db4717b6f9fda130a27e1820eb4d5c7b7 Mon Sep 17 00:00:00 2001
+From: maxwen <max.weninger@gmail.com>
+Date: Mon, 1 Oct 2018 16:37:20 +0200
+Subject: [PATCH] common: Add syslog_read perms for Matlog
+
+Change-Id: I167fa41ba7a379e469f31cda8f37cbc2e1c133df
+---
+ common/private/platform_app.te | 3 +++
+ common/private/priv_app.te     | 3 +++
+ common/private/shell.te        | 2 ++
+ 3 files changed, 8 insertions(+)
+ create mode 100644 common/private/shell.te
+
+diff --git a/common/private/platform_app.te b/common/private/platform_app.te
+index fa3cb86..bd917b9 100644
+--- a/common/private/platform_app.te
++++ b/common/private/platform_app.te
+@@ -9,3 +9,6 @@ hal_client_domain(platform_app, hal_lineage_livedisplay)
+ 
+ # Allow PowerShare HAL service to be found
+ hal_client_domain(platform_app, hal_lineage_powershare)
++
++# Matlog
++allow platform_app kernel:system syslog_read;
+diff --git a/common/private/priv_app.te b/common/private/priv_app.te
+index 1d7fca2..4d043e5 100644
+--- a/common/private/priv_app.te
++++ b/common/private/priv_app.te
+@@ -1 +1,4 @@
+ allow priv_app ota_package_file:dir create_dir_perms;
++
++# Matlog
++allow priv_app kernel:system syslog_read;
+diff --git a/common/private/shell.te b/common/private/shell.te
+new file mode 100644
+index 0000000..cd3af1d
+--- /dev/null
++++ b/common/private/shell.te
+@@ -0,0 +1,2 @@
++# Matlog
++allow shell kernel:system syslog_read;
+-- 
+2.28.0
+
