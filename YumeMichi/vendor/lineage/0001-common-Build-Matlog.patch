@@ -1,4 +1,4 @@
-From 254b54e9819afd0670444a63c6b9bdad41f1c843 Mon Sep 17 00:00:00 2001
+From 88b4e3cb44a8b0b99bda7125f930db01a3670b04 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sat, 19 Sep 2020 23:07:57 +0800
 Subject: [PATCH] common: Build Matlog
@@ -10,7 +10,7 @@ Change-Id: Id6058416706df16d0699f844f405507e3ac806a8
  1 file changed, 4 insertions(+)
 
 diff --git a/config/common.mk b/config/common.mk
-index 2fe9cb01..bf284ea6 100644
+index 2fe9cb01..80332fc7 100644
 --- a/config/common.mk
 +++ b/config/common.mk
 @@ -116,6 +116,10 @@ PRODUCT_PACKAGES += \
@@ -19,7 +19,7 @@ index 2fe9cb01..bf284ea6 100644
  
 +# Matlog
 +PRODUCT_PACKAGES += \
-+    Matlog
++    MatLog
 +
  # Themes
  PRODUCT_PACKAGES += \
