@@ -1,0 +1,31 @@
+From f6640a11b723779c3af56ea6a543e395681db15d Mon Sep 17 00:00:00 2001
+From: Paul Keith <javelinanddart@gmail.com>
+Date: Tue, 26 Jun 2018 16:32:39 +0200
+Subject: [PATCH 1/2] libril: Bounds check s_commands
+
+* We shouldn't be assuming this is always going to be valid
+
+Change-Id: Ibd43133340d86f7c60ead5f7de63c73b05d00f2e
+---
+ libril/ril.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/libril/ril.cpp b/libril/ril.cpp
+index c04dd36..aab8074 100644
+--- a/libril/ril.cpp
++++ b/libril/ril.cpp
+@@ -233,6 +233,11 @@ addRequestToList(int serial, int slotId, int request) {
+ #endif
+ #endif
+ 
++    if (request >= (int)NUM_ELEMS(s_commands)) {
++        RLOGE("Request %s not supported", requestToString(request));
++        return NULL;
++    }
++
+     pRI = (RequestInfo *)calloc(1, sizeof(RequestInfo));
+     if (pRI == NULL) {
+         RLOGE("Memory allocation failed for request %s", requestToString(request));
+-- 
+2.34.1
+

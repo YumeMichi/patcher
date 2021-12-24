@@ -1,0 +1,48 @@
+From 87e04031ffbc4eb681c19653ce4a49b78bb7fff9 Mon Sep 17 00:00:00 2001
+From: Michael Bestas <mkbestas@lineageos.org>
+Date: Tue, 25 Feb 2020 21:50:01 +0200
+Subject: [PATCH 2/2] wcnss-service: Remove setup_wlan_driver_ath_prop()
+
+* Not used by anything, avoid SELinux denial
+
+Change-Id: Ic53cf2b39002e366ad9b20ce38dc6b97bcbf9931
+---
+ wcnss-service/wcnss_service.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/wcnss-service/wcnss_service.c b/wcnss-service/wcnss_service.c
+index 3bc16dc..7d1add9 100644
+--- a/wcnss-service/wcnss_service.c
++++ b/wcnss-service/wcnss_service.c
+@@ -80,7 +80,6 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ #endif
+ #define WCNSS_HAS_CAL_DATA\
+ 		"/sys/module/wcnsscore/parameters/has_calibrated_data"
+-#define WLAN_DRIVER_ATH_DEFAULT_VAL "0"
+ 
+ #define ASCII_A		65
+ #define ASCII_a		97
+@@ -496,11 +495,6 @@ fail:
+ 	return;
+ }
+ 
+-void setup_wlan_driver_ath_prop()
+-{
+-	property_set("vendor.wlan.driver.ath", WLAN_DRIVER_ATH_DEFAULT_VAL);
+-}
+-
+ #ifdef MDM_DETECT
+ int check_modem_compatability(struct dev_info *mdm_detect_info)
+ {
+@@ -884,8 +878,6 @@ nomodem:
+ 			ALOGE("Cal data is successfully written to WCNSS");
+ 	}
+ 
+-	setup_wlan_driver_ath_prop();
+-
+ 	rc = wcnss_read_and_store_cal_data(fd_dev);
+ 	if (rc != SUCCESS)
+ 		ALOGE("Failed to read and save cal data %d", rc);
+-- 
+2.34.1
+

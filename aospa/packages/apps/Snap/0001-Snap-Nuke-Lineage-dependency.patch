@@ -1,0 +1,43 @@
+From c3fe414e15a0b75f8320e836c1088893fd6633e3 Mon Sep 17 00:00:00 2001
+From: Joshua Primero <jprimero155@gmail.com>
+Date: Sun, 14 Jun 2020 14:10:56 +0000
+Subject: [PATCH 1/2] Snap: Nuke Lineage dependency
+
+* Allow us to Compile on any AOSP/CAF based ROMs
+
+Signed-off-by: Joshua Primero <jprimero155@gmail.com>
+Change-Id: I5e1c95d1e9ad12efcae23a12060da89be31bd4fa
+---
+ Android.mk                                  | 2 --
+ src/com/android/camera/util/CameraUtil.java | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/Android.mk b/Android.mk
+index e0cd6f15b..b345e9179 100644
+--- a/Android.mk
++++ b/Android.mk
+@@ -34,8 +34,6 @@ LOCAL_STATIC_JAVA_AAR_LIBRARIES += \
+     qreader-core \
+     qreader-zxing
+ 
+-LOCAL_JAVA_LIBRARIES := org.lineageos.platform.internal
+-
+ LOCAL_PACKAGE_NAME := Snap
+ LOCAL_PRIVILEGED_MODULE := true
+ LOCAL_PRIVATE_PLATFORM_APIS := true
+diff --git a/src/com/android/camera/util/CameraUtil.java b/src/com/android/camera/util/CameraUtil.java
+index bbd81e35f..e2ff39f1b 100755
+--- a/src/com/android/camera/util/CameraUtil.java
++++ b/src/com/android/camera/util/CameraUtil.java
+@@ -249,7 +249,7 @@ public class CameraUtil {
+         sImageFileNamer = new ImageFileNamer(
+                 context.getString(R.string.image_file_name_format));
+         sDeviceKeysPresent = context.getResources().getInteger(
+-                org.lineageos.platform.internal.R.integer.config_deviceHardwareKeys);
++                com.android.internal.R.integer.config_deviceHardwareKeys);
+     }
+ 
+     public static int dpToPixel(int dp) {
+-- 
+2.34.1
+

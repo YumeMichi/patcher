@@ -1,0 +1,41 @@
+From 89426469c5e52067b1d1c16da5e0c53e950fb287 Mon Sep 17 00:00:00 2001
+From: Alessandro Astone <ales.astone@gmail.com>
+Date: Tue, 10 Sep 2019 23:51:12 +0200
+Subject: [PATCH 3/4] wifi: Error out when asked for factory mac address
+
+ * In Android 10, every time a wifi connection is to be established
+   the mac address is reset to factory. This was introduced to play
+   with "Connected MAC randomization".
+
+ * InterfaceTool::GetFactoryMacAddress fetches the factory mac address
+   by dispatching a SIOCETHTOOL ETHTOOL_GPERMADDR ioctl.
+   On our legacy wifi drivers it returns 00:00:00:00:00:00,
+   and android proceeds to set it as wlan0's mac address causing
+   the connection to fail.
+
+ * Hard code an ERROR_NOT_SUPPORTED return status to get around it.
+
+Change-Id: I1afb3d7ed0ad745da9828db0074caa970407bdc5
+---
+ wifi/1.0-legacy/wifi_sta_iface.cpp | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/wifi/1.0-legacy/wifi_sta_iface.cpp b/wifi/1.0-legacy/wifi_sta_iface.cpp
+index a6539e5..2d8f029 100644
+--- a/wifi/1.0-legacy/wifi_sta_iface.cpp
++++ b/wifi/1.0-legacy/wifi_sta_iface.cpp
+@@ -635,9 +635,8 @@ WifiStatus WifiStaIface::setMacAddressInternal(
+ 
+ std::pair<WifiStatus, std::array<uint8_t, 6>>
+ WifiStaIface::getFactoryMacAddressInternal() {
+-    std::array<uint8_t, 6> mac =
+-        iface_util_.lock()->getFactoryMacAddress(ifname_);
+-    return {createWifiStatus(WifiStatusCode::SUCCESS), mac};
++    std::array<uint8_t, 6> mac;
++    return {createWifiStatus(WifiStatusCode::ERROR_NOT_SUPPORTED), mac};
+ }
+ 
+ }  // namespace implementation
+-- 
+2.34.1
+

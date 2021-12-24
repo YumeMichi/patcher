@@ -1,0 +1,192 @@
+From a6c8cda21276cc603ea6d86f4448639bc659922e Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Sun, 23 Feb 2020 16:35:13 +0800
+Subject: [PATCH] products: Add OnePlus X (aka onyx)
+
+ * Even though Quartz is dead~
+
+Change-Id: Ib421bceb5460f12e4a3bce3ce640aa4d0835d684
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+---
+ products/AndroidProducts.mk   |  2 +
+ products/onyx/pa.dependencies | 92 +++++++++++++++++++++++++++++++++++
+ products/onyx/pa_onyx.mk      | 48 ++++++++++++++++++
+ 3 files changed, 142 insertions(+)
+ create mode 100644 products/onyx/pa.dependencies
+ create mode 100644 products/onyx/pa_onyx.mk
+
+diff --git a/products/AndroidProducts.mk b/products/AndroidProducts.mk
+index d995b76..2c483cd 100644
+--- a/products/AndroidProducts.mk
++++ b/products/AndroidProducts.mk
+@@ -43,6 +43,7 @@ PRODUCT_MAKEFILES += \
+     $(LOCAL_DIR)/oneplus7pro/pa_oneplus7pro.mk \
+     $(LOCAL_DIR)/oneplus7t/pa_oneplus7t.mk \
+     $(LOCAL_DIR)/oneplus7tpro/pa_oneplus7tpro.mk \
++    $(LOCAL_DIR)/onyx/pa_onyx.mk \
+     $(LOCAL_DIR)/polaris/pa_polaris.mk \
+     $(LOCAL_DIR)/raphael/pa_raphael.mk \
+     $(LOCAL_DIR)/rolex/pa_rolex.mk \
+@@ -83,6 +84,7 @@ COMMON_LUNCH_CHOICES += \
+     pa_oneplus7pro-userdebug \
+     pa_oneplus7t-userdebug \
+     pa_oneplus7tpro-userdebug \
++    pa_onyx-userdebug \
+     pa_polaris-userdebug \
+     pa_rolex-userdebug \
+     pa_rosy-userdebug \
+diff --git a/products/onyx/pa.dependencies b/products/onyx/pa.dependencies
+new file mode 100644
+index 0000000..8f3ba39
+--- /dev/null
++++ b/products/onyx/pa.dependencies
+@@ -0,0 +1,92 @@
++[
++    {
++        "remote":       "github",
++        "repository":   "YumeMichi/device_oneplus_onyx",
++        "target_path":  "device/oneplus/onyx",
++        "revision":     "quartz"
++    },
++    {
++        "remote":       "github",
++        "repository":   "YumeMichi/kernel_oneplus_onyx",
++        "target_path":  "kernel/oneplus/onyx",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "YumeMichi/proprietary_vendor_oneplus",
++        "target_path":  "vendor/oneplus",
++        "revision":     "quartz"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA/android_device_qcom_common",
++        "target_path":  "device/qcom/common",
++        "revision":     "quartz"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA/android_hardware_qcom_audio",
++        "target_path":  "hardware/qcom/audio",
++        "revision":     "quartz-8974"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA-onyx/android_hardware_qcom_display",
++        "target_path":  "hardware/qcom/display",
++        "revision":     "quartz-8974"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA/android_hardware_qcom_media",
++        "target_path":  "hardware/qcom/media",
++        "revision":     "quartz-8974"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA/android_hardware_qcom_bt",
++        "target_path":  "hardware/qcom/bt",
++        "revision":     "quartz-legacy"
++    },
++    {
++        "remote":       "aospa",
++        "repository":   "AOSPA/android_packages_apps_Bluetooth",
++        "target_path":  "packages/apps/Bluetooth",
++        "revision":     "quartz-dev"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_packages_apps_Snap",
++        "target_path":  "packages/apps/Snap",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "YumeMichi/linaro-arm-eabi-4.9",
++        "target_path":  "prebuilts/gcc/linux-x86/arm/linaro-arm-eabi-4.9",
++        "revision":     "master"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_external_connectivity",
++        "target_path":  "external/connectivity",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_external_sony_boringssl-compat",
++        "target_path":  "external/sony/boringssl-compat",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_hardware_sony_timekeep",
++        "target_path":  "hardware/sony/timekeep",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_packages_resources_devicesettings",
++        "target_path":  "packages/resources/devicesettings",
++        "revision":     "lineage-17.1"
++    }
++]
+diff --git a/products/onyx/pa_onyx.mk b/products/onyx/pa_onyx.mk
+new file mode 100644
+index 0000000..2fa8fe3
+--- /dev/null
++++ b/products/onyx/pa_onyx.mk
+@@ -0,0 +1,48 @@
++# Copyright (C) 2020 Paranoid Android
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++
++# Check for target product
++ifeq (pa_onyx,$(TARGET_PRODUCT))
++
++# Inherit from those products. Most specific first.
++$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
++$(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_l_mr1.mk)
++
++TARGET_BOOT_ANIMATION_RES := 1080
++
++# Inherit device configuration
++$(call inherit-product, device/oneplus/onyx/device.mk)
++
++# Inherit common PA configuration
++$(call inherit-product, device/qcom/common/common.mk)
++$(call inherit-product, vendor/pa/config/common_full_phone.mk)
++
++# GApps
++TARGET_DISABLES_GAPPS := true
++
++# Override build properties
++PRODUCT_NAME := pa_onyx
++PRODUCT_DEVICE := onyx
++PRODUCT_BRAND := OnePlus
++PRODUCT_MODEL := OnePlus
++PRODUCT_MANUFACTURER := OnePlus
++
++PRODUCT_GMS_CLIENTID_BASE := android-oneplus
++
++PRODUCT_BUILD_PROP_OVERRIDES += \
++    PRIVATE_BUILD_DESC="OnePlus-user 6.0.1 MMB29M 10281213 release-keys"
++
++BUILD_FINGERPRINT := OnePlus/OnePlus/OnePlus:6.0.1/MMB29M/10281213:user/release-keys
++
++endif
+-- 
+2.34.1
+

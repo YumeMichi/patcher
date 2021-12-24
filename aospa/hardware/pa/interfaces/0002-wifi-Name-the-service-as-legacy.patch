@@ -1,0 +1,273 @@
+From fedf1f46e4719e9e167c89402558e3b34fd149cf Mon Sep 17 00:00:00 2001
+From: Bruno Martins <bgcngm@gmail.com>
+Date: Fri, 4 Oct 2019 23:36:09 +0100
+Subject: [PATCH 2/4] wifi: Name the service as legacy
+
+Change-Id: I4d3389911d9e6ddf47e8ec24dd2f9e5f9ecdf040
+---
+ wifi/{1.0 => 1.0-legacy}/Android.mk                       | 8 ++++----
+ .../android.hardware.wifi@1.0-service.legacy.rc}          | 2 +-
+ wifi/{1.0 => 1.0-legacy}/hidl_callback_util.h             | 0
+ wifi/{1.0 => 1.0-legacy}/hidl_return_util.h               | 0
+ wifi/{1.0 => 1.0-legacy}/hidl_struct_util.cpp             | 0
+ wifi/{1.0 => 1.0-legacy}/hidl_struct_util.h               | 0
+ wifi/{1.0 => 1.0-legacy}/hidl_sync_util.cpp               | 0
+ wifi/{1.0 => 1.0-legacy}/hidl_sync_util.h                 | 0
+ wifi/{1.0 => 1.0-legacy}/ringbuffer.cpp                   | 0
+ wifi/{1.0 => 1.0-legacy}/ringbuffer.h                     | 0
+ wifi/{1.0 => 1.0-legacy}/service.cpp                      | 0
+ wifi/{1.0 => 1.0-legacy}/wifi.cpp                         | 0
+ wifi/{1.0 => 1.0-legacy}/wifi.h                           | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_ap_iface.cpp                | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_ap_iface.h                  | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_chip.cpp                    | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_chip.h                      | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_feature_flags.cpp           | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_feature_flags.h             | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_iface_util.cpp              | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_iface_util.h                | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal.cpp              | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal.h                | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal_stubs.cpp        | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal_stubs.h          | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_mode_controller.cpp         | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_mode_controller.h           | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_nan_iface.cpp               | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_nan_iface.h                 | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_p2p_iface.cpp               | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_p2p_iface.h                 | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_rtt_controller.cpp          | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_rtt_controller.h            | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_sta_iface.cpp               | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_sta_iface.h                 | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_status_util.cpp             | 0
+ wifi/{1.0 => 1.0-legacy}/wifi_status_util.h               | 0
+ 37 files changed, 5 insertions(+), 5 deletions(-)
+ rename wifi/{1.0 => 1.0-legacy}/Android.mk (92%)
+ rename wifi/{1.0/android.hardware.wifi@1.0-service.rc => 1.0-legacy/android.hardware.wifi@1.0-service.legacy.rc} (87%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_callback_util.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_return_util.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_struct_util.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_struct_util.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_sync_util.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/hidl_sync_util.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/ringbuffer.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/ringbuffer.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/service.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_ap_iface.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_ap_iface.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_chip.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_chip.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_feature_flags.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_feature_flags.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_iface_util.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_iface_util.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal_stubs.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_legacy_hal_stubs.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_mode_controller.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_mode_controller.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_nan_iface.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_nan_iface.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_p2p_iface.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_p2p_iface.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_rtt_controller.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_rtt_controller.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_sta_iface.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_sta_iface.h (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_status_util.cpp (100%)
+ rename wifi/{1.0 => 1.0-legacy}/wifi_status_util.h (100%)
+
+diff --git a/wifi/1.0/Android.mk b/wifi/1.0-legacy/Android.mk
+similarity index 92%
+rename from wifi/1.0/Android.mk
+rename to wifi/1.0-legacy/Android.mk
+index ae084e2..d1cfecc 100644
+--- a/wifi/1.0/Android.mk
++++ b/wifi/1.0-legacy/Android.mk
+@@ -17,7 +17,7 @@ LOCAL_PATH := $(call my-dir)
+ ### android.hardware.wifi static library
+ ###
+ include $(CLEAR_VARS)
+-LOCAL_MODULE := android.hardware.wifi@1.0-service-lib
++LOCAL_MODULE := android.hardware.wifi@1.0-legacy_service-lib
+ LOCAL_MODULE_RELATIVE_PATH := hw
+ LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_CPPFLAGS := -Wall -Werror -Wextra
+@@ -76,7 +76,7 @@ include $(BUILD_STATIC_LIBRARY)
+ ### android.hardware.wifi daemon
+ ###
+ include $(CLEAR_VARS)
+-LOCAL_MODULE := android.hardware.wifi@1.0-service
++LOCAL_MODULE := android.hardware.wifi@1.0-service.legacy
+ LOCAL_MODULE_RELATIVE_PATH := hw
+ LOCAL_PROPRIETARY_MODULE := true
+ LOCAL_CPPFLAGS := -Wall -Werror -Wextra
+@@ -97,6 +97,6 @@ LOCAL_SHARED_LIBRARIES := \
+     android.hardware.wifi@1.2 \
+     android.hardware.wifi@1.3
+ LOCAL_STATIC_LIBRARIES := \
+-    android.hardware.wifi@1.0-service-lib
+-LOCAL_INIT_RC := android.hardware.wifi@1.0-service.rc
++    android.hardware.wifi@1.0-legacy_service-lib
++LOCAL_INIT_RC := android.hardware.wifi@1.0-service.legacy.rc
+ include $(BUILD_EXECUTABLE)
+diff --git a/wifi/1.0/android.hardware.wifi@1.0-service.rc b/wifi/1.0-legacy/android.hardware.wifi@1.0-service.legacy.rc
+similarity index 87%
+rename from wifi/1.0/android.hardware.wifi@1.0-service.rc
+rename to wifi/1.0-legacy/android.hardware.wifi@1.0-service.legacy.rc
+index cf849d0..87251e1 100644
+--- a/wifi/1.0/android.hardware.wifi@1.0-service.rc
++++ b/wifi/1.0-legacy/android.hardware.wifi@1.0-service.legacy.rc
+@@ -1,4 +1,4 @@
+-service vendor.wifi_hal_legacy /vendor/bin/hw/android.hardware.wifi@1.0-service
++service vendor.wifi_hal_legacy /vendor/bin/hw/android.hardware.wifi@1.0-service.legacy
+     class hal
+     capabilities NET_ADMIN NET_RAW SYS_MODULE
+     user wifi
+diff --git a/wifi/1.0/hidl_callback_util.h b/wifi/1.0-legacy/hidl_callback_util.h
+similarity index 100%
+rename from wifi/1.0/hidl_callback_util.h
+rename to wifi/1.0-legacy/hidl_callback_util.h
+diff --git a/wifi/1.0/hidl_return_util.h b/wifi/1.0-legacy/hidl_return_util.h
+similarity index 100%
+rename from wifi/1.0/hidl_return_util.h
+rename to wifi/1.0-legacy/hidl_return_util.h
+diff --git a/wifi/1.0/hidl_struct_util.cpp b/wifi/1.0-legacy/hidl_struct_util.cpp
+similarity index 100%
+rename from wifi/1.0/hidl_struct_util.cpp
+rename to wifi/1.0-legacy/hidl_struct_util.cpp
+diff --git a/wifi/1.0/hidl_struct_util.h b/wifi/1.0-legacy/hidl_struct_util.h
+similarity index 100%
+rename from wifi/1.0/hidl_struct_util.h
+rename to wifi/1.0-legacy/hidl_struct_util.h
+diff --git a/wifi/1.0/hidl_sync_util.cpp b/wifi/1.0-legacy/hidl_sync_util.cpp
+similarity index 100%
+rename from wifi/1.0/hidl_sync_util.cpp
+rename to wifi/1.0-legacy/hidl_sync_util.cpp
+diff --git a/wifi/1.0/hidl_sync_util.h b/wifi/1.0-legacy/hidl_sync_util.h
+similarity index 100%
+rename from wifi/1.0/hidl_sync_util.h
+rename to wifi/1.0-legacy/hidl_sync_util.h
+diff --git a/wifi/1.0/ringbuffer.cpp b/wifi/1.0-legacy/ringbuffer.cpp
+similarity index 100%
+rename from wifi/1.0/ringbuffer.cpp
+rename to wifi/1.0-legacy/ringbuffer.cpp
+diff --git a/wifi/1.0/ringbuffer.h b/wifi/1.0-legacy/ringbuffer.h
+similarity index 100%
+rename from wifi/1.0/ringbuffer.h
+rename to wifi/1.0-legacy/ringbuffer.h
+diff --git a/wifi/1.0/service.cpp b/wifi/1.0-legacy/service.cpp
+similarity index 100%
+rename from wifi/1.0/service.cpp
+rename to wifi/1.0-legacy/service.cpp
+diff --git a/wifi/1.0/wifi.cpp b/wifi/1.0-legacy/wifi.cpp
+similarity index 100%
+rename from wifi/1.0/wifi.cpp
+rename to wifi/1.0-legacy/wifi.cpp
+diff --git a/wifi/1.0/wifi.h b/wifi/1.0-legacy/wifi.h
+similarity index 100%
+rename from wifi/1.0/wifi.h
+rename to wifi/1.0-legacy/wifi.h
+diff --git a/wifi/1.0/wifi_ap_iface.cpp b/wifi/1.0-legacy/wifi_ap_iface.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_ap_iface.cpp
+rename to wifi/1.0-legacy/wifi_ap_iface.cpp
+diff --git a/wifi/1.0/wifi_ap_iface.h b/wifi/1.0-legacy/wifi_ap_iface.h
+similarity index 100%
+rename from wifi/1.0/wifi_ap_iface.h
+rename to wifi/1.0-legacy/wifi_ap_iface.h
+diff --git a/wifi/1.0/wifi_chip.cpp b/wifi/1.0-legacy/wifi_chip.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_chip.cpp
+rename to wifi/1.0-legacy/wifi_chip.cpp
+diff --git a/wifi/1.0/wifi_chip.h b/wifi/1.0-legacy/wifi_chip.h
+similarity index 100%
+rename from wifi/1.0/wifi_chip.h
+rename to wifi/1.0-legacy/wifi_chip.h
+diff --git a/wifi/1.0/wifi_feature_flags.cpp b/wifi/1.0-legacy/wifi_feature_flags.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_feature_flags.cpp
+rename to wifi/1.0-legacy/wifi_feature_flags.cpp
+diff --git a/wifi/1.0/wifi_feature_flags.h b/wifi/1.0-legacy/wifi_feature_flags.h
+similarity index 100%
+rename from wifi/1.0/wifi_feature_flags.h
+rename to wifi/1.0-legacy/wifi_feature_flags.h
+diff --git a/wifi/1.0/wifi_iface_util.cpp b/wifi/1.0-legacy/wifi_iface_util.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_iface_util.cpp
+rename to wifi/1.0-legacy/wifi_iface_util.cpp
+diff --git a/wifi/1.0/wifi_iface_util.h b/wifi/1.0-legacy/wifi_iface_util.h
+similarity index 100%
+rename from wifi/1.0/wifi_iface_util.h
+rename to wifi/1.0-legacy/wifi_iface_util.h
+diff --git a/wifi/1.0/wifi_legacy_hal.cpp b/wifi/1.0-legacy/wifi_legacy_hal.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_legacy_hal.cpp
+rename to wifi/1.0-legacy/wifi_legacy_hal.cpp
+diff --git a/wifi/1.0/wifi_legacy_hal.h b/wifi/1.0-legacy/wifi_legacy_hal.h
+similarity index 100%
+rename from wifi/1.0/wifi_legacy_hal.h
+rename to wifi/1.0-legacy/wifi_legacy_hal.h
+diff --git a/wifi/1.0/wifi_legacy_hal_stubs.cpp b/wifi/1.0-legacy/wifi_legacy_hal_stubs.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_legacy_hal_stubs.cpp
+rename to wifi/1.0-legacy/wifi_legacy_hal_stubs.cpp
+diff --git a/wifi/1.0/wifi_legacy_hal_stubs.h b/wifi/1.0-legacy/wifi_legacy_hal_stubs.h
+similarity index 100%
+rename from wifi/1.0/wifi_legacy_hal_stubs.h
+rename to wifi/1.0-legacy/wifi_legacy_hal_stubs.h
+diff --git a/wifi/1.0/wifi_mode_controller.cpp b/wifi/1.0-legacy/wifi_mode_controller.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_mode_controller.cpp
+rename to wifi/1.0-legacy/wifi_mode_controller.cpp
+diff --git a/wifi/1.0/wifi_mode_controller.h b/wifi/1.0-legacy/wifi_mode_controller.h
+similarity index 100%
+rename from wifi/1.0/wifi_mode_controller.h
+rename to wifi/1.0-legacy/wifi_mode_controller.h
+diff --git a/wifi/1.0/wifi_nan_iface.cpp b/wifi/1.0-legacy/wifi_nan_iface.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_nan_iface.cpp
+rename to wifi/1.0-legacy/wifi_nan_iface.cpp
+diff --git a/wifi/1.0/wifi_nan_iface.h b/wifi/1.0-legacy/wifi_nan_iface.h
+similarity index 100%
+rename from wifi/1.0/wifi_nan_iface.h
+rename to wifi/1.0-legacy/wifi_nan_iface.h
+diff --git a/wifi/1.0/wifi_p2p_iface.cpp b/wifi/1.0-legacy/wifi_p2p_iface.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_p2p_iface.cpp
+rename to wifi/1.0-legacy/wifi_p2p_iface.cpp
+diff --git a/wifi/1.0/wifi_p2p_iface.h b/wifi/1.0-legacy/wifi_p2p_iface.h
+similarity index 100%
+rename from wifi/1.0/wifi_p2p_iface.h
+rename to wifi/1.0-legacy/wifi_p2p_iface.h
+diff --git a/wifi/1.0/wifi_rtt_controller.cpp b/wifi/1.0-legacy/wifi_rtt_controller.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_rtt_controller.cpp
+rename to wifi/1.0-legacy/wifi_rtt_controller.cpp
+diff --git a/wifi/1.0/wifi_rtt_controller.h b/wifi/1.0-legacy/wifi_rtt_controller.h
+similarity index 100%
+rename from wifi/1.0/wifi_rtt_controller.h
+rename to wifi/1.0-legacy/wifi_rtt_controller.h
+diff --git a/wifi/1.0/wifi_sta_iface.cpp b/wifi/1.0-legacy/wifi_sta_iface.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_sta_iface.cpp
+rename to wifi/1.0-legacy/wifi_sta_iface.cpp
+diff --git a/wifi/1.0/wifi_sta_iface.h b/wifi/1.0-legacy/wifi_sta_iface.h
+similarity index 100%
+rename from wifi/1.0/wifi_sta_iface.h
+rename to wifi/1.0-legacy/wifi_sta_iface.h
+diff --git a/wifi/1.0/wifi_status_util.cpp b/wifi/1.0-legacy/wifi_status_util.cpp
+similarity index 100%
+rename from wifi/1.0/wifi_status_util.cpp
+rename to wifi/1.0-legacy/wifi_status_util.cpp
+diff --git a/wifi/1.0/wifi_status_util.h b/wifi/1.0-legacy/wifi_status_util.h
+similarity index 100%
+rename from wifi/1.0/wifi_status_util.h
+rename to wifi/1.0-legacy/wifi_status_util.h
+-- 
+2.34.1
+

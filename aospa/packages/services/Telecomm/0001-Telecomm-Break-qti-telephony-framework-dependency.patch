@@ -1,0 +1,187 @@
+From b10a4d2296c1cabbd77ef4aaba4fc4b2e7b69b84 Mon Sep 17 00:00:00 2001
+From: Pranav Vashi <neobuddy89@gmail.com>
+Date: Sun, 31 May 2020 03:59:14 +0530
+Subject: [PATCH] Telecomm: Break qti-telephony-framework dependency
+
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+Change-Id: Ife00e99e11d473ed286b574ae04f814d36f4741f
+---
+ .../server/telecom/CallIntentProcessor.java   | 14 +++---
+ .../android/server/telecom/CallsManager.java  | 38 +++++++++++++---
+ .../android/server/telecom/TelephonyUtil.java | 43 ++++++++++++-------
+ 3 files changed, 67 insertions(+), 28 deletions(-)
+
+diff --git a/src/com/android/server/telecom/CallIntentProcessor.java b/src/com/android/server/telecom/CallIntentProcessor.java
+index b10a2139..a7b003dc 100644
+--- a/src/com/android/server/telecom/CallIntentProcessor.java
++++ b/src/com/android/server/telecom/CallIntentProcessor.java
+@@ -167,11 +167,6 @@ public class CallIntentProcessor {
+             clientExtras.putString(TelecomManager.EXTRA_CALL_SUBJECT, callsubject);
+         }
+ 
+-        final int callDomain = intent.getIntExtra(
+-                QtiCallConstants.EXTRA_CALL_DOMAIN, QtiCallConstants.DOMAIN_AUTOMATIC);
+-        Log.d(CallIntentProcessor.class, "callDomain = " + callDomain);
+-        clientExtras.putInt(QtiCallConstants.EXTRA_CALL_DOMAIN, callDomain);
+-
+         final int videoState = intent.getIntExtra( TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE,
+                 VideoProfile.STATE_AUDIO_ONLY);
+         clientExtras.putInt(TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE, videoState);
+@@ -214,6 +209,15 @@ public class CallIntentProcessor {
+                 }
+             }
+         });
++
++        try {
++            final int callDomain = intent.getIntExtra(
++                    QtiCallConstants.EXTRA_CALL_DOMAIN, QtiCallConstants.DOMAIN_AUTOMATIC);
++            Log.d(CallIntentProcessor.class, "callDomain = " + callDomain);
++            clientExtras.putInt(QtiCallConstants.EXTRA_CALL_DOMAIN, callDomain);
++        } catch (NoClassDefFoundError ex) {
++            // Do nothing
++        }
+     }
+ 
+     static void sendNewOutgoingCallIntent(Context context, Call call, CallsManager callsManager,
+diff --git a/src/com/android/server/telecom/CallsManager.java b/src/com/android/server/telecom/CallsManager.java
+index 652903f5..62de462b 100644
+--- a/src/com/android/server/telecom/CallsManager.java
++++ b/src/com/android/server/telecom/CallsManager.java
+@@ -546,7 +546,11 @@ public class CallsManager extends Call.ListenerBase
+                 CarrierConfigManager.ACTION_CARRIER_CONFIG_CHANGED);
+         intentFilter.addAction(SystemContract.ACTION_BLOCK_SUPPRESSION_STATE_CHANGED);
+         context.registerReceiver(mReceiver, intentFilter);
+-        QtiCarrierConfigHelper.getInstance().setup(mContext);
++        try {
++            QtiCarrierConfigHelper.getInstance().setup(mContext);
++        } catch (NoClassDefFoundError ex) {
++            // Do nothing
++        }
+     }
+ 
+     public void setIncomingCallNotifier(IncomingCallNotifier incomingCallNotifier) {
+@@ -727,10 +731,14 @@ public class CallsManager extends Call.ListenerBase
+             return true;
+         }
+ 
+-        final boolean isLowBattery = extras.getBoolean(QtiCallConstants.LOW_BATTERY_EXTRA_KEY,
+-                false);
+-        Log.d(TAG, "isIncomingVideoCallAllowed: lowbattery = " + isLowBattery);
+-        return !isLowBattery;
++        try {
++            final boolean isLowBattery = extras.getBoolean(QtiCallConstants.LOW_BATTERY_EXTRA_KEY,
++                    false);
++            Log.d(TAG, "isIncomingVideoCallAllowed: lowbattery = " + isLowBattery);
++            return !isLowBattery;
++        } catch (NoClassDefFoundError ex) {
++            return true;
++        }
+     }
+ 
+     private static boolean isIncomingVideoCall(Call call) {
+@@ -1285,6 +1293,22 @@ public class CallsManager extends Call.ListenerBase
+         return reusedCall;
+     }
+ 
++    private boolean isCarrierConfigEnabled(int phoneId, Context context, String config) {
++        try {
++        return QtiImsExtUtils.isCarrierConfigEnabled(phoneId, context, config);
++        } catch (NoClassDefFoundError ex) {
++            return false;
++        }
++    }
++
++    private boolean isRttSupportedOnVtCalls(int phoneId, Context context) {
++        try {
++            return QtiImsExtUtils.isRttSupportedOnVtCalls(phoneId, context);
++        } catch (NoClassDefFoundError ex) {
++            return false;
++        }
++    }
++
+     /**
+      * Kicks off the first steps to creating an outgoing call.
+      *
+@@ -1609,7 +1633,7 @@ public class CallsManager extends Call.ListenerBase
+                             mPhoneAccountRegistrar.getSubscriptionIdForPhoneAccount(
+                             callToUse.getTargetPhoneAccount()));
+                     if (!isVoicemail && (!VideoProfile.isVideo(callToUse.getVideoState())
+-                            || QtiImsExtUtils.isRttSupportedOnVtCalls(
++                            || isRttSupportedOnVtCalls(
+                             phoneId, mContext))
+                             && (isRttSettingOn
+                             || (extras != null
+@@ -3856,7 +3880,7 @@ public class CallsManager extends Call.ListenerBase
+         PhoneAccountHandle accountHandle = call.getTargetPhoneAccount();
+         int phoneId = SubscriptionManager.getPhoneId(
+                 mPhoneAccountRegistrar.getSubscriptionIdForPhoneAccount(accountHandle));
+-        return QtiImsExtUtils.isCarrierConfigEnabled(phoneId, mContext,
++        return isCarrierConfigEnabled(phoneId, mContext,
+                 "config_enable_video_crbt") && getDialingCall() != null
+             && !VideoProfile.isTransmissionEnabled(videoState)
+             && VideoProfile.isReceptionEnabled(videoState);
+diff --git a/src/com/android/server/telecom/TelephonyUtil.java b/src/com/android/server/telecom/TelephonyUtil.java
+index 5ea5e49b..cd603681 100644
+--- a/src/com/android/server/telecom/TelephonyUtil.java
++++ b/src/com/android/server/telecom/TelephonyUtil.java
+@@ -85,30 +85,41 @@ public final class TelephonyUtil {
+         }
+     }
+ 
++    private static IExtTelephony getIExtTelephony() {
++        try {
++            IExtTelephony ex = IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++            return ex;
++        } catch (NoClassDefFoundError ex) {
++            return null;
++        }
++    }
++
+     public static boolean isLocalEmergencyNumber(String address) {
+-        IExtTelephony mIExtTelephony =
+-            IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++        IExtTelephony mIExtTelephony = getIExtTelephony();
+         boolean result = false;
+-        try {
+-            result = mIExtTelephony.isLocalEmergencyNumber(address);
+-        } catch (RemoteException ex) {
+-            Log.e(LOG_TAG, ex, "RemoteException");
+-        } catch (NullPointerException ex) {
+-            Log.e(LOG_TAG, ex, "NullPointerException");
++        if (mIExtTelephony != null) {
++            try {
++                result = mIExtTelephony.isLocalEmergencyNumber(address);
++            } catch (RemoteException ex) {
++                Log.e(LOG_TAG, ex, "RemoteException");
++            } catch (NullPointerException ex) {
++                Log.e(LOG_TAG, ex, "NullPointerException");
++            }
+         }
+         return result;
+     }
+ 
+     public static boolean isPotentialLocalEmergencyNumber(String address) {
+-        IExtTelephony mIExtTelephony =
+-            IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
++        IExtTelephony mIExtTelephony = getIExtTelephony();
+         boolean result = false;
+-        try {
+-            result = mIExtTelephony.isPotentialLocalEmergencyNumber(address);
+-        } catch (RemoteException ex) {
+-            Log.e(LOG_TAG, ex, "RemoteException");
+-        } catch (NullPointerException ex) {
+-            Log.e(LOG_TAG, ex, "NullPointerException");
++        if (mIExtTelephony != null) {
++            try {
++                result = mIExtTelephony.isPotentialLocalEmergencyNumber(address);
++            } catch (RemoteException ex) {
++                Log.e(LOG_TAG, ex, "RemoteException");
++            } catch (NullPointerException ex) {
++                Log.e(LOG_TAG, ex, "NullPointerException");
++            }
+         }
+         return result;
+     }
+-- 
+2.34.1
+
