@@ -1,0 +1,62 @@
+From a9d2d382813dd88e348a463c7ea2e7224772c280 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Wed, 7 Oct 2020 06:01:27 -0600
+Subject: [PATCH] [Q_asb_2020-10] Bump Security String to 2020-10-05
+
+Implemented:
+============
+None
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2020-0213   A-143464314  ID     High       10, 11
+CVE-2020-0215   A-140417248  EoP    High       8.0, 8.1, 9, 10, 11
+CVE-2020-0246   A-159062405  ID     High       10, 11
+CVE-2020-0377   A-158833854  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0378   A-157748906  ID     High       9, 10, 11
+CVE-2020-0398   A-154323381  ID     High       10, 11
+CVE-2020-0400   A-153356561  ID     High       10, 11
+CVE-2020-0408   A-156999009  EoP    High       8.0, 8.1, 9, 10, 11
+CVE-2020-0410   A-156021269  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0411   A-142641801  ID     High       10, 11
+CVE-2020-0412   A-160390416  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0413   A-158778659  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0414   A-157708122  ID     High       10, 11
+CVE-2020-0415   A-156020795  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0416   A-155288585  EoP    High       8.0, 8.1, 9, 10, 11
+CVE-2020-0419   A-142125338  ID     High       8.1, 9, 10, 11
+CVE-2020-0421   A-161894517  EoP    High       8.0, 8.1, 9, 10, 11
+CVE-2020-0422   A-161718556  ID     High       8.0, 8.1, 9, 10, 11
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2019-2194   A-137284057  EoP    Moderate   9
+CVE-2020-0420   A-162383705  EoP    High       11
+
+Change-Id: I9066a7939d1ae32dcb0478766192709cfa2126aa
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index d1eafa41c..3e957b7b6 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2020-09-05
++      PLATFORM_SECURITY_PATCH := 2020-10-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+
