@@ -1,0 +1,114 @@
+From cf19435d3b6847ad76e703d0011a2f41f086855d Mon Sep 17 00:00:00 2001
+From: Steven Moreland <smoreland@google.com>
+Date: Thu, 6 Aug 2020 19:32:45 +0000
+Subject: [PATCH] [Q_asb_2020-11] libbinder_ndk: fix failure when dump/shell
+ are unset
+
+People directly using libbinder_ndk functions who didn't create a debug
+dump function function would fail to initialize that pointer, and
+potentially crash. Those who didn't create a shell function were
+guaranteed to crash. This wasn't noticed because the C++ wrappers which
+are the recommended way to use libbinder_ndk always set these functions.
+
+Bug: 161812320
+Test: unit tests
+
+Merged-In: I1f6909531bc640097f3f48c4a558fd03f2fa62cb
+Change-Id: I1f6909531bc640097f3f48c4a558fd03f2fa62cb
+(cherry picked from commit 8d49c3fbae160936ac44a1213e53e6cf617ee867)
+---
+ libs/binder/ndk/ibinder_internal.h         |  8 ++++----
+ libs/binder/ndk/test/iface.cpp             | 12 +++++++++++-
+ libs/binder/ndk/test/include/iface/iface.h |  3 +++
+ libs/binder/ndk/test/main_client.cpp       |  8 ++++++++
+ 4 files changed, 26 insertions(+), 5 deletions(-)
+
+diff --git a/libs/binder/ndk/ibinder_internal.h b/libs/binder/ndk/ibinder_internal.h
+index 5cb68c291b..ca7588a4d1 100644
+--- a/libs/binder/ndk/ibinder_internal.h
++++ b/libs/binder/ndk/ibinder_internal.h
+@@ -109,12 +109,12 @@ struct AIBinder_Class {
+     const ::android::String16& getInterfaceDescriptor() const { return mInterfaceDescriptor; }
+ 
+     // required to be non-null, implemented for every class
+-    const AIBinder_Class_onCreate onCreate;
+-    const AIBinder_Class_onDestroy onDestroy;
+-    const AIBinder_Class_onTransact onTransact;
++    const AIBinder_Class_onCreate onCreate = nullptr;
++    const AIBinder_Class_onDestroy onDestroy = nullptr;
++    const AIBinder_Class_onTransact onTransact = nullptr;
+ 
+     // optional methods for a class
+-    AIBinder_onDump onDump;
++    AIBinder_onDump onDump = nullptr;
+ 
+    private:
+     // This must be a String16 since BBinder virtual getInterfaceDescriptor returns a reference to
+diff --git a/libs/binder/ndk/test/iface.cpp b/libs/binder/ndk/test/iface.cpp
+index 64832f3081..a5889856fc 100644
+--- a/libs/binder/ndk/test/iface.cpp
++++ b/libs/binder/ndk/test/iface.cpp
+@@ -118,7 +118,7 @@ IFoo::~IFoo() {
+     AIBinder_Weak_delete(mWeakBinder);
+ }
+ 
+-binder_status_t IFoo::addService(const char* instance) {
++AIBinder* IFoo::getBinder() {
+     AIBinder* binder = nullptr;
+ 
+     if (mWeakBinder != nullptr) {
+@@ -132,8 +132,18 @@ binder_status_t IFoo::addService(const char* instance) {
+             AIBinder_Weak_delete(mWeakBinder);
+         }
+         mWeakBinder = AIBinder_Weak_new(binder);
++
++        // WARNING: it is important that this class does not implement debug or
++        // shell functions because it does not use special C++ wrapper
++        // functions, and so this is how we test those functions.
+     }
+ 
++    return binder;
++}
++
++binder_status_t IFoo::addService(const char* instance) {
++    AIBinder* binder = getBinder();
++
+     binder_status_t status = AServiceManager_addService(binder, instance);
+     // Strong references we care about kept by remote process
+     AIBinder_decStrong(binder);
+diff --git a/libs/binder/ndk/test/include/iface/iface.h b/libs/binder/ndk/test/include/iface/iface.h
+index cdf5493216..d9dd64b8a6 100644
+--- a/libs/binder/ndk/test/include/iface/iface.h
++++ b/libs/binder/ndk/test/include/iface/iface.h
+@@ -30,6 +30,9 @@ class IFoo : public virtual ::android::RefBase {
+ 
+     static AIBinder_Class* kClass;
+ 
++    // binder representing this interface with one reference count
++    AIBinder* getBinder();
++
+     // Takes ownership of IFoo
+     binder_status_t addService(const char* instance);
+     static ::android::sp<IFoo> getService(const char* instance, AIBinder** outBinder = nullptr);
+diff --git a/libs/binder/ndk/test/main_client.cpp b/libs/binder/ndk/test/main_client.cpp
+index 8467734c75..bd30d8b3b5 100644
+--- a/libs/binder/ndk/test/main_client.cpp
++++ b/libs/binder/ndk/test/main_client.cpp
+@@ -48,6 +48,14 @@ TEST(NdkBinder, CheckServiceThatDoesExist) {
+     AIBinder_decStrong(binder);
+ }
+ 
++TEST(NdkBinder, UnimplementedDump) {
++    sp<IFoo> foo = IFoo::getService(IFoo::kSomeInstanceName);
++    ASSERT_NE(foo, nullptr);
++    AIBinder* binder = foo->getBinder();
++    EXPECT_EQ(STATUS_OK, AIBinder_dump(binder, STDOUT_FILENO, nullptr, 0));
++    AIBinder_decStrong(binder);
++}
++
+ TEST(NdkBinder, DoubleNumber) {
+     sp<IFoo> foo = IFoo::getService(IFoo::kSomeInstanceName);
+     ASSERT_NE(foo, nullptr);
+-- 
+2.34.1
+

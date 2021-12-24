@@ -1,0 +1,192 @@
+From 31334c1c24c054fa341ec17e1146f109a081e2db Mon Sep 17 00:00:00 2001
+From: Hall Liu <hallliu@google.com>
+Date: Thu, 20 Aug 2020 19:06:57 -0700
+Subject: [PATCH] [Q_asb_2020-11] RESTRICT AUTOMERGE Fix exported broadcast
+ receiver vulnerability
+
+CellBroadcastReceiver was declared as exported in the manifest and
+therefore allowed any app to send a MARK_AS_READ intent, even though
+it's only supposed to be called from an internal PendingIntent. Fix this
+by creating a new non-exported receiver and using that to handle the
+mark-as-read intent instead.
+
+Fixes: 162741784
+Test: atest GoogleCellBroadcastReceiverUnitTests
+Change-Id: I03c8163c22a6fbc92613ca2ccd2ac191fc0084a4
+Merged-In: I03c8163c22a6fbc92613ca2ccd2ac191fc0084a4
+(cherry picked from commit e514bc6a01fdd36a519fd4fefffa45f166911c97)
+(cherry picked from commit 22d8e34f8a629ea21accc94a43f7157dcd69f7d0)
+---
+ AndroidManifest.xml                           |  5 ++
+ .../CellBroadcastAlertService.java            | 13 +++--
+ .../CellBroadcastInternalReceiver.java        | 56 +++++++++++++++++++
+ .../CellBroadcastReceiver.java                | 13 ++---
+ 4 files changed, 72 insertions(+), 15 deletions(-)
+ create mode 100644 src/com/android/cellbroadcastreceiver/CellBroadcastInternalReceiver.java
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index bfd79a52..275d695f 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -130,6 +130,11 @@
+             </intent-filter>
+         </receiver>
+ 
++        <receiver android:name="com.android.cellbroadcastreceiver.CellBroadcastInternalReceiver"
++                  android:exported="false">
++            <!-- No intent filter on purpose: this should only receive explicit intents -->
++        </receiver>
++
+         <provider
+                 android:name="CellBroadcastSearchIndexableProvider"
+                 android:authorities="com.android.cellbroadcastreceiver"
+diff --git a/src/com/android/cellbroadcastreceiver/CellBroadcastAlertService.java b/src/com/android/cellbroadcastreceiver/CellBroadcastAlertService.java
+index e4f71554..ccf293be 100644
+--- a/src/com/android/cellbroadcastreceiver/CellBroadcastAlertService.java
++++ b/src/com/android/cellbroadcastreceiver/CellBroadcastAlertService.java
+@@ -691,9 +691,11 @@ public class CellBroadcastAlertService extends Service {
+         final NotificationManager notificationManager = NotificationManager.from(context);
+         createNotificationChannels(context);
+ 
++        boolean isWatch = context.getPackageManager()
++                .hasSystemFeature(PackageManager.FEATURE_WATCH);
+         // Create intent to show the new messages when user selects the notification.
+         Intent intent;
+-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
++        if (isWatch) {
+             // For FEATURE_WATCH we want to mark as read
+             intent = createMarkAsReadIntent(context, message.getDeliveryTime());
+         } else {
+@@ -706,7 +708,7 @@ public class CellBroadcastAlertService extends Service {
+         intent.putExtra(CellBroadcastAlertDialog.FROM_SAVE_STATE_NOTIFICATION_EXTRA, fromSaveState);
+ 
+         PendingIntent pi;
+-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
++        if (isWatch) {
+             pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+         } else {
+             pi = PendingIntent.getActivity(context, NOTIFICATION_ID, intent,
+@@ -730,7 +732,7 @@ public class CellBroadcastAlertService extends Service {
+                         .setVisibility(Notification.VISIBILITY_PUBLIC)
+                         .setOngoing(nonSwipeableNotification);
+ 
+-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)) {
++        if (isWatch) {
+             builder.setDeleteIntent(pi);
+             // FEATURE_WATCH/CWH devices see this as priority
+             builder.setVibrate(new long[]{0});
+@@ -760,8 +762,7 @@ public class CellBroadcastAlertService extends Service {
+         // Emergency messages use a different audio playback and display path. Since we use
+         // addToNotification for the emergency display on FEATURE WATCH devices vs the
+         // Alert Dialog, it will call this and override the emergency audio tone.
+-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WATCH)
+-                && !CellBroadcastChannelManager.isEmergencyMessage(context, message)) {
++        if (isWatch && !CellBroadcastChannelManager.isEmergencyMessage(context, message)) {
+             if (res.getBoolean(R.bool.watch_enable_non_emergency_audio)) {
+                 // start audio/vibration/speech service for non emergency alerts
+                 Intent audioIntent = new Intent(context, CellBroadcastAlertAudio.class);
+@@ -809,7 +810,7 @@ public class CellBroadcastAlertService extends Service {
+      * @return delete intent to add to the pending intent
+      */
+     static Intent createMarkAsReadIntent(Context context, long deliveryTime) {
+-        Intent deleteIntent = new Intent(context, CellBroadcastReceiver.class);
++        Intent deleteIntent = new Intent(context, CellBroadcastInternalReceiver.class);
+         deleteIntent.setAction(CellBroadcastReceiver.ACTION_MARK_AS_READ);
+         deleteIntent.putExtra(CellBroadcastReceiver.EXTRA_DELIVERY_TIME, deliveryTime);
+         return deleteIntent;
+diff --git a/src/com/android/cellbroadcastreceiver/CellBroadcastInternalReceiver.java b/src/com/android/cellbroadcastreceiver/CellBroadcastInternalReceiver.java
+new file mode 100644
+index 00000000..455c5b68
+--- /dev/null
++++ b/src/com/android/cellbroadcastreceiver/CellBroadcastInternalReceiver.java
+@@ -0,0 +1,56 @@
++/*
++ * Copyright (C) 2020 The Android Open Source Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.cellbroadcastreceiver;
++
++import android.content.BroadcastReceiver;
++import android.content.Context;
++import android.content.Intent;
++import android.provider.Telephony;
++
++import com.android.internal.annotations.VisibleForTesting;
++
++/**
++ * {@link BroadcastReceiver} used for handling internal broadcasts (e.g. generated from
++ * {@link android.app.PendingIntent}s).
++ */
++public class CellBroadcastInternalReceiver extends BroadcastReceiver {
++
++    /**
++     * helper method for easier testing. To generate a new CellBroadcastTask
++     * @param deliveryTime message delivery time
++     */
++    @VisibleForTesting
++    public void getCellBroadcastTask(Context context, long deliveryTime) {
++        new CellBroadcastContentProvider.AsyncCellBroadcastTask(context.getContentResolver())
++                .execute(new CellBroadcastContentProvider.CellBroadcastOperation() {
++                    @Override
++                    public boolean execute(CellBroadcastContentProvider provider) {
++                        return provider.markBroadcastRead(Telephony.CellBroadcasts.DELIVERY_TIME,
++                                deliveryTime);
++                    }
++                });
++    }
++
++    @Override
++    public void onReceive(Context context, Intent intent) {
++        if (CellBroadcastReceiver.ACTION_MARK_AS_READ.equals(intent.getAction())) {
++            final long deliveryTime = intent.getLongExtra(
++                    CellBroadcastReceiver.EXTRA_DELIVERY_TIME, -1);
++            getCellBroadcastTask(context, deliveryTime);
++        }
++    }
++}
+diff --git a/src/com/android/cellbroadcastreceiver/CellBroadcastReceiver.java b/src/com/android/cellbroadcastreceiver/CellBroadcastReceiver.java
+index 48a1573e..496e34a9 100644
+--- a/src/com/android/cellbroadcastreceiver/CellBroadcastReceiver.java
++++ b/src/com/android/cellbroadcastreceiver/CellBroadcastReceiver.java
+@@ -31,6 +31,7 @@ import android.telephony.CarrierConfigManager;
+ import android.telephony.ServiceState;
+ import android.telephony.SubscriptionManager;
+ import android.telephony.cdma.CdmaSmsCbProgramData;
++import android.util.EventLog;
+ import android.util.Log;
+ 
+ import com.android.internal.telephony.cdma.sms.SmsEnvelope;
+@@ -62,15 +63,9 @@ public class CellBroadcastReceiver extends BroadcastReceiver {
+         String action = intent.getAction();
+ 
+         if (ACTION_MARK_AS_READ.equals(action)) {
+-            final long deliveryTime = intent.getLongExtra(EXTRA_DELIVERY_TIME, -1);
+-            new CellBroadcastContentProvider.AsyncCellBroadcastTask(context.getContentResolver())
+-                    .execute(new CellBroadcastContentProvider.CellBroadcastOperation() {
+-                        @Override
+-                        public boolean execute(CellBroadcastContentProvider provider) {
+-                            return provider.markBroadcastRead(CellBroadcasts.DELIVERY_TIME,
+-                                    deliveryTime);
+-                        }
+-                    });
++            // The only way this'll be called is if someone tries to maliciously set something as
++            // read. Log an event.
++            EventLog.writeEvent(0x534e4554, "162741784", -1, null);
+         } else if (CarrierConfigManager.ACTION_CARRIER_CONFIG_CHANGED.equals(action)) {
+             initializeSharedPreference(context.getApplicationContext());
+             startConfigService(context.getApplicationContext());
+-- 
+2.34.1
+

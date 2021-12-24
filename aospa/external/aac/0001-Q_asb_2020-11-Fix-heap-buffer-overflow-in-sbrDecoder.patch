@@ -1,0 +1,60 @@
+From fd15c72c4a560d0bdabac8fac0f398389b10a3d4 Mon Sep 17 00:00:00 2001
+From: Fraunhofer IIS FDK <audio-fdk@iis.fraunhofer.de>
+Date: Mon, 6 Jul 2020 15:12:34 -0700
+Subject: [PATCH] [Q_asb_2020-11] Fix heap buffer overflow in
+ sbrDecoder_AssignQmfChannels2SbrChannels().
+
+In the bug the SBR decoder has already set up 9 channels and tries to
+allocate one more channel. The assignment of the QMF channels to SBR
+channels fails since the QMF domain manages only 8+1 channels instead
+of 10 channels as reqeusted by SBR.
+Here we have added a check in sbrDecoder_InitElement() which will
+return with a parse error in case additional SBR channels would exceed
+the maximum number of SBR channels. This solves the potential heap
+buffer overflow.
+
+Bug: 158762825
+Test: atest DecoderTestAacDrc DecoderTestAacFormat DecoderTestXheAac
+Merged-In: I0150ac6d5a47ffce883010f531928656eebc619e
+Change-Id: I8569a15214707ab622e986b34b4b917251495662
+(cherry picked from commit c516539a202b08cda8569a9e58c9dc6097450cbe)
+---
+ libSBRdec/src/sbrdecoder.cpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/libSBRdec/src/sbrdecoder.cpp b/libSBRdec/src/sbrdecoder.cpp
+index c827ced..58ab9a3 100644
+--- a/libSBRdec/src/sbrdecoder.cpp
++++ b/libSBRdec/src/sbrdecoder.cpp
+@@ -619,10 +619,6 @@ SBR_ERROR sbrDecoder_InitElement(
+       self->numSbrChannels -= self->pSbrElement[elementIndex]->nChannels;
+     }
+ 
+-    /* Save element ID for sanity checks and to have a fallback for concealment.
+-     */
+-    self->pSbrElement[elementIndex]->elementID = elementID;
+-
+     /* Determine amount of channels for this element */
+     switch (elementID) {
+       case ID_NONE:
+@@ -655,12 +651,16 @@ SBR_ERROR sbrDecoder_InitElement(
+     }
+ 
+     /* Sanity check to avoid memory leaks */
+-    if (elChannels < self->pSbrElement[elementIndex]->nChannels) {
++    if (elChannels < self->pSbrElement[elementIndex]->nChannels ||
++        (self->numSbrChannels + elChannels) > (8) + (1)) {
+       self->numSbrChannels += self->pSbrElement[elementIndex]->nChannels;
+       sbrError = SBRDEC_PARSE_ERROR;
+       goto bail;
+     }
+ 
++    /* Save element ID for sanity checks and to have a fallback for concealment.
++     */
++    self->pSbrElement[elementIndex]->elementID = elementID;
+     self->pSbrElement[elementIndex]->nChannels = elChannels;
+ 
+     for (ch = 0; ch < elChannels; ch++) {
+-- 
+2.34.1
+

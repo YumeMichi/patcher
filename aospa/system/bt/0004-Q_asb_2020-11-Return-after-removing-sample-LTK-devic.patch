@@ -1,0 +1,32 @@
+From c1b64ecbfe27a2c15b49a57ba3b4581e7907e6e3 Mon Sep 17 00:00:00 2001
+From: "li-wei.cheng" <li-wei.cheng@mediatek.com>
+Date: Mon, 20 Jan 2020 15:27:21 +0800
+Subject: [PATCH 4/5] [Q_asb_2020-11] Return after removing sample LTK device
+
+Return directly after calling bta_dm_remove_device to
+prevent from accessing the invalid security record (p_dev_rec).
+
+Test: Hardcode to test bond with sample key
+Tag: #security
+Bug: 162497143
+Change-Id: Iaa59f3c415dd8066849fd70912fdb83f890229d7
+(cherry picked from commit 7c86810c44ef2efd97c3e78bd77e36257a05f75b)
+---
+ stack/btm/btm_sec.cc | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/stack/btm/btm_sec.cc b/stack/btm/btm_sec.cc
+index bb0ff49871..32e4b4e82a 100644
+--- a/stack/btm/btm_sec.cc
++++ b/stack/btm/btm_sec.cc
+@@ -4566,6 +4566,7 @@ void btm_sec_disconnected(uint16_t handle, uint8_t reason) {
+     LOG(INFO) << __func__ << " removing bond to device that used sample LTK: " << p_dev_rec->bd_addr;
+ 
+     bta_dm_remove_device(p_dev_rec->bd_addr);
++    return;
+   }
+ 
+   BTM_TRACE_EVENT("%s after update sec_flags=0x%x", __func__,
+-- 
+2.34.1
+

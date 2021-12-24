@@ -1,0 +1,65 @@
+From 7e3b6df43631b98e4bc4735d265dd5c0b76ad4d4 Mon Sep 17 00:00:00 2001
+From: Ken Chen <cken@google.com>
+Date: Thu, 30 Jul 2020 13:24:16 +0800
+Subject: [PATCH] [Q_asb_2020-11] Fix OOB read in DNS resolver
+
+The remote server specifies resplen, the length of the response it
+intends to send. anssiz represents the size of the destination buffer.
+If the reported resplen is larger than the anssiz, the code correctly
+only reads up to anssiz bytes, but returns resplen. so later functions
+will access far out of bounds.
+
+The fix ensures that the length of send_vc return does not exceed the
+buffer size.
+
+(Manually backport commit from ag/12280247, since it's different git
+project on qt-dev. Use aosp/1302595 as Merged-In tag to avoid conflict)
+
+Bug: 161362564
+Test: atest pass
+Change-Id: Id4b5df1be4652e4623847b0b0bad0af65b80fdd5
+Merged-In: I1ff2dc09f41f76973c5f066b07b15388e722b375
+(cherry picked from commit 11ad8ac8e1f6b3c7f50ca45b5de2f40e30f35cfb)
+---
+ resolv/res_send.cpp    | 5 ++++-
+ server/AndroidTest.xml | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/resolv/res_send.cpp b/resolv/res_send.cpp
+index 1ccfc741..1dff2038 100644
+--- a/resolv/res_send.cpp
++++ b/resolv/res_send.cpp
+@@ -931,6 +931,9 @@ read_len:
+             else
+                 break;
+         }
++        LOG(WARNING) << __func__ << ": resplen " << resplen << " exceeds buf size " << anssiz;
++        // return size should never exceed container size
++        resplen = anssiz;
+     }
+     /*
+      * If the calling application has bailed out of
+@@ -941,7 +944,7 @@ read_len:
+      */
+     if (hp->id != anhp->id) {
+         LOG(DEBUG) << __func__ << ": ld answer (unexpected):";
+-        res_pquery(ans, (resplen > anssiz) ? anssiz : resplen);
++        res_pquery(ans, resplen);
+         goto read_len;
+     }
+ 
+diff --git a/server/AndroidTest.xml b/server/AndroidTest.xml
+index 2501d781..fbb0be72 100644
+--- a/server/AndroidTest.xml
++++ b/server/AndroidTest.xml
+@@ -14,6 +14,7 @@
+      limitations under the License.
+ -->
+ <configuration description="Config for netd_unit_test">
++    <target_preparer class="com.android.tradefed.targetprep.RootTargetPreparer"/>
+     <target_preparer class="com.android.tradefed.targetprep.PushFilePreparer">
+         <option name="cleanup" value="true" />
+         <option name="push" value="netd_unit_test->/data/local/tmp/netd_unit_test" />
+-- 
+2.34.1
+

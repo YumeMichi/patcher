@@ -1,0 +1,61 @@
+From 37ce77057074533f436554208404dfe252187f17 Mon Sep 17 00:00:00 2001
+From: Christopher Ferris <cferris@google.com>
+Date: Tue, 26 May 2020 10:33:18 -0700
+Subject: [PATCH] [Q_asb_2020-11] Fail explicitly on length overflow.
+
+Instead of aborting when FileMap::create detects an overflow, detect the
+overflow directly and fail the call.
+
+Bug: 156997193
+
+Test: Ran unit tests, including new unit test that aborted before.
+Change-Id: Ie49975b8949fd12bbde14346ec9bbb774ef88a51
+Merged-In: Ie49975b8949fd12bbde14346ec9bbb774ef88a51
+(cherry picked from commit 68604b9c29b5bd11e2e2dbb848d6b364bf627d21)
+(cherry picked from commit f846413e621d7245d8e78f04349a6a93d2bbbea4)
+---
+ libutils/FileMap.cpp      |  6 +++++-
+ libutils/FileMap_test.cpp | 13 +++++++++++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/libutils/FileMap.cpp b/libutils/FileMap.cpp
+index 1202c156d..c8286311f 100644
+--- a/libutils/FileMap.cpp
++++ b/libutils/FileMap.cpp
+@@ -189,7 +189,11 @@ bool FileMap::create(const char* origFileName, int fd, off64_t offset, size_t le
+ 
+     int adjust = offset % mPageSize;
+     off64_t adjOffset = offset - adjust;
+-    size_t adjLength = length + adjust;
++    size_t adjLength;
++    if (__builtin_add_overflow(length, adjust, &adjLength)) {
++        ALOGE("adjusted length overflow: length %zu adjust %d", length, adjust);
++        return false;
++    }
+ 
+     int flags = MAP_SHARED;
+     int prot = PROT_READ;
+diff --git a/libutils/FileMap_test.cpp b/libutils/FileMap_test.cpp
+index 576d89bbe..096e27a56 100644
+--- a/libutils/FileMap_test.cpp
++++ b/libutils/FileMap_test.cpp
+@@ -32,3 +32,16 @@ TEST(FileMap, zero_length_mapping) {
+     ASSERT_EQ(0u, m.getDataLength());
+     ASSERT_EQ(4096, m.getDataOffset());
+ }
++
++TEST(FileMap, offset_overflow) {
++    // Make sure that an end that overflows SIZE_MAX will not abort.
++    // See http://b/156997193.
++    TemporaryFile tf;
++    ASSERT_TRUE(tf.fd != -1);
++
++    off64_t offset = 200;
++    size_t length = SIZE_MAX;
++
++    android::FileMap m;
++    ASSERT_FALSE(m.create("test", tf.fd, offset, length, true));
++}
+-- 
+2.34.1
+

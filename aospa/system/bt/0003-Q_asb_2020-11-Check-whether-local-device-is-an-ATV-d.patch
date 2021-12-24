@@ -1,0 +1,164 @@
+From 2fe6e8bb031d6ed2e320f85c9f4f9f3e7209223f Mon Sep 17 00:00:00 2001
+From: Rahul Sabnis <rahulsabnis@google.com>
+Date: Fri, 31 Jul 2020 19:44:27 -0700
+Subject: [PATCH 3/5] [Q_asb_2020-11] Check whether local device is an ATV
+ device to determine whether to show the consent dialog for BLE pairing in
+ JUSTWORKS and ENCRYPTION_ONLY mode
+
+Tag: #feature
+Bug: 157038281
+Test: Manual
+Merged-In: I6d06f5996da71e5a1407e544b0023d82924aa56f
+Change-Id: I6d06f5996da71e5a1407e544b0023d82924aa56f
+(cherry picked from commit cd3398b4e26f25cc6fe4d6928b258f76203de502)
+---
+ btif/include/btif_api.h                | 12 ++++++++++++
+ btif/src/bluetooth.cc                  |  6 +++++-
+ include/hardware/bluetooth.h           |  4 +++-
+ service/hal/bluetooth_interface.cc     |  2 +-
+ stack/smp/smp_act.cc                   | 11 +++++++----
+ test/suite/adapter/adapter_unittest.cc |  2 +-
+ 6 files changed, 29 insertions(+), 8 deletions(-)
+
+diff --git a/btif/include/btif_api.h b/btif/include/btif_api.h
+index bb8e69093a..50d833f300 100644
+--- a/btif/include/btif_api.h
++++ b/btif/include/btif_api.h
+@@ -116,6 +116,18 @@ bool is_restricted_mode(void);
+  ******************************************************************************/
+ bool is_niap_mode(void);
+ 
++/*******************************************************************************
++ *
++ * Function         is_atv_device
++ *
++ * Description      Returns true if the local device is an Android TV
++ *                  device, false if it is not.
++ *
++ * Returns          bool
++ *
++ ******************************************************************************/
++bool is_atv_device(void);
++
+ /*******************************************************************************
+  *
+  * Function         btif_get_adapter_properties
+diff --git a/btif/src/bluetooth.cc b/btif/src/bluetooth.cc
+index 1599311d91..158a739ca9 100644
+--- a/btif/src/bluetooth.cc
++++ b/btif/src/bluetooth.cc
+@@ -82,6 +82,7 @@ using bluetooth::hearing_aid::HearingAidInterface;
+ bt_callbacks_t* bt_hal_cbacks = NULL;
+ bool restricted_mode = false;
+ bool niap_mode = false;
++bool is_local_device_atv = false;
+ 
+ /*******************************************************************************
+  *  Externs
+@@ -134,7 +135,7 @@ static bool is_profile(const char* p1, const char* p2) {
+  ****************************************************************************/
+ 
+ static int init(bt_callbacks_t* callbacks, bool start_restricted,
+-                bool is_niap_mode) {
++                bool is_niap_mode, bool is_atv) {
+   LOG_INFO(LOG_TAG, "%s: start restricted = %d ; niap = %d", __func__,
+            start_restricted, is_niap_mode);
+ 
+@@ -147,6 +148,7 @@ static int init(bt_callbacks_t* callbacks, bool start_restricted,
+   bt_hal_cbacks = callbacks;
+   restricted_mode = start_restricted;
+   niap_mode = is_niap_mode;
++  is_local_device_atv = is_atv;
+   stack_manager_get_interface()->init_stack();
+   btif_debug_init();
+   return BT_STATUS_SUCCESS;
+@@ -171,6 +173,8 @@ static void cleanup(void) { stack_manager_get_interface()->clean_up_stack(); }
+ bool is_restricted_mode() { return restricted_mode; }
+ bool is_niap_mode() { return niap_mode; }
+ 
++bool is_atv_device() { return is_local_device_atv; }
++
+ static int get_adapter_properties(void) {
+   /* sanity check */
+   if (!interface_ready()) return BT_STATUS_NOT_READY;
+diff --git a/include/hardware/bluetooth.h b/include/hardware/bluetooth.h
+index 604ec4c0bc..cd070a7fb2 100644
+--- a/include/hardware/bluetooth.h
++++ b/include/hardware/bluetooth.h
+@@ -470,8 +470,10 @@ typedef struct {
+    * restricted mode, bonds that are created are marked as restricted in the
+    * config file. These devices are deleted upon leaving restricted mode.
+    * The |is_niap_mode| flag inits the adapter in NIAP mode.
++   * The |is_atv| flag indicates whether the local device is an Android TV
+    */
+-  int (*init)(bt_callbacks_t* callbacks, bool guest_mode, bool is_niap_mode);
++  int (*init)(bt_callbacks_t* callbacks, bool guest_mode,
++              bool is_niap_mode, bool is_atv);
+ 
+   /** Enable Bluetooth. */
+   int (*enable)();
+diff --git a/service/hal/bluetooth_interface.cc b/service/hal/bluetooth_interface.cc
+index 5ca220ceef..b87ee8c599 100644
+--- a/service/hal/bluetooth_interface.cc
++++ b/service/hal/bluetooth_interface.cc
+@@ -254,7 +254,7 @@ class BluetoothInterfaceImpl : public BluetoothInterface {
+ 
+     // Initialize the Bluetooth interface. Set up the adapter (Bluetooth DM) API
+     // callbacks.
+-    status = hal_iface_->init(&bt_callbacks, false, false);
++    status = hal_iface_->init(&bt_callbacks, false, false, false);
+     if (status != BT_STATUS_SUCCESS) {
+       LOG(ERROR) << "Failed to initialize Bluetooth stack";
+       return false;
+diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
+index 1239542225..22d99588cc 100644
+--- a/stack/smp/smp_act.cc
++++ b/stack/smp/smp_act.cc
+@@ -19,6 +19,7 @@
+ #include <cutils/log.h>
+ #include <log/log.h>
+ #include <string.h>
++#include "btif_api.h"
+ #include "btif_common.h"
+ #include "btif_storage.h"
+ #include "device/include/interop.h"
+@@ -1301,8 +1302,9 @@ void smp_decide_association_model(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
+         smp_int_data.status = SMP_PAIR_AUTH_FAIL;
+         int_evt = SMP_AUTH_CMPL_EVT;
+       } else {
+-        if (p_cb->local_io_capability != SMP_IO_CAP_NONE &&
+-            p_cb->local_io_capability != SMP_IO_CAP_IN) {
++        if (!is_atv_device() &&
++            (p_cb->local_io_capability == SMP_IO_CAP_IO ||
++             p_cb->local_io_capability == SMP_IO_CAP_KBDISP)) {
+           /* display consent dialog if this device has a display */
+           SMP_TRACE_DEBUG("ENCRYPTION_ONLY showing Consent Dialog");
+           p_cb->cb_evt = SMP_CONSENT_REQ_EVT;
+@@ -1656,8 +1658,9 @@ void smp_process_peer_nonce(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
+       }
+ 
+       if (p_cb->selected_association_model == SMP_MODEL_SEC_CONN_JUSTWORKS) {
+-        if (p_cb->local_io_capability != SMP_IO_CAP_NONE &&
+-            p_cb->local_io_capability != SMP_IO_CAP_IN) {
++        if (!is_atv_device() &&
++            (p_cb->local_io_capability == SMP_IO_CAP_IO ||
++             p_cb->local_io_capability == SMP_IO_CAP_KBDISP)) {
+           /* display consent dialog */
+           SMP_TRACE_DEBUG("JUST WORKS showing Consent Dialog");
+           p_cb->cb_evt = SMP_CONSENT_REQ_EVT;
+diff --git a/test/suite/adapter/adapter_unittest.cc b/test/suite/adapter/adapter_unittest.cc
+index 7a26e28f1b..5079835301 100644
+--- a/test/suite/adapter/adapter_unittest.cc
++++ b/test/suite/adapter/adapter_unittest.cc
+@@ -179,7 +179,7 @@ TEST_F(BluetoothTest, AdapterCleanupDuringDiscovery) {
+   ASSERT_TRUE(bt_callbacks != nullptr);
+ 
+   for (int i = 0; i < kTestRepeatCount; ++i) {
+-    bt_interface()->init(bt_callbacks, false, false);
++    bt_interface()->init(bt_callbacks, false, false, false);
+     EXPECT_EQ(bt_interface()->enable(), BT_STATUS_SUCCESS);
+     semaphore_wait(adapter_state_changed_callback_sem_);
+     EXPECT_EQ(GetState(), BT_STATE_ON) << "Adapter did not turn on.";
+-- 
+2.34.1
+

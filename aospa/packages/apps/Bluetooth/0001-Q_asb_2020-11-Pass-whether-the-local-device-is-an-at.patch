@@ -1,0 +1,110 @@
+From 3c95ea9bab07601c221c9b10071a0c44caddc39b Mon Sep 17 00:00:00 2001
+From: Rahul Sabnis <rahulsabnis@google.com>
+Date: Fri, 31 Jul 2020 19:47:06 -0700
+Subject: [PATCH] [Q_asb_2020-11] Pass whether the local device is an atv
+ device to the native layer to determine whether to include pairing dialogs
+ for justworks and encryption only LE pairing
+
+Tag: #feature
+Bug: 157038281
+Test: Manual
+Merged-In: Ib7575ff3d5f7e0c208743eff652440f7947dfed7
+Change-Id: Ib7575ff3d5f7e0c208743eff652440f7947dfed7
+(cherry picked from commit 9cfb9204e573b34da01415f32798cb5376f95555)
+---
+ jni/com_android_bluetooth_btservice_AdapterService.cpp   | 7 ++++---
+ src/com/android/bluetooth/btservice/AdapterService.java  | 9 +++++++--
+ .../android/bluetooth/btservice/AdapterServiceTest.java  | 3 ++-
+ .../android/bluetooth/btservice/ProfileServiceTest.java  | 3 ++-
+ 4 files changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/jni/com_android_bluetooth_btservice_AdapterService.cpp b/jni/com_android_bluetooth_btservice_AdapterService.cpp
+index 3e4a9bff1..ec454d145 100644
+--- a/jni/com_android_bluetooth_btservice_AdapterService.cpp
++++ b/jni/com_android_bluetooth_btservice_AdapterService.cpp
+@@ -684,7 +684,7 @@ static void classInitNative(JNIEnv* env, jclass clazz) {
+ }
+ 
+ static bool initNative(JNIEnv* env, jobject obj, jboolean isGuest,
+-                       jboolean isNiapMode) {
++                       jboolean isNiapMode, jboolean isAtvDevice) {
+   ALOGV("%s", __func__);
+ 
+   android_bluetooth_UidTraffic.clazz =
+@@ -700,7 +700,8 @@ static bool initNative(JNIEnv* env, jobject obj, jboolean isGuest,
+ 
+   int ret = sBluetoothInterface->init(&sBluetoothCallbacks,
+                                       isGuest == JNI_TRUE ? 1 : 0,
+-                                      isNiapMode == JNI_TRUE ? 1 : 0);
++                                      isNiapMode == JNI_TRUE ? 1 : 0,
++                                      isAtvDevice == JNI_TRUE ? 1 : 0);
+   if (ret != BT_STATUS_SUCCESS) {
+     ALOGE("Error while setting the callbacks: %d\n", ret);
+     sBluetoothInterface = NULL;
+@@ -1240,7 +1241,7 @@ static jbyteArray obfuscateAddressNative(JNIEnv* env, jobject obj,
+ static JNINativeMethod sMethods[] = {
+     /* name, signature, funcPtr */
+     {"classInitNative", "()V", (void*)classInitNative},
+-    {"initNative", "(ZZ)Z", (void*)initNative},
++    {"initNative", "(ZZZ)Z", (void*)initNative},
+     {"cleanupNative", "()V", (void*)cleanupNative},
+     {"enableNative", "()Z", (void*)enableNative},
+     {"disableNative", "()Z", (void*)disableNative},
+diff --git a/src/com/android/bluetooth/btservice/AdapterService.java b/src/com/android/bluetooth/btservice/AdapterService.java
+index 81fb6987b..1783332fa 100644
+--- a/src/com/android/bluetooth/btservice/AdapterService.java
++++ b/src/com/android/bluetooth/btservice/AdapterService.java
+@@ -430,7 +430,11 @@ public class AdapterService extends Service {
+         mVendorSocket = new VendorSocket(this);
+         mAdapterStateMachine = AdapterState.make(this);
+         mJniCallbacks = new JniCallbacks(this, mAdapterProperties);
+-        initNative(isGuest(), isNiapMode());
++
++        // Android TV doesn't show consent dialogs for just works and encryption only le pairing
++        boolean isAtvDevice = getApplicationContext().getPackageManager().hasSystemFeature(
++                PackageManager.FEATURE_LEANBACK_ONLY);
++        initNative(isGuest(), isNiapMode(), isAtvDevice);
+         mNativeAvailable = true;
+         mCallbacks = new RemoteCallbackList<IBluetoothCallback>();
+         mAppOps = getSystemService(AppOpsManager.class);
+@@ -3108,7 +3112,8 @@ public class AdapterService extends Service {
+ 
+     static native void classInitNative();
+ 
+-    native boolean initNative(boolean startRestricted, boolean isNiapMode);
++    native boolean initNative(boolean startRestricted, boolean isNiapMode,
++            boolean isAtvDevice);
+ 
+     native void cleanupNative();
+ 
+diff --git a/tests/unit/src/com/android/bluetooth/btservice/AdapterServiceTest.java b/tests/unit/src/com/android/bluetooth/btservice/AdapterServiceTest.java
+index 2d58a6096..28866aac5 100644
+--- a/tests/unit/src/com/android/bluetooth/btservice/AdapterServiceTest.java
++++ b/tests/unit/src/com/android/bluetooth/btservice/AdapterServiceTest.java
+@@ -101,7 +101,8 @@ public class AdapterServiceTest {
+         }
+         Assert.assertNotNull(Looper.myLooper());
+         AdapterService adapterService = new AdapterService();
+-        adapterService.initNative(false /* is_restricted */, false /* is_niap_mode */);
++        adapterService.initNative(false /* is_restricted */, false /* is_niap_mode */,
++                false);
+         adapterService.cleanupNative();
+         HashMap<String, HashMap<String, String>> adapterConfig = TestUtils.readAdapterConfig();
+         Assert.assertNotNull(adapterConfig);
+diff --git a/tests/unit/src/com/android/bluetooth/btservice/ProfileServiceTest.java b/tests/unit/src/com/android/bluetooth/btservice/ProfileServiceTest.java
+index 3fea6f5cc..396bb5da3 100644
+--- a/tests/unit/src/com/android/bluetooth/btservice/ProfileServiceTest.java
++++ b/tests/unit/src/com/android/bluetooth/btservice/ProfileServiceTest.java
+@@ -96,7 +96,8 @@ public class ProfileServiceTest {
+ 
+         mProfiles = Config.getSupportedProfiles();
+ 
+-        mMockAdapterService.initNative(false /* is_restricted */, false /* is_niap_mode */);
++        mMockAdapterService.initNative(false /* is_restricted */, false /* is_niap_mode */,
++                false);
+ 
+         TestUtils.setAdapterService(mMockAdapterService);
+ 
+-- 
+2.34.1
+
