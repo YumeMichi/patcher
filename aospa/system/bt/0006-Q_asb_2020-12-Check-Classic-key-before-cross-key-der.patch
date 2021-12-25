@@ -1,0 +1,43 @@
+From 93d970d513466bcfb5909e41c1ae0b5133843865 Mon Sep 17 00:00:00 2001
+From: Chen Chen <cncn@google.com>
+Date: Wed, 23 Sep 2020 17:02:58 -0700
+Subject: [PATCH 6/7] [Q_asb_2020-12] Check Classic key before cross-key
+ derivation
+
+Bug: 158854097
+Test: atest net_test_stack_smp
+Tag: #security
+Ignore-AOSP-First: Security fix
+
+Change-Id: Id88241324e9fb89ef14e50b52eb459a0d81c492b
+(cherry picked from commit d3521aa04a3c588cf581c903ea8b9301ae62e3c0)
+---
+ stack/smp/smp_act.cc | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
+index 22d99588cc..bfce7cbce2 100644
+--- a/stack/smp/smp_act.cc
++++ b/stack/smp/smp_act.cc
+@@ -1254,7 +1254,17 @@ void smp_key_distribution(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
+     /* state check to prevent re-entrant */
+     if (smp_get_state() == SMP_STATE_BOND_PENDING) {
+       if (p_cb->derive_lk) {
+-        smp_derive_link_key_from_long_term_key(p_cb, NULL);
++        tBTM_SEC_DEV_REC* p_dev_rec = btm_find_dev(p_cb->pairing_bda);
++        if (!(p_dev_rec->sec_flags & BTM_SEC_LE_LINK_KEY_AUTHED) &&
++            (p_dev_rec->sec_flags & BTM_SEC_LINK_KEY_AUTHED)) {
++          SMP_TRACE_DEBUG(
++              "%s BR key is higher security than existing LE keys, don't "
++              "derive LK from LTK",
++              __func__);
++          android_errorWriteLog(0x534e4554, "158854097");
++        } else {
++          smp_derive_link_key_from_long_term_key(p_cb, NULL);
++        }
+         p_cb->derive_lk = false;
+       }
+ 
+-- 
+2.34.1
+

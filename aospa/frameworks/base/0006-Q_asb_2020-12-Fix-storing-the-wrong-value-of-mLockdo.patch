@@ -1,0 +1,39 @@
+From 4f9a1ce99d17f395d73f4b29767e4cc2638491a6 Mon Sep 17 00:00:00 2001
+From: lucaslin <lucaslin@google.com>
+Date: Mon, 5 Oct 2020 20:00:07 +0800
+Subject: [PATCH 6/7] [Q_asb_2020-12] Fix storing the wrong value of mLockdown
+ in setting
+
+When user is stopped, the Vpn#onUserStopped() will be called and
+the value of mLockdown will be set to false then store into
+setting.
+This is a wrong behavior because user doesn't change it, so for
+this kind of case, there is no need to store the value of
+mLockdown in setting.
+In fact, there is no need to call Vpn#saveAlwaysOnPackage() when
+user is stopped because there is nothing changed.
+
+Bug: 168500792
+Test: atest FrameworksNetTests
+Change-Id: Ie85a347216614b7873bfdf199165d89527ada3a8
+(cherry picked from commit 9226fc3723a477751705011cd7eecf063b1c3707)
+---
+ services/core/java/com/android/server/connectivity/Vpn.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/connectivity/Vpn.java b/services/core/java/com/android/server/connectivity/Vpn.java
+index 08b130d21be1..b18d6270bfd9 100644
+--- a/services/core/java/com/android/server/connectivity/Vpn.java
++++ b/services/core/java/com/android/server/connectivity/Vpn.java
+@@ -1332,7 +1332,7 @@ public class Vpn {
+      */
+     public synchronized void onUserStopped() {
+         // Switch off networking lockdown (if it was enabled)
+-        setLockdown(false);
++        setVpnForcedLocked(false);
+         mAlwaysOn = false;
+ 
+         // Quit any active connections
+-- 
+2.34.1
+

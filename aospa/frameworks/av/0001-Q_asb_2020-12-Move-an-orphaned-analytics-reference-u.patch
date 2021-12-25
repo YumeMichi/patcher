@@ -1,0 +1,47 @@
+From be15fe261e204ff308004808bb3ff267666676d0 Mon Sep 17 00:00:00 2001
+From: Ray Essick <essick@google.com>
+Date: Thu, 1 Oct 2020 12:09:00 -0700
+Subject: [PATCH] [Q_asb_2020-12] Move an orphaned analytics reference under a
+ mutex
+
+Bug: 167695677
+Bug: 151644303
+Test: poc from bugs
+Merged-In: I75f29a6254c5eab5d4f524ee7a7ef59f93a0b405
+Change-Id: I0a5a532e9e96baf95efc2b82dba07adc7baf4930
+(cherry picked from commit 8e4dd95f57ac2f3e675527ec7c77977889dc3cb3)
+---
+ media/libmediaplayerservice/nuplayer/NuPlayerDriver.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/media/libmediaplayerservice/nuplayer/NuPlayerDriver.cpp b/media/libmediaplayerservice/nuplayer/NuPlayerDriver.cpp
+index 176cc04007..7cf5b67ed4 100644
+--- a/media/libmediaplayerservice/nuplayer/NuPlayerDriver.cpp
++++ b/media/libmediaplayerservice/nuplayer/NuPlayerDriver.cpp
+@@ -556,7 +556,6 @@ void NuPlayerDriver::updateMetrics(const char *where) {
+     // getDuration() uses mLock
+     int duration_ms = -1;
+     getDuration(&duration_ms);
+-    mAnalyticsItem->setInt64(kPlayerDuration, duration_ms);
+ 
+     mPlayer->updateInternalTimers();
+ 
+@@ -578,13 +577,14 @@ void NuPlayerDriver::updateMetrics(const char *where) {
+     // we also avoid any races within mAnalyticsItem machinery
+     Mutex::Autolock autoLock(mMetricsLock);
+ 
++    mAnalyticsItem->setInt64(kPlayerDuration, duration_ms);
++
+     mAnalyticsItem->setInt64(kPlayerPlaying, (playingTimeUs+500)/1000 );
+ 
+     if (mRebufferingEvents != 0) {
+         mAnalyticsItem->setInt64(kPlayerRebuffering, (rebufferingTimeUs+500)/1000 );
+         mAnalyticsItem->setInt32(kPlayerRebufferingCount, rebufferingEvents);
+         mAnalyticsItem->setInt32(kPlayerRebufferingAtExit, rebufferingAtExit);
+-
+      }
+ 
+     mAnalyticsItem->setCString(kPlayerDataSourceType, mPlayer->getDataSourceType());
+-- 
+2.34.1
+

@@ -1,0 +1,34 @@
+From 38b70951307019767bcb8a3a35f44f917633eb0e Mon Sep 17 00:00:00 2001
+From: wilsonshih <wilsonshih@google.com>
+Date: Wed, 13 May 2020 16:09:35 +0800
+Subject: [PATCH 4/7] [Q_asb_2020-12] Make WallpaperMS bind wallpaper component
+ PendingIntent immutable.
+
+Require that the PendingIntent be immutable so that a malicious app is
+not able to hijack and mutate any of the details.
+
+Fixes: 154915372
+Test: build & flash, change wallpaper manually.
+Change-Id: I59b48811b26736bf0575769107dd940ca33ccf8d
+(cherry picked from commit d4bd69cef05d379555418a8fe748ec94ff6bd6d0)
+(cherry picked from commit d337ac7a46cfd4eae52f34e58f952a6b3c710f25)
+---
+ .../com/android/server/wallpaper/WallpaperManagerService.java   | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/wallpaper/WallpaperManagerService.java b/services/core/java/com/android/server/wallpaper/WallpaperManagerService.java
+index 0e2f0ce991c7..37ae3340d319 100644
+--- a/services/core/java/com/android/server/wallpaper/WallpaperManagerService.java
++++ b/services/core/java/com/android/server/wallpaper/WallpaperManagerService.java
+@@ -2709,7 +2709,7 @@ public class WallpaperManagerService extends IWallpaperManager.Stub
+                     mContext, 0,
+                     Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER),
+                             mContext.getText(com.android.internal.R.string.chooser_wallpaper)),
+-                    0, null, new UserHandle(serviceUserId)));
++                    PendingIntent.FLAG_IMMUTABLE, null, new UserHandle(serviceUserId)));
+             if (!mContext.bindServiceAsUser(intent, newConn,
+                     Context.BIND_AUTO_CREATE | Context.BIND_SHOWING_UI
+                             | Context.BIND_FOREGROUND_SERVICE_WHILE_AWAKE
+-- 
+2.34.1
+

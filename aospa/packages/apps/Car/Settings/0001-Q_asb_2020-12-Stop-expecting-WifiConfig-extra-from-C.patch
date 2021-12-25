@@ -1,0 +1,60 @@
+From 66fb645e89c25d57ee6390d2cb5af4edb37f277b Mon Sep 17 00:00:00 2001
+From: David Su <dysu@google.com>
+Date: Thu, 18 Jun 2020 19:13:22 -0700
+Subject: [PATCH] [Q_asb_2020-12] Stop expecting WifiConfig extra from
+ CONFIGURED_NETWORKS_CHANGED_ACTION broadcast
+
+WifiConfig is no longer sent in this broadcast
+due to privacy concerns, so stop reading this
+extra. Instead, query WifiManager to find the
+matching WifiConfiguration to update.
+
+Bug: 158874479
+Test: make CarSettingsRoboTests -j40
+Change-Id: Ief5caf8727c9c2334a9a0610d015ec8514eb1cc9
+---
+ .../wifi/details/WifiInfoProviderImpl.java    | 21 +++++++++++--------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/src/com/android/car/settings/wifi/details/WifiInfoProviderImpl.java b/src/com/android/car/settings/wifi/details/WifiInfoProviderImpl.java
+index 3ba3dc29..3e71b593 100644
+--- a/src/com/android/car/settings/wifi/details/WifiInfoProviderImpl.java
++++ b/src/com/android/car/settings/wifi/details/WifiInfoProviderImpl.java
+@@ -75,15 +75,7 @@ public class WifiInfoProviderImpl implements WifiInfoProvider {
+             switch (intent.getAction()) {
+                 case WifiManager.CONFIGURED_NETWORKS_CHANGED_ACTION:
+                     LOG.d("Wifi Config changed.");
+-                    if (!intent.getBooleanExtra(WifiManager.EXTRA_MULTIPLE_NETWORKS_CHANGED,
+-                            false /* defaultValue */)) {
+-                        // only one network changed
+-                        WifiConfiguration wifiConfiguration = intent
+-                                .getParcelableExtra(WifiManager.EXTRA_WIFI_CONFIGURATION);
+-                        if (mAccessPoint.matches(wifiConfiguration)) {
+-                            mWifiConfig = wifiConfiguration;
+-                        }
+-                    }
++                    updateMatchingWifiConfig();
+                     updateInfo();
+                     for (Listener listener : getListenersCopy()) {
+                         listener.onWifiConfigurationChanged(mWifiConfig, mNetworkInfo, mWifiInfo);
+@@ -99,6 +91,17 @@ public class WifiInfoProviderImpl implements WifiInfoProvider {
+                     break;
+             }
+         }
++
++        private void updateMatchingWifiConfig() {
++            // use getPrivilegedConfiguredNetworks() to get Passpoint & other ephemeral networks
++            for (WifiConfiguration wifiConfiguration :
++                    mWifiManager.getPrivilegedConfiguredNetworks()) {
++                if (mAccessPoint.matches(wifiConfiguration)) {
++                    mWifiConfig = wifiConfiguration;
++                    break;
++                }
++            }
++        }
+     };
+ 
+     private final NetworkRequest mNetworkRequest = new NetworkRequest.Builder()
+-- 
+2.34.1
+

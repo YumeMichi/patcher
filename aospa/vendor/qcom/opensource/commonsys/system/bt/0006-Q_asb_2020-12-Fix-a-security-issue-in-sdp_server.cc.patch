@@ -1,0 +1,43 @@
+From 539020fd2b74a3bdb5dc27bd16e54fbda01ff32b Mon Sep 17 00:00:00 2001
+From: Hansong Zhang <hsz@google.com>
+Date: Tue, 6 Oct 2020 14:48:27 -0700
+Subject: [PATCH 6/6] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
+
+Bug: 169342531
+Test: POC
+Change-Id: I0e8cdb9a00184f62d11fb06bc30f07b2a35bc49e
+(cherry picked from commit d7573f4fa9007ab7750edfc56305eea97c525cdb)
+---
+ stack/sdp/sdp_server.cc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/stack/sdp/sdp_server.cc b/stack/sdp/sdp_server.cc
+index daf0de83a..f312ea0d3 100644
+--- a/stack/sdp/sdp_server.cc
++++ b/stack/sdp/sdp_server.cc
+@@ -477,9 +477,11 @@ void sdp_server_handle_client_req(tCONN_CB* p_ccb, BT_HDR* p_msg) {
+ 
+   if (p_req + sizeof(pdu_id) + sizeof(trans_num) > p_req_end) {
+     android_errorWriteLog(0x534e4554, "69384124");
++    android_errorWriteLog(0x534e4554, "169342531");
+     trans_num = 0;
+     sdpu_build_n_send_error(p_ccb, trans_num, SDP_INVALID_REQ_SYNTAX,
+                             SDP_TEXT_BAD_HEADER);
++    return;
+   }
+ 
+   /* The first byte in the message is the pdu type */
+@@ -490,8 +492,10 @@ void sdp_server_handle_client_req(tCONN_CB* p_ccb, BT_HDR* p_msg) {
+ 
+   if (p_req + sizeof(param_len) > p_req_end) {
+     android_errorWriteLog(0x534e4554, "69384124");
++    android_errorWriteLog(0x534e4554, "169342531");
+     sdpu_build_n_send_error(p_ccb, trans_num, SDP_INVALID_REQ_SYNTAX,
+                             SDP_TEXT_BAD_HEADER);
++    return;
+   }
+ 
+   BE_STREAM_TO_UINT16(param_len, p_req);
+-- 
+2.34.1
+

@@ -1,0 +1,60 @@
+From 61b8c1c2ca79755f58e69c29f48853bff0a8dab5 Mon Sep 17 00:00:00 2001
+From: David Su <dysu@google.com>
+Date: Thu, 18 Jun 2020 19:00:18 -0700
+Subject: [PATCH] [Q_asb_2020-12] Stop expecting WifiConfig extra from
+ CONFIGURED_NETWORKS_CHANGED_ACTION broadcast
+
+WifiConfig is no longer sent in this broadcast
+due to privacy concerns, so stop reading this
+extra. Instead, query WifiManager to find the
+matching WifiConfiguration to update.
+
+Bug: 158874479
+Test: make RunSettingsRoboTests -j40 ROBOTEST_FILTER="com.android.settings.wifi.details.WifiDetailPreferenceControllerTest"
+Change-Id: Ie52339220acbbe111a6aa5f785fbfa409c405b5b
+---
+ .../WifiDetailPreferenceController.java       | 21 +++++++++++--------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/src/com/android/settings/wifi/details/WifiDetailPreferenceController.java b/src/com/android/settings/wifi/details/WifiDetailPreferenceController.java
+index 0f6e5621be..8f51a0e773 100644
+--- a/src/com/android/settings/wifi/details/WifiDetailPreferenceController.java
++++ b/src/com/android/settings/wifi/details/WifiDetailPreferenceController.java
+@@ -199,15 +199,7 @@ public class WifiDetailPreferenceController extends AbstractPreferenceController
+         public void onReceive(Context context, Intent intent) {
+             switch (intent.getAction()) {
+                 case WifiManager.CONFIGURED_NETWORKS_CHANGED_ACTION:
+-                    if (!intent.getBooleanExtra(WifiManager.EXTRA_MULTIPLE_NETWORKS_CHANGED,
+-                            false /* defaultValue */)) {
+-                        // only one network changed
+-                        WifiConfiguration wifiConfiguration = intent
+-                                .getParcelableExtra(WifiManager.EXTRA_WIFI_CONFIGURATION);
+-                        if (mAccessPoint.matches(wifiConfiguration)) {
+-                            mWifiConfig = wifiConfiguration;
+-                        }
+-                    }
++                    updateMatchingWifiConfig();
+                     // fall through
+                 case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+                 case WifiManager.RSSI_CHANGED_ACTION:
+@@ -215,6 +207,17 @@ public class WifiDetailPreferenceController extends AbstractPreferenceController
+                     break;
+             }
+         }
++
++        private void updateMatchingWifiConfig() {
++            // use getPrivilegedConfiguredNetworks() to get Passpoint & other ephemeral networks
++            for (WifiConfiguration wifiConfiguration :
++                    mWifiManager.getPrivilegedConfiguredNetworks()) {
++                if (mAccessPoint.matches(wifiConfiguration)) {
++                    mWifiConfig = wifiConfiguration;
++                    break;
++                }
++            }
++        }
+     };
+ 
+     private final NetworkRequest mNetworkRequest = new NetworkRequest.Builder()
+-- 
+2.34.1
+

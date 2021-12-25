@@ -1,0 +1,78 @@
+From eb417217e3e82f14309b7dad9903abc0b9ed3798 Mon Sep 17 00:00:00 2001
+From: James Zern <jzern@google.com>
+Date: Wed, 23 Sep 2020 10:49:22 -0700
+Subject: [PATCH] [Q_asb_2020-12] cherry-pick 0a0368368 Check the conformance
+ requirements in Sec. 6.8.1.
+
+fixes a segfault with a malformed bitstream
+
++ correct README.version to have the right base commit and local
+modifications
+
+Bug: 166268541
+Test: aomdec + sargo hwsan
+Merged-In: I558248e2a0b4cfc4bc3d7c42c80505d82fb9804f
+Change-Id: Ib39bcdd0d2d397711216430ab3d13a4bb62d6508
+(cherry picked from commit bf15b1c4e96a9208bd8349481bb9fa8444b04725)
+---
+ README.android           |  4 ++--
+ README.version           |  7 +++----
+ libaom/av1/decoder/obu.c | 12 ++++++++++++
+ 3 files changed, 17 insertions(+), 6 deletions(-)
+
+diff --git a/README.android b/README.android
+index 668d27f..2fad782 100644
+--- a/README.android
++++ b/README.android
+@@ -4,9 +4,9 @@ Version: v1.0.0
+ License: BSD
+ License File: libaom/LICENSE
+ 
+-Date: Thursday November 29 2018
++Date: Friday March 29 2019
+ Branch: origin/master
+-Commit: 250bc3a61c501344523eec07fec35f304767260b
++Commit: 978ab9e6cd19904cdd54b69a4c30b10c747eb55a
+ 
+ Description:
+ Contains the sources used to compile libaom.
+diff --git a/README.version b/README.version
+index bbe2a6c..1368490 100644
+--- a/README.version
++++ b/README.version
+@@ -1,6 +1,5 @@
+-URL: https://aomedia.googlesource.com/aom/+archive/250bc3a61c501344523eec07fec35f304767260b.tar.gz
++URL: https://aomedia.googlesource.com/aom/+archive/978ab9e6cd19904cdd54b69a4c30b10c747eb55a.tar.gz
+ Version: v1.0.0
+ Local Modifications:
+-  Rename files to avoid object collisions:
+-    aom_dsp/x86/highbd_intrapred_sse2.asm
+-    aom_dsp/x86/intrapred_sse2.asm
++  Remove __clang__analyzer__ preprocessor directives (ag/7285842)
++  Cherry-pick 0a0368368 Check the conformance requirements in Sec. 6.8.1.
+diff --git a/libaom/av1/decoder/obu.c b/libaom/av1/decoder/obu.c
+index aaea572..e578163 100644
+--- a/libaom/av1/decoder/obu.c
++++ b/libaom/av1/decoder/obu.c
+@@ -764,6 +764,18 @@ int aom_decode_frame_from_obus(struct AV1Decoder *pbi, const uint8_t *data,
+       case OBU_FRAME_HEADER:
+       case OBU_REDUNDANT_FRAME_HEADER:
+       case OBU_FRAME:
++        if (obu_header.type == OBU_REDUNDANT_FRAME_HEADER) {
++          if (!pbi->seen_frame_header) {
++            cm->error.error_code = AOM_CODEC_CORRUPT_FRAME;
++            return -1;
++          }
++        } else {
++          // OBU_FRAME_HEADER or OBU_FRAME.
++          if (pbi->seen_frame_header) {
++            cm->error.error_code = AOM_CODEC_CORRUPT_FRAME;
++            return -1;
++          }
++        }
+         // Only decode first frame header received
+         if (!pbi->seen_frame_header ||
+             (cm->large_scale_tile && !pbi->camera_frame_header_ready)) {
+-- 
+2.34.1
+

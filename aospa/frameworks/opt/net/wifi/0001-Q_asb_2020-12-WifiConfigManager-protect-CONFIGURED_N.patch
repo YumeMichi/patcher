@@ -1,0 +1,58 @@
+From 32379e3f940a3b93e8a142cc396ca0049b63e7c1 Mon Sep 17 00:00:00 2001
+From: David Su <dysu@google.com>
+Date: Mon, 28 Sep 2020 19:55:29 -0700
+Subject: [PATCH] [Q_asb_2020-12] WifiConfigManager: protect
+ CONFIGURED_NETWORKS_CHANGED_ACTION with permissions
+
+Guard with ACCESS_WIFI_STATE & ACCESS_FINE_LOCATION permissions.
+
+Bug: 158874479
+Bug: 159373687
+Test: presubmit unit tests
+Test: Verify Settings still works correctly.
+
+Change-Id: I88d93006ff379105e13e1b339ec51757a56ac863
+Merged-In: I657063f68701d57cfeb3765dfbab25ba50ef7b97
+(cherry picked from commit ff831c8e8dff31c14b418cce9cfd238f46f5152f)
+---
+ .../java/com/android/server/wifi/WifiConfigManager.java   | 8 +++++++-
+ .../com/android/server/wifi/WifiConfigManagerTest.java    | 4 ++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/service/java/com/android/server/wifi/WifiConfigManager.java b/service/java/com/android/server/wifi/WifiConfigManager.java
+index 7ecdc3efa..c40104fa2 100644
+--- a/service/java/com/android/server/wifi/WifiConfigManager.java
++++ b/service/java/com/android/server/wifi/WifiConfigManager.java
+@@ -837,7 +837,13 @@ public class WifiConfigManager {
+         maskPasswordsInWifiConfiguration(broadcastNetwork);
+         intent.putExtra(WifiManager.EXTRA_WIFI_CONFIGURATION, broadcastNetwork);
+         intent.putExtra(WifiManager.EXTRA_CHANGE_REASON, reason);
+-        mContext.sendBroadcastAsUser(intent, UserHandle.ALL);
++        mContext.sendBroadcastAsUserMultiplePermissions(
++                intent,
++                UserHandle.ALL,
++                new String[]{
++                        android.Manifest.permission.ACCESS_WIFI_STATE,
++                        android.Manifest.permission.ACCESS_FINE_LOCATION,
++                });
+     }
+ 
+     /**
+diff --git a/tests/wifitests/src/com/android/server/wifi/WifiConfigManagerTest.java b/tests/wifitests/src/com/android/server/wifi/WifiConfigManagerTest.java
+index f90010711..294bdf27e 100644
+--- a/tests/wifitests/src/com/android/server/wifi/WifiConfigManagerTest.java
++++ b/tests/wifitests/src/com/android/server/wifi/WifiConfigManagerTest.java
+@@ -4902,8 +4902,8 @@ public class WifiConfigManagerTest {
+     private int verifyNetworkInBroadcastAndReturnReason(WifiConfiguration configuration) {
+         ArgumentCaptor<Intent> intentCaptor = ArgumentCaptor.forClass(Intent.class);
+         ArgumentCaptor<UserHandle> userHandleCaptor = ArgumentCaptor.forClass(UserHandle.class);
+-        mContextConfigStoreMockOrder.verify(mContext)
+-                .sendBroadcastAsUser(intentCaptor.capture(), userHandleCaptor.capture());
++        mContextConfigStoreMockOrder.verify(mContext).sendBroadcastAsUserMultiplePermissions(
++                intentCaptor.capture(), userHandleCaptor.capture(), any());
+ 
+         assertEquals(userHandleCaptor.getValue(), UserHandle.ALL);
+         Intent intent = intentCaptor.getValue();
+-- 
+2.34.1
+

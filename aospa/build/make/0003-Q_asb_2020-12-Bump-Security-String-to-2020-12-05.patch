@@ -1,0 +1,55 @@
+From 827643b74a75cffc550afca98b1e08a293865658 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Sat, 12 Dec 2020 15:58:04 -0700
+Subject: [PATCH 3/3] [Q_asb_2020-12] Bump Security String to 2020-12-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2020-0294   A-154915372  EoP    High       8.0, 8.1, 9, 10
+CVE-2020-0459   A-159373687  ID     High       8.0, 8.1, 9, 10
+CVE-2020-0463   A-169342531  ID     High       8.0, 8.1, 9, 10, 11
+CVE-2020-0464   A-150371903  ID     High       10
+CVE-2020-0467   A-168500792  ID     High       8.1, 9, 10, 11
+CVE-2020-0468   A-158484422  ID     High       10, 11
+CVE-2020-0470   A-166268541  ID     High       10, 11
+CVE-2020-15802  A-158854097  ID     High       8.0, 8.1, 9, 10, 11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2020-0099   A-141745510  EoP    High       8.0, 8.1, 9, 10
+CVE-2020-0458   A-160265164  RCE    Critical   8.0, 8.1, 9, 10
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2020-0440   A-162627132  EoP    High       11
+CVE-2020-0460   A-163413737  ID     High       11
+CVE-2020-0469   A-168692734  DoS    High       11
+
+Change-Id: I4172ccf129126f84050e68a14e239b7e03a22a44
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index b0374516c..9f4004a65 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2020-11-05
++      PLATFORM_SECURITY_PATCH := 2020-12-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+
