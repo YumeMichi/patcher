@@ -1,7 +1,7 @@
 From 5c35f9f6af0c2b5ed44bca9e9ee1106764dad767 Mon Sep 17 00:00:00 2001
 From: Seigo Nonaka <nona@google.com>
 Date: Fri, 4 Jun 2021 16:07:23 -0700
-Subject: [PATCH 50/57] [Q_asb_2021-09] Improve ellipsize performance
+Subject: [PATCH 50/61] [Q_asb_2021-09] Improve ellipsize performance
 
 Instead of iterate all ellipsized characters, only iterate the necessary
 ranges for copying.

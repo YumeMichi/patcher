@@ -1,0 +1,47 @@
+From f1c881114913a2f120dc57dba0a945cc87edf273 Mon Sep 17 00:00:00 2001
+From: Steven Moreland <smoreland@google.com>
+Date: Mon, 30 Aug 2021 15:41:44 -0700
+Subject: [PATCH 7/7] [Q_asb_2021-11] libbinder: uptimeMillis returns int64_t!
+
+This was limiting device uptime to ~1 month. Certainly, devices should
+update more frequently, but that decision should not be because of
+ubsan!
+
+This is a partial copy of the change
+Ifa00c32ee184795b03e16b39ac70ff41ebf00331 here.
+
+Bug: 197336441
+Test: TH
+Merged-In: Ifa00c32ee184795b03e16b39ac70ff41ebf00331
+Change-Id: Ib9f3e63e968ac77f0f6ea6447d586db588e9dbe4
+(cherry picked from commit 3ba4963f5baf1c9a3a461f1c6a0caa7fb65aa6db)
+---
+ libs/binder/IServiceManager.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/libs/binder/IServiceManager.cpp b/libs/binder/IServiceManager.cpp
+index 4ba6c2a923..8cd2d45c92 100644
+--- a/libs/binder/IServiceManager.cpp
++++ b/libs/binder/IServiceManager.cpp
+@@ -147,7 +147,8 @@ public:
+ 
+         const bool isVendorService =
+             strcmp(ProcessState::self()->getDriverName().c_str(), "/dev/vndbinder") == 0;
+-        const long timeout = uptimeMillis() + 5000;
++        const long timeout = 5000;
++        int64_t startTime = uptimeMillis();
+         if (!gSystemBootCompleted && !isVendorService) {
+             // Vendor code can't access system properties
+             char bootCompleted[PROPERTY_VALUE_MAX];
+@@ -158,7 +159,7 @@ public:
+         const long sleepTime = gSystemBootCompleted ? 1000 : 100;
+ 
+         int n = 0;
+-        while (uptimeMillis() < timeout) {
++        while (uptimeMillis() - startTime < timeout) {
+             n++;
+             ALOGI("Waiting for service '%s' on '%s'...", String8(name).string(),
+                 ProcessState::self()->getDriverName().c_str());
+-- 
+2.34.1
+

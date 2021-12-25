@@ -1,7 +1,7 @@
 From 196a8d165d5bedc37a79d0bcfde65451d2e6d335 Mon Sep 17 00:00:00 2001
 From: Denis Hsu <denis.hsu@mediatek.com>
 Date: Wed, 17 Jun 2020 10:17:30 +0800
-Subject: [PATCH 3/6] [Q_asb_2021-02] SF: update mInputFlinger on main thread
+Subject: [PATCH 3/7] [Q_asb_2021-02] SF: update mInputFlinger on main thread
 
 mInputFlinger can be accessed by bootFinished() and updateInputFlinger().
 These function can run in different thread at the same time, but

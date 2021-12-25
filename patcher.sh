@@ -27,6 +27,7 @@ REPOSITORIES=(
     'frameworks/opt/net/wifi'
     'frameworks/opt/telephony'
     'hardware/interfaces'
+    'hardware/nxp/nfc'
     'hardware/pa/interfaces'
     'hardware/qcom/wlan'
     'hardware/ril'

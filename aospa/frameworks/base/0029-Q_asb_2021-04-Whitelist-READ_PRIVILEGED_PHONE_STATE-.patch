@@ -1,7 +1,7 @@
 From ff02b79bb31bc1a63fc7d89b78863addc9c0f16f Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Wed, 19 Feb 2020 23:37:42 -0800
-Subject: [PATCH 29/57] [Q_asb_2021-04] Whitelist READ_PRIVILEGED_PHONE_STATE
+Subject: [PATCH 29/61] [Q_asb_2021-04] Whitelist READ_PRIVILEGED_PHONE_STATE
  for the contacts provider
 
 In Android 10 access to device identifiers was moved from a runtime

@@ -1,7 +1,7 @@
 From fbf63439062bffd2a95baccc1901d311e19f88e3 Mon Sep 17 00:00:00 2001
 From: John Reck <jreck@google.com>
 Date: Thu, 22 Apr 2021 16:55:09 -0400
-Subject: [PATCH 52/57] [Q_asb_2021-10] Fix a potential thread safety issue in
+Subject: [PATCH 52/61] [Q_asb_2021-10] Fix a potential thread safety issue in
  VectorDrawable
 
 Bug: 158839504

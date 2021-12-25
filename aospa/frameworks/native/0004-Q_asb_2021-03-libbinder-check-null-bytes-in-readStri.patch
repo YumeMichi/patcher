@@ -1,7 +1,7 @@
 From 9a9547f20ad11e6867df586e8084cd0af4d0dbac Mon Sep 17 00:00:00 2001
 From: Steven Moreland <smoreland@google.com>
 Date: Wed, 18 Nov 2020 00:32:42 +0000
-Subject: [PATCH 4/6] [Q_asb_2021-03] libbinder: check null bytes in
+Subject: [PATCH 4/7] [Q_asb_2021-03] libbinder: check null bytes in
  readString*Inplace
 
 This is entirely defensive, since the only real guarantee we have here

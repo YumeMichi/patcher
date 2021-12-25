@@ -1,7 +1,7 @@
 From f1599d37a33124cc922bee88eac32a720977701d Mon Sep 17 00:00:00 2001
 From: Jonathan Scott <scottjonathan@google.com>
 Date: Wed, 3 Feb 2021 17:24:10 +0000
-Subject: [PATCH 34/57] [Q_asb_2021-05] [RESTRICT AUTOMERGE] Use userId instead
+Subject: [PATCH 34/61] [Q_asb_2021-05] [RESTRICT AUTOMERGE] Use userId instead
  of USER_CURRENT in shouldLockKeyguard.
 
 USER_CURRENT is not an acceptable input to isSecure(). The test has also

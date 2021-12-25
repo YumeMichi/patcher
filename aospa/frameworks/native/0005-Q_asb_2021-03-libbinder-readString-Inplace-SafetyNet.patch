@@ -1,7 +1,7 @@
 From d5ba8eb47782854f0b6060401148790ee6c97eeb Mon Sep 17 00:00:00 2001
 From: Steven Moreland <smoreland@google.com>
 Date: Fri, 4 Dec 2020 21:13:03 +0000
-Subject: [PATCH 5/6] [Q_asb_2021-03] libbinder: readString*Inplace SafetyNet
+Subject: [PATCH 5/7] [Q_asb_2021-03] libbinder: readString*Inplace SafetyNet
  (II)
 
 SafetyNet logs (this time for failure case, instead of success case).

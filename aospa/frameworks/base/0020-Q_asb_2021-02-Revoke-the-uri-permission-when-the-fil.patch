@@ -1,7 +1,7 @@
 From 08b55f71bbdf7b2301537551dd081dee144d5c6b Mon Sep 17 00:00:00 2001
 From: Ivan Chiang <chiangi@google.com>
 Date: Mon, 10 Aug 2020 16:43:33 +0800
-Subject: [PATCH 20/57] [Q_asb_2021-02] Revoke the uri permission when the file
+Subject: [PATCH 20/61] [Q_asb_2021-02] Revoke the uri permission when the file
  is deleted
 
 When the file is deleted, renamed or moved, revoke all uri

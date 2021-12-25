@@ -1,7 +1,7 @@
 From 8c9bb634bc4404c1016c91560cfc8c848b5ddc19 Mon Sep 17 00:00:00 2001
 From: Arthur Ishiguro <arthuri@google.com>
 Date: Tue, 22 Sep 2020 13:05:15 -0700
-Subject: [PATCH 2/6] [Q_asb_2021-01] Prevent mEventCache UAF in
+Subject: [PATCH 2/7] [Q_asb_2021-01] Prevent mEventCache UAF in
  SensorEventConnection
 
 Since there is no check to see if SensorEventConnection has been

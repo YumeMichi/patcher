@@ -1,7 +1,7 @@
 From c295452c4d48313cacc884745d2c95070e0a00d6 Mon Sep 17 00:00:00 2001
 From: Siarhei Vishniakou <svv@google.com>
 Date: Mon, 21 Jun 2021 22:30:51 +0000
-Subject: [PATCH 6/6] [Q_asb_2021-09] Do not modify vector after getting
+Subject: [PATCH 6/7] [Q_asb_2021-09] Do not modify vector after getting
  references
 
 We used to obtain a reference to a specific element inside a vector. We
