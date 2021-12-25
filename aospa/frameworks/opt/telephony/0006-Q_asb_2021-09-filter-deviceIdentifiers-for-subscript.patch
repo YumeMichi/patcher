@@ -1,0 +1,38 @@
+From c5d3b5c2665bc10e155e2ca00c29db1b17792f8c Mon Sep 17 00:00:00 2001
+From: Chen Xu <fionaxu@google.com>
+Date: Thu, 13 May 2021 15:49:01 -0700
+Subject: [PATCH 6/7] [Q_asb_2021-09] filter deviceIdentifiers for
+ subscriptionInfo if callers without perm
+
+Fix a security issue that app can read iccId of sim card(s) without
+requiring READ_PRIVILEGED_PHONE_STATE permission when calling hidden API SubscriptionManager.getAllActiveSubscriptionInfoList. Apply
+deviceIdentifier filter to remove those info if the caller does not have proper permissions.
+
+Bug: 183612370
+Test: Manual
+Merged-in: If7d243c40d187008f8cb314b162228cbad1702a4
+Change-Id: If7d243c40d187008f8cb314b162228cbad1702a4
+(cherry picked from commit f6bb9b20840c29e74a37ea2b880e63b3fc9470ff)
+(cherry picked from commit 0f869d07572d1dea8384dfc9a59291f6f751f687)
+---
+ .../android/internal/telephony/SubscriptionController.java    | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/java/com/android/internal/telephony/SubscriptionController.java b/src/java/com/android/internal/telephony/SubscriptionController.java
+index fdd58f6f21..0e83e26a43 100644
+--- a/src/java/com/android/internal/telephony/SubscriptionController.java
++++ b/src/java/com/android/internal/telephony/SubscriptionController.java
+@@ -735,6 +735,10 @@ public class SubscriptionController extends ISub.Stub {
+             subList = getSubInfo(null, null);
+             if (subList != null) {
+                 if (VDBG) logd("[getAllSubInfoList]- " + subList.size() + " infos return");
++                subList.stream().map(
++                        subscriptionInfo -> conditionallyRemoveIdentifiers(subscriptionInfo,
++                                callingPackage, "getAllSubInfoList"))
++                        .collect(Collectors.toList());
+             } else {
+                 if (VDBG) logd("[getAllSubInfoList]- no info return");
+             }
+-- 
+2.34.1
+

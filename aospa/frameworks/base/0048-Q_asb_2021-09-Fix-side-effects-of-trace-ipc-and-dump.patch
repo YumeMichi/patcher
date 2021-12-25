@@ -1,0 +1,67 @@
+From e6cec68fd8a25fb81373d522bf5f2298ea79d534 Mon Sep 17 00:00:00 2001
+From: Christopher Tate <ctate@google.com>
+Date: Mon, 7 Jun 2021 15:02:45 -0700
+Subject: [PATCH 48/51] [Q_asb_2021-09] Fix side effects of trace-ipc and
+ dumpheap commands
+
+These shell commands were implicitly deleting any client-named file for
+which the system uid had deletion capability.  They no longer do this,
+instead using only the client's own capabilities and file manipulation
+modes.
+
+Bug: 185398942
+Test: manual "adb shell cmd activity dumpheap system_server /data/system/last-fstrim"
+Test: atest CtsPermissionTestCases:ShellCommandPermissionTest
+Merged-In: Ie61ab2c3f4bfbd04de09ca99c1116d1129461e8f
+Change-Id: Ie61ab2c3f4bfbd04de09ca99c1116d1129461e8f
+(cherry picked from commit 3555fa2f09972cb238eeeee6b0d7ed286d731989)
+---
+ .../server/am/ActivityManagerShellCommand.java       | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/services/core/java/com/android/server/am/ActivityManagerShellCommand.java b/services/core/java/com/android/server/am/ActivityManagerShellCommand.java
+index 9f3a7e93a433..68d1c0e85787 100644
+--- a/services/core/java/com/android/server/am/ActivityManagerShellCommand.java
++++ b/services/core/java/com/android/server/am/ActivityManagerShellCommand.java
+@@ -90,7 +90,6 @@ import com.android.internal.util.MemInfoReader;
+ import com.android.internal.util.Preconditions;
+ 
+ import java.io.BufferedReader;
+-import java.io.File;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.io.InputStreamReader;
+@@ -759,8 +758,7 @@ final class ActivityManagerShellCommand extends ShellCommand {
+             return -1;
+         }
+ 
+-        File file = new File(filename);
+-        file.delete();
++        // Writes an error message to stderr on failure
+         ParcelFileDescriptor fd = openFileForSystem(filename, "w");
+         if (fd == null) {
+             return -1;
+@@ -914,16 +912,16 @@ final class ActivityManagerShellCommand extends ShellCommand {
+             t.set(System.currentTimeMillis());
+             heapFile = "/data/local/tmp/heapdump-" + t.format("%Y%m%d-%H%M%S") + ".prof";
+         }
+-        pw.println("File: " + heapFile);
+-        pw.flush();
+ 
+-        File file = new File(heapFile);
+-        file.delete();
++        // Writes an error message to stderr on failure
+         ParcelFileDescriptor fd = openFileForSystem(heapFile, "w");
+         if (fd == null) {
+             return -1;
+         }
+ 
++        pw.println("File: " + heapFile);
++        pw.flush();
++
+         final CountDownLatch latch = new CountDownLatch(1);
+ 
+         final RemoteCallback finishCallback = new RemoteCallback(new OnResultListener() {
+-- 
+2.34.1
+

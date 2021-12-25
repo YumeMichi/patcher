@@ -1,7 +1,7 @@
 From cf19435d3b6847ad76e703d0011a2f41f086855d Mon Sep 17 00:00:00 2001
 From: Steven Moreland <smoreland@google.com>
 Date: Thu, 6 Aug 2020 19:32:45 +0000
-Subject: [PATCH 1/5] [Q_asb_2020-11] libbinder_ndk: fix failure when
+Subject: [PATCH 1/6] [Q_asb_2020-11] libbinder_ndk: fix failure when
  dump/shell are unset
 
 People directly using libbinder_ndk functions who didn't create a debug

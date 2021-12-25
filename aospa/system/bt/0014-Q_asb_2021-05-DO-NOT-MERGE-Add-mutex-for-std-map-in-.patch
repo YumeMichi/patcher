@@ -1,7 +1,7 @@
 From 4f02b31a0514b8a9007fad354de250e4d5532819 Mon Sep 17 00:00:00 2001
 From: Chienyuan <chienyuanhuang@google.com>
 Date: Thu, 28 Jan 2021 14:08:17 +0800
-Subject: [PATCH 14/21] [Q_asb_2021-05] DO NOT MERGE Add mutex for std::map in
+Subject: [PATCH 14/22] [Q_asb_2021-05] DO NOT MERGE Add mutex for std::map in
  btif_av.cc
 
 TAG: #security

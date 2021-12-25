@@ -1,7 +1,7 @@
 From c50cb0fd6675c6c5bee5100c615a61fc69c0248e Mon Sep 17 00:00:00 2001
 From: Rahul Sabnis <rahulsabnis@google.com>
 Date: Fri, 26 Jun 2020 10:27:07 -0700
-Subject: [PATCH 02/21] [Q_asb_2020-11] Shows a consent dialog on the local
+Subject: [PATCH 02/22] [Q_asb_2020-11] Shows a consent dialog on the local
  device when pairing a bluetooth low energy device if the local device has a
  display.
 

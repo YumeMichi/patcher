@@ -1,0 +1,34 @@
+From 82cc5fae17a551e589c599e7817578a6e89203b4 Mon Sep 17 00:00:00 2001
+From: SongFerngWang <songferngwang@google.com>
+Date: Wed, 5 May 2021 21:30:39 +0800
+Subject: [PATCH 7/7] [Q_asb_2021-09] [security] SubscriptionGroup is exposed
+ to unprivileged callers
+
+SubscriptionInfo.mGroupUUID is not cleared in
+conditionallyRemoveIdentifiers if the caller only has READ_PHONE_STATE
+(based on a check to checkReadPhoneState) and not READ_DEVICE_IDENTIFIERS.
+Bug: 181053462
+Test: atest SubscriptionManagerTest
+
+Change-Id: I68d1edb4e7cc2ad6696363ea1dacb09e839a651e
+Merged-In: I68d1edb4e7cc2ad6696363ea1dacb09e839a651e
+(cherry picked from commit 7264df380483454f0e24c5028df129d58d41390a)
+---
+ .../com/android/internal/telephony/SubscriptionController.java   | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/java/com/android/internal/telephony/SubscriptionController.java b/src/java/com/android/internal/telephony/SubscriptionController.java
+index 0e83e26a43..da33f1d73e 100644
+--- a/src/java/com/android/internal/telephony/SubscriptionController.java
++++ b/src/java/com/android/internal/telephony/SubscriptionController.java
+@@ -3778,6 +3778,7 @@ public class SubscriptionController extends ISub.Stub {
+         if (!hasIdentifierAccess) {
+             result.clearIccId();
+             result.clearCardString();
++            result.clearGroupUuid();
+         }
+         return result;
+     }
+-- 
+2.34.1
+

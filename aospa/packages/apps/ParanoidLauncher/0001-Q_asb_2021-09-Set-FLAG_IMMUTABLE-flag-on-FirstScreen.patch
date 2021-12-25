@@ -1,0 +1,49 @@
+From a2dbd1aa4e774c0a5b4b78c8e9b0660928040896 Mon Sep 17 00:00:00 2001
+From: Jon Miranda <jonmiranda@google.com>
+Date: Thu, 1 Apr 2021 13:14:23 -0400
+Subject: [PATCH 1/2] [Q_asb_2021-09] Set FLAG_IMMUTABLE flag on
+ FirstScreenBroadcast PendingIntent.
+
+Bug: 179289753
+Bug: 183927137
+Test: restore phone and ensure broadcast is sent
+Change-Id: I8d8e38a1aa6bdf13879d460cfa84cabe6c6bb1f2
+(cherry picked from commit b62fba0d0199d719ac63761846e09b4b28e1dc2c)
+Merged-In: I8d8e38a1aa6bdf13879d460cfa84cabe6c6bb1f2
+(cherry picked from commit 6a7a7f6bad9ddb3b09620b5bd3e931e4a7f94037)
+---
+ .../android/launcher3/model/FirstScreenBroadcast.java | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/src/com/android/launcher3/model/FirstScreenBroadcast.java b/src/com/android/launcher3/model/FirstScreenBroadcast.java
+index a0b717763..3f7ba21ba 100644
+--- a/src/com/android/launcher3/model/FirstScreenBroadcast.java
++++ b/src/com/android/launcher3/model/FirstScreenBroadcast.java
+@@ -15,6 +15,15 @@
+  */
+ package com.android.launcher3.model;
+ 
++import static android.app.PendingIntent.FLAG_IMMUTABLE;
++import static android.app.PendingIntent.FLAG_ONE_SHOT;
++import static android.os.Process.myUserHandle;
++
++import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
++
++import static java.util.stream.Collectors.groupingBy;
++import static java.util.stream.Collectors.mapping;
++
+ import android.app.PendingIntent;
+ import android.content.Context;
+ import android.content.Intent;
+@@ -145,7 +154,7 @@ public class FirstScreenBroadcast {
+                 .putStringArrayListExtra(HOTSEAT_ITEM_EXTRA, new ArrayList<>(hotseatItems))
+                 .putStringArrayListExtra(WIDGET_ITEM_EXTRA, new ArrayList<>(widgetItems))
+                 .putExtra(VERIFICATION_TOKEN_EXTRA, PendingIntent.getActivity(context, 0,
+-                        new Intent(), PendingIntent.FLAG_ONE_SHOT)));
++                        new Intent(), FLAG_ONE_SHOT | FLAG_IMMUTABLE)));
+     }
+ 
+     private static String getPackageName(ItemInfo info) {
+-- 
+2.34.1
+

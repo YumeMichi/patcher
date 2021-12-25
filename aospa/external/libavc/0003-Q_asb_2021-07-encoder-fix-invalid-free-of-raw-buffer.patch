@@ -1,7 +1,7 @@
 From cdbefc545e7fcd1e38804158c78f86a91f1774a8 Mon Sep 17 00:00:00 2001
 From: Neelkamal Semwal <neelkamal.semwal@ittiam.com>
 Date: Fri, 12 Mar 2021 10:15:49 +0530
-Subject: [PATCH 3/3] [Q_asb_2021-07] encoder: fix invalid free of raw buffers
+Subject: [PATCH 3/4] [Q_asb_2021-07] encoder: fix invalid free of raw buffers
 
 Return current input buffer as buffer to be freed in case
 of errors that are seen before picking up the input buffer

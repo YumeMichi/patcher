@@ -1,7 +1,7 @@
 From 8920faeb9669ef802eb598da0c033d42cd450658 Mon Sep 17 00:00:00 2001
 From: "Philip P. Moltmann" <moltmann@google.com>
 Date: Wed, 28 Oct 2020 14:00:32 -0700
-Subject: [PATCH 13/45] [Q_asb_2021-01] Hide overlays over uninstall confirm
+Subject: [PATCH 13/51] [Q_asb_2021-01] Hide overlays over uninstall confirm
  dialog
 
 Test: atest CtsPackageUninstallTestCases

@@ -1,7 +1,7 @@
 From e7d006734ca7d0ddfb6dafd22e56253789505bb5 Mon Sep 17 00:00:00 2001
 From: Neelkamal Semwal <neelkamal.semwal@ittiam.com>
 Date: Wed, 10 Mar 2021 10:03:39 +0530
-Subject: [PATCH 2/3] [Q_asb_2021-06] avcenc: Add bitstream overflow check
+Subject: [PATCH 2/4] [Q_asb_2021-06] avcenc: Add bitstream overflow check
  during emulation prevention
 
 Bug: 176533109

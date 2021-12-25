@@ -1,0 +1,66 @@
+From 1283bd08fdfd577cf0d6334491d5d59f887958b0 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Thu, 16 Sep 2021 06:16:53 -0600
+Subject: [PATCH 12/12] [Q_asb_2021-09] Bump Security String to 2021-09-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0595   A-177457096  EoP    High       8.1, 9, 10, 11
+CVE-2021-0598   A-180422108  EoP    High       8.1, 9, 10, 11
+CVE-2021-0644   A-181053462  ID     High       10, 11
+CVE-2021-0682   A-159624555  ID     High       8.1, 9, 10, 11
+CVE-2021-0683   A-185398942  EoP    High       8.1, 9, 10, 11
+CVE-2021-0684   A-179839665  EoP    High       8.1, 9, 10, 11
+CVE-2021-0686   A-177927831  ID     High       10, 11
+CVE-2021-0687   A-188913943  DoS    Critical   8.1, 9, 10, 11
+CVE-2021-0688   A-161149543  EoP    High       8.1, 9, 10, 11
+CVE-2021-0689   A-190188264  ID     High       8.1, 9, 10, 11
+CVE-2021-0690   A-182152757  ID     High       8.1, 9, 10, 11
+CVE-2021-0692   A-179289753  EoP    High       9, 10, 11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:  Prior Change:
+CVE-2021-0428   A-173421434  ID     High       10                      bee5bbdc51fe
+                                                                       dd80f1e5137f
+                                                                       c49a04527460
+                                                                       1efc993961
+                                                                       5f5f8c7871
+                                                                       5fbde70cbb
+                                                                       3178770a25
+                                                                       9b12a56b0a
+                                                                       481350b3
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0685   A-191055353  EoP    High       11
+CVE-2021-0691   A-188554048  EoP    Moderate   11
+CVE-2021-0693   A-184046948  ID     High       11
+
+Change-Id: I721aa3f15bdbfbd78de352f77e30f8eab4a79727
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index 8540ecb97..6b8ef7545 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2021-08-05
++      PLATFORM_SECURITY_PATCH := 2021-09-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+

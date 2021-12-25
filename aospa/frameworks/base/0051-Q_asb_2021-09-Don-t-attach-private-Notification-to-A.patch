@@ -1,0 +1,263 @@
+From b58987c0b08773b3c3276068f2b98529d7ea5eca Mon Sep 17 00:00:00 2001
+From: Steve Elliott <steell@google.com>
+Date: Tue, 22 Jun 2021 13:58:48 -0400
+Subject: [PATCH 51/51] [Q_asb_2021-09] Don't attach private Notification to
+ A11yEvent when user locked
+
+Fixes: 159624555
+Test: manual, atest
+Change-Id: Ib44f1d3695d2b31bee4f8ccae3f948c83f3b40b6
+Merged-In: Ib44f1d3695d2b31bee4f8ccae3f948c83f3b40b6
+(cherry picked from commit 54fbccc2934eae844550d851480d5448c2542f1d)
+(cherry picked from commit f7f339c7d001a31f6bc7cea27e6c982a45cb8eab)
+(cherry picked from commit 614647cb997f18c7710afbf44fabcdead81c81e5)
+---
+ .../NotificationManagerService.java           | 35 +++++--
+ .../notification/BuzzBeepBlinkTest.java       | 94 +++++++++++++++++++
+ 2 files changed, 122 insertions(+), 7 deletions(-)
+
+diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java
+index 42ed440be098..6f6647509097 100755
+--- a/services/core/java/com/android/server/notification/NotificationManagerService.java
++++ b/services/core/java/com/android/server/notification/NotificationManagerService.java
+@@ -111,6 +111,7 @@ import android.app.IActivityManager;
+ import android.app.INotificationManager;
+ import android.app.ITransientNotification;
+ import android.app.IUriGrantsManager;
++import android.app.KeyguardManager;
+ import android.app.Notification;
+ import android.app.NotificationChannel;
+ import android.app.NotificationChannelGroup;
+@@ -424,6 +425,8 @@ public class NotificationManagerService extends SystemService {
+     final ArrayList<ToastRecord> mToastQueue = new ArrayList<>();
+     final ArrayMap<String, NotificationRecord> mSummaryByGroupKey = new ArrayMap<>();
+ 
++    private KeyguardManager mKeyguardManager;
++
+     // The last key in this list owns the hardware.
+     ArrayList<String> mLights = new ArrayList<>();
+ 
+@@ -1501,6 +1504,11 @@ public class NotificationManagerService extends SystemService {
+         mAudioManager = audioMananger;
+     }
+ 
++    @VisibleForTesting
++    void setKeyguardManager(KeyguardManager keyguardManager) {
++        mKeyguardManager = keyguardManager;
++    }
++
+     @VisibleForTesting
+     void setHints(int hints) {
+         mListenerHints = hints;
+@@ -1952,6 +1960,7 @@ public class NotificationManagerService extends SystemService {
+             mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+             mAudioManagerInternal = getLocalService(AudioManagerInternal.class);
+             mWindowManagerInternal = LocalServices.getService(WindowManagerInternal.class);
++            mKeyguardManager = getContext().getSystemService(KeyguardManager.class);
+             mZenModeHelper.onSystemReady();
+             mRoleObserver = new RoleObserver(getContext().getSystemService(RoleManager.class),
+                     mPackageManager, getContext().getMainExecutor());
+@@ -5926,7 +5935,6 @@ public class NotificationManagerService extends SystemService {
+         boolean beep = false;
+         boolean blink = false;
+ 
+-        final Notification notification = record.sbn.getNotification();
+         final String key = record.getKey();
+ 
+         // Should this notification make noise, vibe, or use the LED?
+@@ -5945,7 +5953,7 @@ public class NotificationManagerService extends SystemService {
+         // If the notification will appear in the status bar, it should send an accessibility
+         // event
+         if (!record.isUpdate && record.getImportance() > IMPORTANCE_MIN) {
+-            sendAccessibilityEvent(notification, record.sbn.getPackageName());
++            sendAccessibilityEvent(record);
+             sentAccessibilityEvent = true;
+         }
+ 
+@@ -5969,7 +5977,7 @@ public class NotificationManagerService extends SystemService {
+                 boolean hasAudibleAlert = hasValidSound || hasValidVibrate;
+                 if (hasAudibleAlert && !shouldMuteNotificationLocked(record)) {
+                     if (!sentAccessibilityEvent) {
+-                        sendAccessibilityEvent(notification, record.sbn.getPackageName());
++                        sendAccessibilityEvent(record);
+                         sentAccessibilityEvent = true;
+                     }
+                     if (DBG) Slog.v(TAG, "Interrupting!");
+@@ -6647,17 +6655,30 @@ public class NotificationManagerService extends SystemService {
+         return (x < low) ? low : ((x > high) ? high : x);
+     }
+ 
+-    void sendAccessibilityEvent(Notification notification, CharSequence packageName) {
++    void sendAccessibilityEvent(NotificationRecord record) {
+         if (!mAccessibilityManager.isEnabled()) {
+             return;
+         }
+ 
+-        AccessibilityEvent event =
++        final Notification notification = record.getNotification();
++        final CharSequence packageName = record.sbn.getPackageName();
++        final AccessibilityEvent event =
+             AccessibilityEvent.obtain(AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED);
+         event.setPackageName(packageName);
+         event.setClassName(Notification.class.getName());
+-        event.setParcelableData(notification);
+-        CharSequence tickerText = notification.tickerText;
++        final int visibilityOverride = record.getPackageVisibilityOverride();
++        final int notifVisibility = visibilityOverride == NotificationManager.VISIBILITY_NO_OVERRIDE
++                ? notification.visibility : visibilityOverride;
++        final int userId = record.getUser().getIdentifier();
++        final boolean needPublic = userId >= 0 && mKeyguardManager.isDeviceLocked(userId);
++        if (needPublic && notifVisibility != Notification.VISIBILITY_PUBLIC) {
++            // Emit the public version if we're on the lockscreen and this notification isn't
++            // publicly visible.
++            event.setParcelableData(notification.publicVersion);
++        } else {
++            event.setParcelableData(notification);
++        }
++        final CharSequence tickerText = notification.tickerText;
+         if (!TextUtils.isEmpty(tickerText)) {
+             event.getText().add(tickerText);
+         }
+diff --git a/services/tests/uiservicestests/src/com/android/server/notification/BuzzBeepBlinkTest.java b/services/tests/uiservicestests/src/com/android/server/notification/BuzzBeepBlinkTest.java
+index 8c3373faa0d4..45997869f9d3 100644
+--- a/services/tests/uiservicestests/src/com/android/server/notification/BuzzBeepBlinkTest.java
++++ b/services/tests/uiservicestests/src/com/android/server/notification/BuzzBeepBlinkTest.java
+@@ -44,6 +44,7 @@ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.when;
+ 
+ import android.app.ActivityManager;
++import android.app.KeyguardManager;
+ import android.app.Notification;
+ import android.app.Notification.Builder;
+ import android.app.NotificationChannel;
+@@ -77,6 +78,7 @@ import com.android.server.lights.Light;
+ import org.junit.Before;
+ import org.junit.Test;
+ import org.junit.runner.RunWith;
++import org.mockito.ArgumentCaptor;
+ import org.mockito.ArgumentMatcher;
+ import org.mockito.Mock;
+ import org.mockito.Mockito;
+@@ -96,6 +98,8 @@ public class BuzzBeepBlinkTest extends UiServiceTestCase {
+     NotificationUsageStats mUsageStats;
+     @Mock
+     IAccessibilityManager mAccessibilityService;
++    @Mock
++    KeyguardManager mKeyguardManager;
+ 
+     private NotificationManagerService mService;
+     private String mPkg = "com.android.server.notification";
+@@ -135,6 +139,7 @@ public class BuzzBeepBlinkTest extends UiServiceTestCase {
+         when(mAudioManager.getStreamVolume(anyInt())).thenReturn(10);
+         when(mAudioManager.getRingerModeInternal()).thenReturn(AudioManager.RINGER_MODE_NORMAL);
+         when(mUsageStats.isAlertRateLimited(any())).thenReturn(false);
++        when(mKeyguardManager.isDeviceLocked(anyInt())).thenReturn(false);
+ 
+         long serviceReturnValue = IntPair.of(
+                 AccessibilityManager.STATE_FLAG_ACCESSIBILITY_ENABLED,
+@@ -155,6 +160,7 @@ public class BuzzBeepBlinkTest extends UiServiceTestCase {
+         mService.setFallbackVibrationPattern(FALLBACK_VIBRATION_PATTERN);
+         mService.setUsageStats(mUsageStats);
+         mService.setAccessibilityManager(accessibilityManager);
++        mService.setKeyguardManager(mKeyguardManager);
+         mService.mScreenOn = false;
+         mService.mInCallStateOffHook = false;
+         mService.mNotificationPulseEnabled = true;
+@@ -432,6 +438,94 @@ public class BuzzBeepBlinkTest extends UiServiceTestCase {
+         assertNotEquals(-1, r.getLastAudiblyAlertedMs());
+     }
+ 
++    @Test
++    public void testLockedPrivateA11yRedaction() throws Exception {
++        NotificationRecord r = getBeepyNotification();
++        r.setPackageVisibilityOverride(NotificationManager.VISIBILITY_NO_OVERRIDE);
++        r.getNotification().visibility = Notification.VISIBILITY_PRIVATE;
++        when(mKeyguardManager.isDeviceLocked(anyInt())).thenReturn(true);
++        AccessibilityManager accessibilityManager = Mockito.mock(AccessibilityManager.class);
++        when(accessibilityManager.isEnabled()).thenReturn(true);
++        mService.setAccessibilityManager(accessibilityManager);
++
++        mService.buzzBeepBlinkLocked(r);
++
++        ArgumentCaptor<AccessibilityEvent> eventCaptor =
++                ArgumentCaptor.forClass(AccessibilityEvent.class);
++
++        verify(accessibilityManager, times(1))
++                .sendAccessibilityEvent(eventCaptor.capture());
++
++        AccessibilityEvent event = eventCaptor.getValue();
++        assertEquals(r.getNotification().publicVersion, event.getParcelableData());
++    }
++
++    @Test
++    public void testLockedOverridePrivateA11yRedaction() throws Exception {
++        NotificationRecord r = getBeepyNotification();
++        r.setPackageVisibilityOverride(Notification.VISIBILITY_PRIVATE);
++        r.getNotification().visibility = Notification.VISIBILITY_PUBLIC;
++        when(mKeyguardManager.isDeviceLocked(anyInt())).thenReturn(true);
++        AccessibilityManager accessibilityManager = Mockito.mock(AccessibilityManager.class);
++        when(accessibilityManager.isEnabled()).thenReturn(true);
++        mService.setAccessibilityManager(accessibilityManager);
++
++        mService.buzzBeepBlinkLocked(r);
++
++        ArgumentCaptor<AccessibilityEvent> eventCaptor =
++                ArgumentCaptor.forClass(AccessibilityEvent.class);
++
++        verify(accessibilityManager, times(1))
++                .sendAccessibilityEvent(eventCaptor.capture());
++
++        AccessibilityEvent event = eventCaptor.getValue();
++        assertEquals(r.getNotification().publicVersion, event.getParcelableData());
++    }
++
++    @Test
++    public void testLockedPublicA11yNoRedaction() throws Exception {
++        NotificationRecord r = getBeepyNotification();
++        r.setPackageVisibilityOverride(NotificationManager.VISIBILITY_NO_OVERRIDE);
++        r.getNotification().visibility = Notification.VISIBILITY_PUBLIC;
++        when(mKeyguardManager.isDeviceLocked(anyInt())).thenReturn(true);
++        AccessibilityManager accessibilityManager = Mockito.mock(AccessibilityManager.class);
++        when(accessibilityManager.isEnabled()).thenReturn(true);
++        mService.setAccessibilityManager(accessibilityManager);
++
++        mService.buzzBeepBlinkLocked(r);
++
++        ArgumentCaptor<AccessibilityEvent> eventCaptor =
++                ArgumentCaptor.forClass(AccessibilityEvent.class);
++
++        verify(accessibilityManager, times(1))
++                .sendAccessibilityEvent(eventCaptor.capture());
++
++        AccessibilityEvent event = eventCaptor.getValue();
++        assertEquals(r.getNotification(), event.getParcelableData());
++    }
++
++    @Test
++    public void testUnlockedPrivateA11yNoRedaction() throws Exception {
++        NotificationRecord r = getBeepyNotification();
++        r.setPackageVisibilityOverride(NotificationManager.VISIBILITY_NO_OVERRIDE);
++        r.getNotification().visibility = Notification.VISIBILITY_PRIVATE;
++        when(mKeyguardManager.isDeviceLocked(anyInt())).thenReturn(false);
++        AccessibilityManager accessibilityManager = Mockito.mock(AccessibilityManager.class);
++        when(accessibilityManager.isEnabled()).thenReturn(true);
++        mService.setAccessibilityManager(accessibilityManager);
++
++        mService.buzzBeepBlinkLocked(r);
++
++        ArgumentCaptor<AccessibilityEvent> eventCaptor =
++                ArgumentCaptor.forClass(AccessibilityEvent.class);
++
++        verify(accessibilityManager, times(1))
++                .sendAccessibilityEvent(eventCaptor.capture());
++
++        AccessibilityEvent event = eventCaptor.getValue();
++        assertEquals(r.getNotification(), event.getParcelableData());
++    }
++
+     @Test
+     public void testBeepInsistently() throws Exception {
+         NotificationRecord r = getInsistentBeepyNotification();
+-- 
+2.34.1
+

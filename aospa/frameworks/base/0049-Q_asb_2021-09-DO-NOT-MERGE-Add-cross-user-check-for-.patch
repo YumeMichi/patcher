@@ -1,0 +1,34 @@
+From d6f17bc184c8815efe6d9cb0404075215f38d90f Mon Sep 17 00:00:00 2001
+From: Hai Zhang <zhanghai@google.com>
+Date: Wed, 16 Jun 2021 00:20:52 +0000
+Subject: [PATCH 49/51] [Q_asb_2021-09] DO NOT MERGE Add cross-user check for
+ getDefaultSmsPackage().
+
+Bug: 177927831
+Test: atest RoleSecurityTest
+Change-Id: I1254804fb72a299e782d45f938acdf979a82f904
+(cherry picked from commit 0abccabffee50a3960d0e116651921530c9d20c7)
+---
+ .../java/com/android/server/role/RoleManagerService.java    | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/core/java/com/android/server/role/RoleManagerService.java b/services/core/java/com/android/server/role/RoleManagerService.java
+index fff9ec7f02c5..4d2f658535e8 100644
+--- a/services/core/java/com/android/server/role/RoleManagerService.java
++++ b/services/core/java/com/android/server/role/RoleManagerService.java
+@@ -637,6 +637,12 @@ public class RoleManagerService extends SystemService implements RoleUserState.C
+ 
+         @Override
+         public String getDefaultSmsPackage(int userId) {
++            userId = handleIncomingUser(userId, false, "getDefaultSmsPackage");
++            if (!mUserManagerInternal.exists(userId)) {
++                Slog.e(LOG_TAG, "user " + userId + " does not exist");
++                return null;
++            }
++
+             long identity = Binder.clearCallingIdentity();
+             try {
+                 return CollectionUtils.firstOrNull(
+-- 
+2.34.1
+

@@ -1,0 +1,37 @@
+From 5aa7e36080c60ebd1ab3a9a0b2302898a5163a8a Mon Sep 17 00:00:00 2001
+From: Jonathan Miranda <jonmiranda@google.com>
+Date: Thu, 10 Jun 2021 16:12:38 +0000
+Subject: [PATCH 2/2] [Q_asb_2021-09] Forward fix for: Set FLAG_IMMUTABLE flag
+ on FirstScreenBroadcast PendingIntent.
+
+Bug: 179289753
+Bug: 183927137
+Test: restore phone and ensure broadcast is sent
+
+Change-Id: I60e179d35957309f404937473fb5272f115b65ce
+Merged-In: I70acd4ce48853be728be1fb80b4b885d00a059a9
+(cherry picked from commit 89299047d7d4760545d1269de69f581700abcdde)
+---
+ src/com/android/launcher3/model/FirstScreenBroadcast.java | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/src/com/android/launcher3/model/FirstScreenBroadcast.java b/src/com/android/launcher3/model/FirstScreenBroadcast.java
+index 3f7ba21ba..9f3344dc5 100644
+--- a/src/com/android/launcher3/model/FirstScreenBroadcast.java
++++ b/src/com/android/launcher3/model/FirstScreenBroadcast.java
+@@ -17,12 +17,6 @@ package com.android.launcher3.model;
+ 
+ import static android.app.PendingIntent.FLAG_IMMUTABLE;
+ import static android.app.PendingIntent.FLAG_ONE_SHOT;
+-import static android.os.Process.myUserHandle;
+-
+-import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
+-
+-import static java.util.stream.Collectors.groupingBy;
+-import static java.util.stream.Collectors.mapping;
+ 
+ import android.app.PendingIntent;
+ import android.content.Context;
+-- 
+2.34.1
+

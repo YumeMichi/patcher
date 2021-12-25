@@ -1,0 +1,40 @@
+From 9371a31011a50b14cc01b89b4a7d775e84533d68 Mon Sep 17 00:00:00 2001
+From: SongFerngWang <songferngwang@google.com>
+Date: Wed, 5 May 2021 21:33:00 +0800
+Subject: [PATCH 46/51] [Q_asb_2021-09] [security] SubscriptionGroup is exposed
+ to unprivileged callers
+
+SubscriptionInfo.mGroupUUID is not cleared in
+conditionallyRemoveIdentifiers if the caller only has READ_PHONE_STATE
+(based on a check to checkReadPhoneState) and not READ_DEVICE_IDENTIFIERS.
+Bug: 181053462
+Test: atest SubscriptionManagerTest
+
+Change-Id: Ic2b62523330dc6e2169ad851715c4ab3da3b29cf
+Merged-In: Ic2b62523330dc6e2169ad851715c4ab3da3b29cf
+(cherry picked from commit 873d4bffb26cf2673ddfa949928186c7c99dd564)
+---
+ telephony/java/android/telephony/SubscriptionInfo.java | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/telephony/java/android/telephony/SubscriptionInfo.java b/telephony/java/android/telephony/SubscriptionInfo.java
+index a90a75d670dd..e5bc5cd1e53c 100644
+--- a/telephony/java/android/telephony/SubscriptionInfo.java
++++ b/telephony/java/android/telephony/SubscriptionInfo.java
+@@ -529,6 +529,13 @@ public class SubscriptionInfo implements Parcelable {
+         return mGroupUUID;
+     }
+ 
++    /**
++     * @hide
++     */
++    public void clearGroupUuid() {
++        this.mGroupUUID = null;
++    }
++
+     /**
+      * @hide
+      */
+-- 
+2.34.1
+
