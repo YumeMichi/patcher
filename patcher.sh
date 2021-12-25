@@ -37,6 +37,7 @@ REPOSITORIES=(
     'packages/apps/Car/Settings'
     'packages/apps/CellBroadcastReceiver'
     'packages/apps/Contacts'
+    'packages/apps/FMRadio'
     'packages/apps/KeyChain'
     'packages/apps/Nfc'
     'packages/apps/ParanoidLauncher'
@@ -60,6 +61,7 @@ REPOSITORIES=(
     'vendor/pa'
     # 'vendor/qcom/opensource/commonsys/packages/apps/Bluetooth'
     'vendor/qcom/opensource/commonsys/system/bt'
+    'vendor/qcom/opensource/fm-commonsys'
 )
 
 for repository in "${REPOSITORIES[@]}"; do

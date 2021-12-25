@@ -1,4 +1,4 @@
-From a6c8cda21276cc603ea6d86f4448639bc659922e Mon Sep 17 00:00:00 2001
+From 0d176405590bfe2c1c4ef5ca9fcd44d807c62dc9 Mon Sep 17 00:00:00 2001
 From: YumeMichi <do4suki@gmail.com>
 Date: Sun, 23 Feb 2020 16:35:13 +0800
 Subject: [PATCH] products: Add OnePlus X (aka onyx)
@@ -8,10 +8,10 @@ Subject: [PATCH] products: Add OnePlus X (aka onyx)
 Change-Id: Ib421bceb5460f12e4a3bce3ce640aa4d0835d684
 Signed-off-by: YumeMichi <do4suki@gmail.com>
 ---
- products/AndroidProducts.mk   |  2 +
- products/onyx/pa.dependencies | 92 +++++++++++++++++++++++++++++++++++
- products/onyx/pa_onyx.mk      | 48 ++++++++++++++++++
- 3 files changed, 142 insertions(+)
+ products/AndroidProducts.mk   |   2 +
+ products/onyx/pa.dependencies | 110 ++++++++++++++++++++++++++++++++++
+ products/onyx/pa_onyx.mk      |  48 +++++++++++++++
+ 3 files changed, 160 insertions(+)
  create mode 100644 products/onyx/pa.dependencies
  create mode 100644 products/onyx/pa_onyx.mk
 
@@ -37,10 +37,10 @@ index d995b76..2c483cd 100644
      pa_rosy-userdebug \
 diff --git a/products/onyx/pa.dependencies b/products/onyx/pa.dependencies
 new file mode 100644
-index 0000000..8f3ba39
+index 0000000..71f79dc
 --- /dev/null
 +++ b/products/onyx/pa.dependencies
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,110 @@
 +[
 +    {
 +        "remote":       "github",
@@ -130,6 +130,24 @@ index 0000000..8f3ba39
 +        "remote":       "github",
 +        "repository":   "LineageOS/android_packages_resources_devicesettings",
 +        "target_path":  "packages/resources/devicesettings",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_vendor_qcom_opensource_libfmjni",
++        "target_path":  "vendor/qcom/opensource/libfmjni",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_vendor_qcom_opensource_fm-commonsys",
++        "target_path":  "vendor/qcom/opensource/fm-commonsys",
++        "revision":     "lineage-17.1"
++    },
++    {
++        "remote":       "github",
++        "repository":   "LineageOS/android_packages_apps_FMRadio",
++        "target_path":  "packages/apps/FMRadio",
 +        "revision":     "lineage-17.1"
 +    }
 +]
