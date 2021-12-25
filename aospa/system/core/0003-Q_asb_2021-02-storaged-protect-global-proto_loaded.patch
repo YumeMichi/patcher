@@ -1,0 +1,66 @@
+From 38a41eb665f877a9ccd790faac71b16243feeda4 Mon Sep 17 00:00:00 2001
+From: Mark Salyzyn <salyzyn@google.com>
+Date: Fri, 20 Nov 2020 09:30:29 -0800
+Subject: [PATCH 3/3] [Q_asb_2021-02] storaged: protect global proto_loaded
+
+proto_loaded is not thread safe, so we must protect it with
+a mutex proto_lock.
+
+Signed-off-by: hanhongli@360.cn
+Signed-off-by: gongguang@360.cn
+Signed-off-by: Mark Salyzyn <salyzyn@google.com>
+Bug: 170732441
+Test: compile
+Change-Id: I93416598b6047e890c66b922b360093aa42db8c5
+(cherry picked from commit 4913d3d760af98765a40a8642624014177290958)
+---
+ storaged/include/storaged.h | 1 +
+ storaged/storaged.cpp       | 6 ++++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/storaged/include/storaged.h b/storaged/include/storaged.h
+index 6f9204879..79b5d41ac 100644
+--- a/storaged/include/storaged.h
++++ b/storaged/include/storaged.h
+@@ -86,6 +86,7 @@ class storaged_t : public android::hardware::health::V2_0::IHealthInfoCallback,
+     sp<android::hardware::health::V2_0::IHealth> health;
+     unique_ptr<storage_info_t> storage_info;
+     static const uint32_t current_version;
++    Mutex proto_lock;
+     unordered_map<userid_t, bool> proto_loaded;
+     void load_proto(userid_t user_id);
+     char* prepare_proto(userid_t user_id, StoragedProto* proto);
+diff --git a/storaged/storaged.cpp b/storaged/storaged.cpp
+index 1d934a28b..3e0f70d3a 100644
+--- a/storaged/storaged.cpp
++++ b/storaged/storaged.cpp
+@@ -164,6 +164,8 @@ storaged_t::storaged_t(void) {
+ }
+ 
+ void storaged_t::add_user_ce(userid_t user_id) {
++    Mutex::Autolock _l(proto_lock);
++
+     if (!proto_loaded[user_id]) {
+         load_proto(user_id);
+         proto_loaded[user_id] = true;
+@@ -171,6 +173,8 @@ void storaged_t::add_user_ce(userid_t user_id) {
+ }
+ 
+ void storaged_t::remove_user_ce(userid_t user_id) {
++    Mutex::Autolock _l(proto_lock);
++
+     proto_loaded[user_id] = false;
+     mUidm.clear_user_history(user_id);
+     RemoveFileIfExists(proto_path(user_id), nullptr);
+@@ -301,6 +305,8 @@ void storaged_t::flush_proto(userid_t user_id, StoragedProto* proto) {
+ }
+ 
+ void storaged_t::flush_protos(unordered_map<int, StoragedProto>* protos) {
++    Mutex::Autolock _l(proto_lock);
++
+     for (auto& it : *protos) {
+         /*
+          * Don't flush proto if we haven't attempted to load it from file.
+-- 
+2.34.1
+

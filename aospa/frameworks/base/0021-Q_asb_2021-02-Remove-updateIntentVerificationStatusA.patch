@@ -1,0 +1,66 @@
+From d89a0d2c0abbfc997f4e59e1b3e0c864872abc3e Mon Sep 17 00:00:00 2001
+From: Winson <chiuwinson@google.com>
+Date: Wed, 28 Oct 2020 13:25:44 -0700
+Subject: [PATCH 21/23] [Q_asb_2021-02] Remove
+ updateIntentVerificationStatusAsUser from ResolverActivity
+
+DO NOT CHERRY PICK ANYWHERE: Security issue
+
+This API is meant to grant an app complete verification over the
+domains it has declared, meaning it will always resolve the domains it
+declares for web links.
+
+This can allow an app to take over links that are unowned. Any time a
+user selects "Always" when resolving an Intent in the diambiguation
+dialog, this API would be called, and all subsequent resolutions of any
+domain declared by the app selected would be automatically directed to
+that app, with no prompt to the user.
+
+From a quick search, it's possible that all usages of this API are
+actually unintended and should be removed. Should be considered for
+deprecation in the future.
+
+Bug: 163358811
+
+Test: none, this is not generally testable, see linked bug for context
+
+Merged-In: Iff7f788a83af68c7fbb1c6b9a8be7b47136be2b6
+Change-Id: Iff7f788a83af68c7fbb1c6b9a8be7b47136be2b6
+(cherry picked from commit 0220a57ec509c16aea0f6afcf4b5abfac25529ea)
+---
+ .../internal/app/ResolverActivity.java        | 19 -------------------
+ 1 file changed, 19 deletions(-)
+
+diff --git a/core/java/com/android/internal/app/ResolverActivity.java b/core/java/com/android/internal/app/ResolverActivity.java
+index bef60d97ad9c..996158755c6a 100644
+--- a/core/java/com/android/internal/app/ResolverActivity.java
++++ b/core/java/com/android/internal/app/ResolverActivity.java
+@@ -1098,25 +1098,6 @@ public class ResolverActivity extends Activity {
+                         if (TextUtils.isEmpty(packageName)) {
+                             pm.setDefaultBrowserPackageNameAsUser(ri.activityInfo.packageName, userId);
+                         }
+-                    } else {
+-                        // Update Domain Verification status
+-                        ComponentName cn = intent.getComponent();
+-                        String packageName = cn.getPackageName();
+-                        String dataScheme = (data != null) ? data.getScheme() : null;
+-
+-                        boolean isHttpOrHttps = (dataScheme != null) &&
+-                                (dataScheme.equals(IntentFilter.SCHEME_HTTP) ||
+-                                        dataScheme.equals(IntentFilter.SCHEME_HTTPS));
+-
+-                        boolean isViewAction = (action != null) && action.equals(Intent.ACTION_VIEW);
+-                        boolean hasCategoryBrowsable = (categories != null) &&
+-                                categories.contains(Intent.CATEGORY_BROWSABLE);
+-
+-                        if (isHttpOrHttps && isViewAction && hasCategoryBrowsable) {
+-                            pm.updateIntentVerificationStatusAsUser(packageName,
+-                                    PackageManager.INTENT_FILTER_DOMAIN_VERIFICATION_STATUS_ALWAYS,
+-                                    userId);
+-                        }
+                     }
+                 } else {
+                     try {
+-- 
+2.34.1
+

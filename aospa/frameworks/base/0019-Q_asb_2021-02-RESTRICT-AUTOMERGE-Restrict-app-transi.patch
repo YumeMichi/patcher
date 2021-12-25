@@ -1,0 +1,68 @@
+From 70a885a3ab34ff39b3c86b314f909fd4da80eb83 Mon Sep 17 00:00:00 2001
+From: lumark <lumark@google.com>
+Date: Mon, 10 Feb 2020 18:41:57 +0800
+Subject: [PATCH 19/23] [Q_asb_2021-02] [RESTRICT AUTOMERGE] Restrict app
+ transition maximum duration
+
+As WindowState#startAnimation for restricting window animation duration
+(currently is 10 secs),
+
+For security reason, we also need to restrict app transition animation
+duration as 3 secs to prevent malicious app may set a long duration or
+infinity repeat counts through ActivityOption#makeCustomAnimation or
+Activity#overridePendingTransition with custom animation set.
+
+Bug: 145728687
+Test: manual as issue provided test app
+Change-Id: I39051d6e4d2b681ce2becbafe14aab3f3d8ebf6b
+(cherry picked from commit 6de34f8ee714691dbc3c089245bf832006826ebe)
+---
+ .../java/com/android/server/wm/AppTransition.java    |  1 +
+ .../java/com/android/server/wm/AppWindowToken.java   | 12 +++++++++++-
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/wm/AppTransition.java b/services/core/java/com/android/server/wm/AppTransition.java
+index 557a609dbc7b..52901bcef176 100644
+--- a/services/core/java/com/android/server/wm/AppTransition.java
++++ b/services/core/java/com/android/server/wm/AppTransition.java
+@@ -170,6 +170,7 @@ public class AppTransition implements Dump {
+     private static final int MAX_CLIP_REVEAL_TRANSITION_DURATION = 420;
+     private static final int THUMBNAIL_APP_TRANSITION_DURATION = 336;
+     private static final long APP_TRANSITION_TIMEOUT_MS = 5000;
++    static final int MAX_APP_TRANSITION_DURATION = 3 * 1000; // 3 secs.
+ 
+     private final Context mContext;
+     private final WindowManagerService mService;
+diff --git a/services/core/java/com/android/server/wm/AppWindowToken.java b/services/core/java/com/android/server/wm/AppWindowToken.java
+index 3a84230b10e7..08e222f567af 100644
+--- a/services/core/java/com/android/server/wm/AppWindowToken.java
++++ b/services/core/java/com/android/server/wm/AppWindowToken.java
+@@ -38,6 +38,7 @@ import static android.view.WindowManager.TRANSIT_WALLPAPER_OPEN;
+ 
+ import static com.android.server.policy.WindowManagerPolicy.FINISH_LAYOUT_REDO_ANIM;
+ import static com.android.server.policy.WindowManagerPolicy.FINISH_LAYOUT_REDO_WALLPAPER;
++import static com.android.server.wm.AppTransition.MAX_APP_TRANSITION_DURATION;
+ import static com.android.server.wm.AppWindowTokenProto.ALL_DRAWN;
+ import static com.android.server.wm.AppWindowTokenProto.APP_STOPPED;
+ import static com.android.server.wm.AppWindowTokenProto.CLIENT_HIDDEN;
+@@ -2695,7 +2696,16 @@ class AppWindowToken extends WindowToken implements WindowManagerService.AppFree
+                 displayConfig.uiMode, displayConfig.orientation, frame, displayFrame, insets,
+                 surfaceInsets, stableInsets, isVoiceInteraction, freeform, getTask().mTaskId);
+         if (a != null) {
+-            if (DEBUG_ANIM) logWithStack(TAG, "Loaded animation " + a + " for " + this);
++            if (a != null) {
++                // Setup the maximum app transition duration to prevent malicious app may set a long
++                // animation duration or infinite repeat counts for the app transition through
++                // ActivityOption#makeCustomAnimation or WindowManager#overridePendingTransition.
++                a.restrictDuration(MAX_APP_TRANSITION_DURATION);
++            }
++            if (DEBUG_ANIM) {
++                logWithStack(TAG, "Loaded animation " + a + " for " + this
++                        + ", duration: " + ((a != null) ? a.getDuration() : 0));
++            }
+             final int containingWidth = frame.width();
+             final int containingHeight = frame.height();
+             a.initialize(containingWidth, containingHeight, width, height);
+-- 
+2.34.1
+

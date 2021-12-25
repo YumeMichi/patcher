@@ -1,0 +1,39 @@
+From c2d2ad37f8776d20932c7a24836269af6c097381 Mon Sep 17 00:00:00 2001
+From: Eugene Susla <eugenesusla@google.com>
+Date: Tue, 3 Nov 2020 14:22:42 -0800
+Subject: [PATCH 2/4] [Q_asb_2021-02] RESTRICT AUTOMERGE Prevent non-system
+ overlays from showing over notification listener consent dialog
+
+Bug: 170731783
+Test: use a visible overlay, ensure it's gone when notification consent is open
+Change-Id: I58e017982f385ffc0d0ba2174512490b1d83dd36
+(cherry picked from commit 2e82aa5d053448450c7ce5977b0bd4827d152bfa)
+---
+ .../notification/NotificationAccessConfirmationActivity.java  | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/com/android/settings/notification/NotificationAccessConfirmationActivity.java b/src/com/android/settings/notification/NotificationAccessConfirmationActivity.java
+index 8677c0226d..a7d9f6889c 100644
+--- a/src/com/android/settings/notification/NotificationAccessConfirmationActivity.java
++++ b/src/com/android/settings/notification/NotificationAccessConfirmationActivity.java
+@@ -17,6 +17,8 @@
+ 
+ package com.android.settings.notification;
+ 
++import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
++
+ import static com.android.internal.notification.NotificationAccessConfirmationActivityContract.EXTRA_COMPONENT_NAME;
+ import static com.android.internal.notification.NotificationAccessConfirmationActivityContract.EXTRA_PACKAGE_TITLE;
+ import static com.android.internal.notification.NotificationAccessConfirmationActivityContract.EXTRA_USER_ID;
+@@ -55,6 +57,8 @@ public class NotificationAccessConfirmationActivity extends Activity
+     protected void onCreate(@Nullable Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+ 
++        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++
+         mNm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+ 
+         mComponentName = getIntent().getParcelableExtra(EXTRA_COMPONENT_NAME);
+-- 
+2.34.1
+

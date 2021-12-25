@@ -1,0 +1,37 @@
+From ccb6bcadbff305703efcbae3218b8ef1d9ed69ea Mon Sep 17 00:00:00 2001
+From: Jakub Pawlowski <jpawlowski@google.com>
+Date: Thu, 19 Nov 2020 13:31:08 +0100
+Subject: [PATCH 4/4] [Q_asb_2021-02] Prevent overlay drawing on top of
+ Bluetooth activity dialog
+
+Bug: 168504491
+Change-Id: I04ebe580db2b299af2bd5e44e0b0f20bd42f8535
+(cherry picked from commit 4f7edf692f4e8a10521379aaae8c1d52ab275d72)
+---
+ .../settings/bluetooth/BluetoothPermissionActivity.java        | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java b/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
+index 4dd9a4042e..be383dc02b 100644
+--- a/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
++++ b/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
+@@ -34,6 +34,8 @@ import com.android.internal.app.AlertActivity;
+ import com.android.internal.app.AlertController;
+ import com.android.settings.R;
+ 
++import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
++
+ /**
+  * BluetoothPermissionActivity shows a dialog for accepting incoming
+  * profile connection request from untrusted devices.
+@@ -76,6 +78,7 @@ public class BluetoothPermissionActivity extends AlertActivity implements
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+ 
++        getWindow().addPrivateFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
+         Intent i = getIntent();
+         String action = i.getAction();
+         if (!action.equals(BluetoothDevice.ACTION_CONNECTION_ACCESS_REQUEST)) {
+-- 
+2.34.1
+

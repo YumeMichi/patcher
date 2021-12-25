@@ -1,0 +1,33 @@
+From a4efef4b220c190b329e014ddc2e5f803da2391d Mon Sep 17 00:00:00 2001
+From: Chris Manton <cmanton@google.com>
+Date: Tue, 10 Nov 2020 16:45:44 -0800
+Subject: [PATCH 3/4] [Q_asb_2021-02] Add bluetooth package to permission
+ request intent
+
+Limit the component that may resolve this intent to the
+bluetooth package.
+
+Bug: 158219161
+Test: Security Fix
+Tag: #security
+Change-Id: If732f940a7aa256f5975349118e8eb6cf5584676
+(cherry picked from commit 1951d27669b1e8eab96f4082cb00cb1d030602ec)
+---
+ .../android/settings/bluetooth/BluetoothPermissionRequest.java   | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java b/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
+index c5f62b8b4d..5fffa3a235 100644
+--- a/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
++++ b/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
+@@ -131,6 +131,7 @@ public final class BluetoothPermissionRequest extends BroadcastReceiver {
+                 // "Clear All Notifications" button
+ 
+                 Intent deleteIntent = new Intent(BluetoothDevice.ACTION_CONNECTION_ACCESS_REPLY);
++                deleteIntent.setPackage("com.android.bluetooth");
+                 deleteIntent.putExtra(BluetoothDevice.EXTRA_DEVICE, mDevice);
+                 deleteIntent.putExtra(BluetoothDevice.EXTRA_CONNECTION_ACCESS_RESULT,
+                         BluetoothDevice.CONNECTION_ACCESS_NO);
+-- 
+2.34.1
+

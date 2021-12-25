@@ -1,0 +1,54 @@
+From 091bbe392c035ffe6e7902c4c2f587aa6b527956 Mon Sep 17 00:00:00 2001
+From: Jimmy Chen <jimmycmchen@google.com>
+Date: Mon, 9 Nov 2020 11:43:12 +0200
+Subject: [PATCH] [Q_asb_2021-02] P2P: Fix copying of secondary device types
+ for P2P group client
+
+Parsing and copying of WPS secondary device types list was verifying
+that the contents is not too long for the internal maximum in the case
+of WPS messages, but similar validation was missing from the case of P2P
+group information which encodes this information in a different
+attribute. This could result in writing beyond the memory area assigned
+for these entries and corrupting memory within an instance of struct
+p2p_device. This could result in invalid operations and unexpected
+behavior when trying to free pointers from that corrupted memory.
+
+Credit to OSS-Fuzz: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=27269
+Fixes: e57ae6e19edf ("P2P: Keep track of secondary device types for peers")
+Signed-off-by: Jouni Malinen <jouni@codeaurora.org>
+
+Bug: 172937525
+Test: add malformed vendor element config in p2p_supplicant.conf
+Change-Id: I6837931dcd3be01e68dc93d79ec1f874063fcae3
+Merged-In: I6837931dcd3be01e68dc93d79ec1f874063fcae3
+(cherry picked from commit 22c30be53c47bab9dfbfeb52723463d0a881405a)
+---
+ src/p2p/p2p.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/p2p/p2p.c b/src/p2p/p2p.c
+index 9c738850..1dc5b92a 100644
+--- a/src/p2p/p2p.c
++++ b/src/p2p/p2p.c
+@@ -8,6 +8,7 @@
+ 
+ #include "includes.h"
+ 
++#include <log/log.h>
+ #include "common.h"
+ #include "eloop.h"
+ #include "common/defs.h"
+@@ -453,6 +454,10 @@ static void p2p_copy_client_info(struct p2p_device *dev,
+ 	dev->info.config_methods = cli->config_methods;
+ 	os_memcpy(dev->info.pri_dev_type, cli->pri_dev_type, 8);
+ 	dev->info.wps_sec_dev_type_list_len = 8 * cli->num_sec_dev_types;
++	if (dev->info.wps_sec_dev_type_list_len > WPS_SEC_DEV_TYPE_MAX_LEN) {
++		android_errorWriteLog(0x534e4554, "172937525");
++		dev->info.wps_sec_dev_type_list_len = WPS_SEC_DEV_TYPE_MAX_LEN;
++	}
+ 	os_memcpy(dev->info.wps_sec_dev_type_list, cli->sec_dev_types,
+ 		  dev->info.wps_sec_dev_type_list_len);
+ }
+-- 
+2.34.1
+

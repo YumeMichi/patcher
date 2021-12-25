@@ -1,0 +1,62 @@
+From 196a8d165d5bedc37a79d0bcfde65451d2e6d335 Mon Sep 17 00:00:00 2001
+From: Denis Hsu <denis.hsu@mediatek.com>
+Date: Wed, 17 Jun 2020 10:17:30 +0800
+Subject: [PATCH 3/3] [Q_asb_2021-02] SF: update mInputFlinger on main thread
+
+mInputFlinger can be accessed by bootFinished() and updateInputFlinger().
+These function can run in different thread at the same time, but
+mInputFlinger was not protected.
+
+update mInputFlinger on main thread
+
+Fixes: 157871763
+Fixes: 147009853
+Fixes: 169256435
+Test: adb shell stop / start
+Test: boot ok
+Test: Race was only reproducible in monkey tests
+Change-Id: I4d87e90793a88a646aaa1ae5806f118f1ae51e30
+Merged-In: I4d87e90793a88a646aaa1ae5806f118f1ae51e30
+(cherry picked from commit 58fbf9fb2c82ee09b0d572e0936b8370c4d35aef)
+---
+ services/surfaceflinger/SurfaceFlinger.cpp | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/services/surfaceflinger/SurfaceFlinger.cpp b/services/surfaceflinger/SurfaceFlinger.cpp
+index 62567d2131..fa78203640 100755
+--- a/services/surfaceflinger/SurfaceFlinger.cpp
++++ b/services/surfaceflinger/SurfaceFlinger.cpp
+@@ -709,13 +709,6 @@ void SurfaceFlinger::bootFinished()
+     if (window != 0) {
+         window->linkToDeath(static_cast<IBinder::DeathRecipient*>(this));
+     }
+-    sp<IBinder> input(defaultServiceManager()->getService(
+-            String16("inputflinger")));
+-    if (input == nullptr) {
+-        ALOGE("Failed to link to input service");
+-    } else {
+-        mInputFlinger = interface_cast<IInputFlinger>(input);
+-    }
+ 
+     if (mVrFlinger) {
+       mVrFlinger->OnBootFinished();
+@@ -730,7 +723,15 @@ void SurfaceFlinger::bootFinished()
+     LOG_EVENT_LONG(LOGTAG_SF_STOP_BOOTANIM,
+                    ns2ms(systemTime(SYSTEM_TIME_MONOTONIC)));
+ 
+-    postMessageAsync(new LambdaMessage([this]() NO_THREAD_SAFETY_ANALYSIS {
++    sp<IBinder> input(defaultServiceManager()->getService(String16("inputflinger")));
++
++    postMessageAsync(new LambdaMessage([=]() NO_THREAD_SAFETY_ANALYSIS {
++        if (input == nullptr) {
++            ALOGE("Failed to link to input service");
++        } else {
++            mInputFlinger = interface_cast<IInputFlinger>(input);
++        }
++
+         readPersistentProperties();
+         mBootStage = BootStage::FINISHED;
+ 
+-- 
+2.34.1
+

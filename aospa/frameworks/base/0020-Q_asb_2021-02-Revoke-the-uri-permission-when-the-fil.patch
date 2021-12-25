@@ -1,0 +1,84 @@
+From 08b55f71bbdf7b2301537551dd081dee144d5c6b Mon Sep 17 00:00:00 2001
+From: Ivan Chiang <chiangi@google.com>
+Date: Mon, 10 Aug 2020 16:43:33 +0800
+Subject: [PATCH 20/23] [Q_asb_2021-02] Revoke the uri permission when the file
+ is deleted
+
+When the file is deleted, renamed or moved, revoke all uri
+permissions with the file
+
+Bug: 157474195
+Test: manual test with DocumentsUI
+Test: atest DocumentsTest#testAfterMoveDocumentInStorage_revokeUriPermission
+Change-Id: I4ffb183630aadb2d87b0965e8cecf88af15f4534
+Merged-In: I4ffb183630aadb2d87b0965e8cecf88af15f4534
+(cherry picked from commit 9efd606f43abe36f9fcf7f0d1ab0d059c51be514)
+(cherry picked from commit 773bec181da077601b66727b1b1472db907a00af)
+---
+ .../android/internal/content/FileSystemProvider.java  | 11 +++++++++++
+ .../externalstorage/ExternalStorageProvider.java      |  6 ++++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/core/java/com/android/internal/content/FileSystemProvider.java b/core/java/com/android/internal/content/FileSystemProvider.java
+index cdb79abbb7ce..c8df16862111 100644
+--- a/core/java/com/android/internal/content/FileSystemProvider.java
++++ b/core/java/com/android/internal/content/FileSystemProvider.java
+@@ -108,6 +108,14 @@ public abstract class FileSystemProvider extends DocumentsProvider {
+         // Default is no-op
+     }
+ 
++    /**
++     * Callback indicating that the given document has been deleted or moved. This gives
++     * the provider a hook to revoke the uri permissions.
++     */
++    protected void onDocIdDeleted(String docId) {
++        // Default is no-op
++    }
++
+     @Override
+     public boolean onCreate() {
+         throw new UnsupportedOperationException(
+@@ -278,6 +286,7 @@ public abstract class FileSystemProvider extends DocumentsProvider {
+ 
+         final String afterDocId = getDocIdForFile(after);
+         onDocIdChanged(docId);
++        onDocIdDeleted(docId);
+         onDocIdChanged(afterDocId);
+ 
+         final File afterVisibleFile = getFileForDocId(afterDocId, true);
+@@ -307,6 +316,7 @@ public abstract class FileSystemProvider extends DocumentsProvider {
+ 
+         final String docId = getDocIdForFile(after);
+         onDocIdChanged(sourceDocumentId);
++        onDocIdDeleted(sourceDocumentId);
+         onDocIdChanged(docId);
+         moveInMediaStore(visibleFileBefore, getFileForDocId(docId, true));
+ 
+@@ -336,6 +346,7 @@ public abstract class FileSystemProvider extends DocumentsProvider {
+         }
+ 
+         onDocIdChanged(docId);
++        onDocIdDeleted(docId);
+         removeFromMediaStore(visibleFile, isDirectory);
+     }
+ 
+diff --git a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
+index 1b27b52f1fa1..4343611eb4c8 100644
+--- a/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
++++ b/packages/ExternalStorageProvider/src/com/android/externalstorage/ExternalStorageProvider.java
+@@ -434,6 +434,12 @@ public class ExternalStorageProvider extends FileSystemProvider {
+         }
+     }
+ 
++    @Override
++    protected void onDocIdDeleted(String docId) {
++        Uri uri = DocumentsContract.buildDocumentUri(AUTHORITY, docId);
++        getContext().revokeUriPermission(uri, ~0);
++    }
++
+     @Override
+     public Cursor queryRoots(String[] projection) throws FileNotFoundException {
+         final MatrixCursor result = new MatrixCursor(resolveRootProjection(projection));
+-- 
+2.34.1
+

@@ -1,0 +1,48 @@
+From 46cd3e58d5fb88af859c1d500b7b7345248445d7 Mon Sep 17 00:00:00 2001
+From: Pete Bentley <prb@google.com>
+Date: Thu, 3 Dec 2020 19:56:54 +0000
+Subject: [PATCH] [Q_asb_2021-02] [DO NOT MERGE] Reject non-ASCII hostnames and
+ SANs.
+
+Updates test expectations to match OkHostnameVerifier behaviour changes
+in the same topic.
+
+Bug: 171980069
+Test: atest CtsLibcoreTestCases CtsLibcoreOkHttpTestCases
+Change-Id: Ia5c6f7f95e827d43280292409b1a12c27756dba0
+Merged-In: I7ccd2c6d4255d29112e9a6d58640316c364bf67a
+(cherry picked from commit c247f14ad56a02de5b1aca0b29ab5b1d02f04b92)
+---
+ .../harmony/tests/javax/net/ssl/HostnameVerifierTest.java   | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/harmony-tests/src/test/java/org/apache/harmony/tests/javax/net/ssl/HostnameVerifierTest.java b/harmony-tests/src/test/java/org/apache/harmony/tests/javax/net/ssl/HostnameVerifierTest.java
+index e6978385e0..96384adba2 100644
+--- a/harmony-tests/src/test/java/org/apache/harmony/tests/javax/net/ssl/HostnameVerifierTest.java
++++ b/harmony-tests/src/test/java/org/apache/harmony/tests/javax/net/ssl/HostnameVerifierTest.java
+@@ -78,7 +78,7 @@ public class HostnameVerifierTest extends TestCase implements
+         assertFalse(verifier.verify("a.foo.com", session));
+         assertTrue(verifier.verify("bar.com", session));
+         assertFalse(verifier.verify("a.bar.com", session));
+-        // The certificate has this name in the altnames section, but Conscrypt drops
++        // The certificate has this name in the altnames section, but OkHostnameVerifier drops
+         // any altnames that are improperly encoded according to RFC 5280, which requires
+         // non-ASCII characters to be encoded in ASCII via Punycode.
+         assertFalse(verifier.verify("\u82b1\u5b50.co.jp", session));
+@@ -129,11 +129,11 @@ public class HostnameVerifierTest extends TestCase implements
+         assertFalse(verifier.verify("a.b.foo.com", session));
+         assertFalse(verifier.verify("bar.com", session));
+         assertTrue(verifier.verify("www.bar.com", session));
+-        assertTrue(verifier.verify("\u82b1\u5b50.bar.com", session));
+         assertFalse(verifier.verify("a.b.bar.com", session));
+-        // The certificate has this name in the altnames section, but Conscrypt drops
++        // The certificate has this name in the altnames section, but OkHostnameVerifier drops
+         // any altnames that are improperly encoded according to RFC 5280, which requires
+         // non-ASCII characters to be encoded in ASCII via Punycode.
++        assertFalse(verifier.verify("\u82b1\u5b50.bar.com", session));
+         assertFalse(verifier.verify("\u82b1\u5b50.co.jp", session));
+         assertFalse(verifier.verify("a.\u82b1\u5b50.co.jp", session));
+     }
+-- 
+2.34.1
+

@@ -1,0 +1,41 @@
+From 7a8ccf8970de69f672c6b5e840f01b9a9e70e296 Mon Sep 17 00:00:00 2001
+From: Songchun Fan <schfan@google.com>
+Date: Mon, 7 Dec 2020 14:06:31 -0800
+Subject: [PATCH 23/23] [Q_asb_2021-02] [SettingsProvider] fix font size scale
+ validator
+
+BUG: 156260178
+Test: builds
+Change-Id: I32f3b7ece78ec8cc97c52a0484151a6a777aa9da
+Merged-In: I32f3b7ece78ec8cc97c52a0484151a6a777aa9da
+(cherry picked from commit 9af8c6364f34c7d7be6c6dff23d3b7052c0a914d)
+---
+ core/java/android/provider/Settings.java | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
+index 61e4505890b3..056f5009b755 100644
+--- a/core/java/android/provider/Settings.java
++++ b/core/java/android/provider/Settings.java
+@@ -3436,16 +3436,8 @@ public final class Settings {
+          */
+         public static final String FONT_SCALE = "font_scale";
+ 
+-        private static final Validator FONT_SCALE_VALIDATOR = new Validator() {
+-            @Override
+-            public boolean validate(@Nullable String value) {
+-                try {
+-                    return Float.parseFloat(value) >= 0;
+-                } catch (NumberFormatException | NullPointerException e) {
+-                    return false;
+-                }
+-            }
+-        };
++        private static final Validator FONT_SCALE_VALIDATOR =
++                new SettingsValidators.InclusiveFloatRangeValidator(0.85f, 1.3f);
+ 
+         /**
+          * The serialized system locale value.
+-- 
+2.34.1
+

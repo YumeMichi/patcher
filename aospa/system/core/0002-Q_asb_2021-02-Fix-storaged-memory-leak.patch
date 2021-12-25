@@ -1,0 +1,39 @@
+From 1349f0fa5e2a7c28b8956a17e307332325585d58 Mon Sep 17 00:00:00 2001
+From: Joe Yu <joe.yu@unisoc.com>
+Date: Wed, 31 Oct 2018 14:37:42 +0800
+Subject: [PATCH 2/3] [Q_asb_2021-02] Fix storaged memory leak
+
+storaged try to load user's proto even if it has been loaded before
+
+https://partnerissuetracker.corp.google.com/u/2/issues/118719575
+
+Change-Id: Ia7575cdc60e82b028c6db9a29ae80e31e02268b1
+(cherry picked from commit 857a63eb6604baa1ed6b0e31839ccce8da18c716)
+Signed-off-by: Mark Salyzyn <salyzyn@google.com>
+Bug: 170732441
+Test: compile
+(cherry picked from commit 8ec2afb91400818b0a8843b8917c05aba75b00db)
+---
+ storaged/storaged.cpp | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/storaged/storaged.cpp b/storaged/storaged.cpp
+index 689766382..1d934a28b 100644
+--- a/storaged/storaged.cpp
++++ b/storaged/storaged.cpp
+@@ -164,8 +164,10 @@ storaged_t::storaged_t(void) {
+ }
+ 
+ void storaged_t::add_user_ce(userid_t user_id) {
+-    load_proto(user_id);
+-    proto_loaded[user_id] = true;
++    if (!proto_loaded[user_id]) {
++        load_proto(user_id);
++        proto_loaded[user_id] = true;
++    }
+ }
+ 
+ void storaged_t::remove_user_ce(userid_t user_id) {
+-- 
+2.34.1
+
