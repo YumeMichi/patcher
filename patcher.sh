@@ -58,7 +58,7 @@ REPOSITORIES=(
     'system/security'
     'system/tools/hidl'
     'vendor/pa'
-    'vendor/qcom/opensource/commonsys/packages/apps/Bluetooth'
+    # 'vendor/qcom/opensource/commonsys/packages/apps/Bluetooth'
     'vendor/qcom/opensource/commonsys/system/bt'
 )
 
