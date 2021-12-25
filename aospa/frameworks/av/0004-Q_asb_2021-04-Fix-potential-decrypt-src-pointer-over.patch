@@ -1,7 +1,7 @@
 From 690ee74d3249aebe632537cb7a9ec5127386d0e3 Mon Sep 17 00:00:00 2001
 From: Edwin Wong <edwinwong@google.com>
 Date: Tue, 26 Jan 2021 20:25:20 -0800
-Subject: [PATCH 04/12] [Q_asb_2021-04] Fix potential decrypt src pointer
+Subject: [PATCH 04/13] [Q_asb_2021-04] Fix potential decrypt src pointer
  overflow.
 
 There is a potential integer overflow to bypass the

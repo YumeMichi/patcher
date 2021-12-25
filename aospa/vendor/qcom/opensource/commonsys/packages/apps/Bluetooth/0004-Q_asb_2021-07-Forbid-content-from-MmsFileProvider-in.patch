@@ -1,0 +1,53 @@
+From 2ec2353d8d1b0e5d7e2fe0079e8df7e11a77efd9 Mon Sep 17 00:00:00 2001
+From: Jakub Pawlowski <jpawlowski@google.com>
+Date: Fri, 23 Apr 2021 20:59:43 +0200
+Subject: [PATCH 4/4] [Q_asb_2021-07] Forbid content from MmsFileProvider in
+ Bluetooth Share
+
+Bug: 179910660
+Test: verified against POC
+Change-Id: I8a888e67ba70d4a8b5721e4124bd8ccb671baaf7
+(cherry picked from commit 5fd89df71e29571cde91c4a899939496002b2499)
+---
+ .../android/bluetooth/opp/BluetoothOppSendFileInfo.java    | 6 ++++++
+ src/com/android/bluetooth/opp/BluetoothOppUtility.java     | 7 +++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java b/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java
+index 7130418ce..0bf65aa2b 100644
+--- a/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java
++++ b/src/com/android/bluetooth/opp/BluetoothOppSendFileInfo.java
+@@ -111,6 +111,12 @@ public class BluetoothOppSendFileInfo {
+         // This will allow more 3rd party applications to share files via
+         // bluetooth
+         if ("content".equals(scheme)) {
++            if (fromExternal && BluetoothOppUtility.isForbiddenContent(uri)) {
++                EventLog.writeEvent(0x534e4554, "179910660", -1, uri.toString());
++                Log.e(TAG, "Content from forbidden URI is not allowed.");
++                return SEND_FILE_INFO_ERROR;
++            }
++
+             contentType = contentResolver.getType(uri);
+             Cursor metadataCursor;
+             try {
+diff --git a/src/com/android/bluetooth/opp/BluetoothOppUtility.java b/src/com/android/bluetooth/opp/BluetoothOppUtility.java
+index 7cb6f802a..8141c8761 100644
+--- a/src/com/android/bluetooth/opp/BluetoothOppUtility.java
++++ b/src/com/android/bluetooth/opp/BluetoothOppUtility.java
+@@ -441,6 +441,13 @@ public class BluetoothOppUtility {
+         return isSameOrSubDirectory(Environment.getExternalStorageDirectory(), file);
+     }
+ 
++    static boolean isForbiddenContent(Uri uri) {
++        if ("com.android.bluetooth.map.MmsFileProvider".equals(uri.getHost())) {
++            return true;
++        }
++        return false;
++    }
++
+     /**
+      * Checks, whether the child directory is the same as, or a sub-directory of the base
+      * directory. Neither base nor child should be null.
+-- 
+2.34.1
+

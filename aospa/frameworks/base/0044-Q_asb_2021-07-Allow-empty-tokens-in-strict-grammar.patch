@@ -1,0 +1,51 @@
+From 14648b447877cab3c4c4affe1c849b2057f797cb Mon Sep 17 00:00:00 2001
+From: Hall Liu <hallliu@google.com>
+Date: Mon, 27 Jan 2020 15:23:25 -0800
+Subject: [PATCH 44/44] [Q_asb_2021-07] Allow empty tokens in strict grammar
+
+Allow empty tokens in SQLiteQueryBuilder's strict grammar enforcement
+
+Bug: 143230980
+Test: atest SQLiteQueryBuilderTest, manual
+Change-Id: Ie82dded77a3eaa75095333b0e77f10e21c9f7caf
+(cherry picked from commit ea5b2c08df2e01139b8607f6bc0085bc70a17f1d)
+Merged-In: Ie82dded77a3eaa75095333b0e77f10e21c9f7caf
+---
+ core/java/android/provider/CallLog.java | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/core/java/android/provider/CallLog.java b/core/java/android/provider/CallLog.java
+index ef28f07e817f..94bff5ed11ba 100644
+--- a/core/java/android/provider/CallLog.java
++++ b/core/java/android/provider/CallLog.java
+@@ -100,6 +100,13 @@ public class CallLog {
+          */
+         public static final String LIMIT_PARAM_KEY = "limit";
+ 
++        /**
++         * Form of {@link #CONTENT_URI} which limits the query results to a single result.
++         */
++        private static final Uri CONTENT_URI_LIMIT_1 = CONTENT_URI.buildUpon()
++                .appendQueryParameter(LIMIT_PARAM_KEY, "1")
++                .build();
++
+         /**
+          * Query parameter used to specify the starting record to return.
+          * <p>
+@@ -931,11 +938,11 @@ public class CallLog {
+             Cursor c = null;
+             try {
+                 c = resolver.query(
+-                    CONTENT_URI,
++                    CONTENT_URI_LIMIT_1,
+                     new String[] {NUMBER},
+                     TYPE + " = " + OUTGOING_TYPE,
+                     null,
+-                    DEFAULT_SORT_ORDER + " LIMIT 1");
++                    DEFAULT_SORT_ORDER);
+                 if (c == null || !c.moveToFirst()) {
+                     return "";
+                 }
+-- 
+2.34.1
+

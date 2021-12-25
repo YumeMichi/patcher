@@ -1,0 +1,44 @@
+From b8b9e3e3a0a7ee8a85d6e2a4b054e6480ec0be52 Mon Sep 17 00:00:00 2001
+From: Devin Moore <devinmoore@google.com>
+Date: Thu, 22 Apr 2021 15:41:07 -0700
+Subject: [PATCH 13/13] [Q_asb_2021-07] DO NOT MERGE Add fmq function
+ instantiations to preserve ABI
+
+Bug: 184963385
+Test: check abidiff after full build
+Test: out/soong/.intermediates/frameworks/av/media/bufferpool/2.0/libstagefright_bufferpool@2.0/android_arm_armv8-a_vendor_shared/libstagefright_bufferpool@2.0.so.abidiff
+Change-Id: I25b7180bb88b4bace4a1d9ad5a789d79cbe3de35
+(cherry picked from commit b0e09634903a73908b84361564215a79f1f6bdb1)
+---
+ media/bufferpool/2.0/BufferStatus.cpp | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/media/bufferpool/2.0/BufferStatus.cpp b/media/bufferpool/2.0/BufferStatus.cpp
+index 693726086e..76402f2ee6 100644
+--- a/media/bufferpool/2.0/BufferStatus.cpp
++++ b/media/bufferpool/2.0/BufferStatus.cpp
+@@ -21,6 +21,21 @@
+ #include <time.h>
+ #include "BufferStatus.h"
+ 
++// This is added to preserve ABI for b/184963385
++template bool android::hardware::MessageQueue<
++    android::hardware::media::bufferpool::V2_0::BufferStatusMessage,
++    android::hardware::kSynchronizedReadWrite>::
++    write(
++        const android::hardware::media::bufferpool::V2_0::BufferStatusMessage *,
++        size_t count);
++#ifndef __aarch64__
++template bool android::hardware::MessageQueue<
++    android::hardware::media::bufferpool::V2_0::BufferInvalidationMessage,
++    android::hardware::kUnsynchronizedWrite>::
++    write(const android::hardware::media::bufferpool::V2_0::
++              BufferInvalidationMessage *,
++          size_t count);
++#endif
+ namespace android {
+ namespace hardware {
+ namespace media {
+-- 
+2.34.1
+

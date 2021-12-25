@@ -1,7 +1,7 @@
 From 07f88fdaf0462172820e060f77e60ad6821117f3 Mon Sep 17 00:00:00 2001
 From: Edwin Wong <edwinwong@google.com>
 Date: Sat, 23 Jan 2021 17:25:14 -0800
-Subject: [PATCH 2/2] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix CryptoPlugin use
+Subject: [PATCH 2/3] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix CryptoPlugin use
  after free vulnerability.
 
 The shared memory buffer used by srcPtr can be freed by another

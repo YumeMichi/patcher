@@ -1,7 +1,7 @@
 From d89a0d2c0abbfc997f4e59e1b3e0c864872abc3e Mon Sep 17 00:00:00 2001
 From: Winson <chiuwinson@google.com>
 Date: Wed, 28 Oct 2020 13:25:44 -0700
-Subject: [PATCH 21/40] [Q_asb_2021-02] Remove
+Subject: [PATCH 21/44] [Q_asb_2021-02] Remove
  updateIntentVerificationStatusAsUser from ResolverActivity
 
 DO NOT CHERRY PICK ANYWHERE: Security issue

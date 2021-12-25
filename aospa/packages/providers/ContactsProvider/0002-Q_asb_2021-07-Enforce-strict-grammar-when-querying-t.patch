@@ -1,0 +1,140 @@
+From 9457d5cb47deb30f4d139c629e211c1a2ba33665 Mon Sep 17 00:00:00 2001
+From: Hall Liu <hallliu@google.com>
+Date: Mon, 27 Jan 2020 15:34:04 -0800
+Subject: [PATCH 2/2] [Q_asb_2021-07] Enforce strict grammar when querying the
+ call log
+
+Disallow subqueries and suspicious tokens when querying from the
+call log database. Also add a column to the projection so that the token
+detector doesn't throw a false positive.
+
+Bug: 143230980
+Test: atest android.provider.cts.contacts.CallLogProviderTest
+Change-Id: I54d2d399f449ea47aa8fb4197c718f9038da25bf
+(cherry picked from commit 1e54cb39bb76f5cc12526abca99b1af017d7d3d2)
+Merged-In: I54d2d399f449ea47aa8fb4197c718f9038da25bf
+---
+ .../providers/contacts/CallLogProvider.java   | 38 +++++++++++++++++--
+ .../contacts/CallLogProviderTest.java         |  6 ++-
+ 2 files changed, 39 insertions(+), 5 deletions(-)
+
+diff --git a/src/com/android/providers/contacts/CallLogProvider.java b/src/com/android/providers/contacts/CallLogProvider.java
+index ff3e65c6..162e993e 100644
+--- a/src/com/android/providers/contacts/CallLogProvider.java
++++ b/src/com/android/providers/contacts/CallLogProvider.java
+@@ -138,6 +138,7 @@ public class CallLogProvider extends ContentProvider {
+         sCallsProjectionMap.put(Calls.FEATURES, Calls.FEATURES);
+         sCallsProjectionMap.put(Calls.PHONE_ACCOUNT_COMPONENT_NAME, Calls.PHONE_ACCOUNT_COMPONENT_NAME);
+         sCallsProjectionMap.put(Calls.PHONE_ACCOUNT_ID, Calls.PHONE_ACCOUNT_ID);
++        sCallsProjectionMap.put(Calls.PHONE_ACCOUNT_HIDDEN, Calls.PHONE_ACCOUNT_HIDDEN);
+         sCallsProjectionMap.put(Calls.PHONE_ACCOUNT_ADDRESS, Calls.PHONE_ACCOUNT_ADDRESS);
+         sCallsProjectionMap.put(Calls.NEW, Calls.NEW);
+         sCallsProjectionMap.put(Calls.VOICEMAIL_URI, Calls.VOICEMAIL_URI);
+@@ -309,6 +310,13 @@ public class CallLogProvider extends ContentProvider {
+         qb.setTables(Tables.CALLS);
+         qb.setProjectionMap(sCallsProjectionMap);
+         qb.setStrict(true);
++        // If the caller doesn't have READ_VOICEMAIL, make sure they can't
++        // do any SQL shenanigans to get access to the voicemails. If the caller does have the
++        // READ_VOICEMAIL permission, then they have sufficient permissions to access any data in
++        // the database, so the strict check is unnecessary.
++        if (!mVoicemailPermissions.callerHasReadAccess(getCallingPackage())) {
++            qb.setStrictGrammar(true);
++        }
+ 
+         final SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
+         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder, true /*isQuery*/);
+@@ -511,6 +519,18 @@ public class CallLogProvider extends ContentProvider {
+         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
+         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder, false /*isQuery*/);
+ 
++        final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
++        qb.setTables(Tables.CALLS);
++        qb.setProjectionMap(sCallsProjectionMap);
++        qb.setStrict(true);
++        // If the caller doesn't have READ_VOICEMAIL, make sure they can't
++        // do any SQL shenanigans to get access to the voicemails. If the caller does have the
++        // READ_VOICEMAIL permission, then they have sufficient permissions to access any data in
++        // the database, so the strict check is unnecessary.
++        if (!mVoicemailPermissions.callerHasReadAccess(getCallingPackage())) {
++            qb.setStrictGrammar(true);
++        }
++
+         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+         final int matchedUriId = sURIMatcher.match(uri);
+         switch (matchedUriId) {
+@@ -525,8 +545,7 @@ public class CallLogProvider extends ContentProvider {
+                 throw new UnsupportedOperationException("Cannot update URL: " + uri);
+         }
+ 
+-        return createDatabaseModifier(db).update(uri, Tables.CALLS, values, selectionBuilder.build(),
+-                selectionArgs);
++        return qb.update(db, values, selectionBuilder.build(), selectionArgs);
+     }
+ 
+     private int deleteInternal(Uri uri, String selection, String[] selectionArgs) {
+@@ -540,14 +559,25 @@ public class CallLogProvider extends ContentProvider {
+         SelectionBuilder selectionBuilder = new SelectionBuilder(selection);
+         checkVoicemailPermissionAndAddRestriction(uri, selectionBuilder, false /*isQuery*/);
+ 
++        final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
++        qb.setTables(Tables.CALLS);
++        qb.setProjectionMap(sCallsProjectionMap);
++        qb.setStrict(true);
++        // If the caller doesn't have READ_VOICEMAIL, make sure they can't
++        // do any SQL shenanigans to get access to the voicemails. If the caller does have the
++        // READ_VOICEMAIL permission, then they have sufficient permissions to access any data in
++        // the database, so the strict check is unnecessary.
++        if (!mVoicemailPermissions.callerHasReadAccess(getCallingPackage())) {
++            qb.setStrictGrammar(true);
++        }
++
+         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
+         final int matchedUriId = sURIMatcher.match(uri);
+         switch (matchedUriId) {
+             case CALLS:
+                 // TODO: Special case - We may want to forward the delete request on user 0 to the
+                 // shadow provider too.
+-                return createDatabaseModifier(db).delete(Tables.CALLS,
+-                        selectionBuilder.build(), selectionArgs);
++                return qb.delete(db, selectionBuilder.build(), selectionArgs);
+             default:
+                 throw new UnsupportedOperationException("Cannot delete that URL: " + uri);
+         }
+diff --git a/tests/src/com/android/providers/contacts/CallLogProviderTest.java b/tests/src/com/android/providers/contacts/CallLogProviderTest.java
+index 93806e00..43085746 100644
+--- a/tests/src/com/android/providers/contacts/CallLogProviderTest.java
++++ b/tests/src/com/android/providers/contacts/CallLogProviderTest.java
+@@ -20,6 +20,7 @@ import com.android.internal.telephony.CallerInfo;
+ import com.android.internal.telephony.PhoneConstants;
+ import com.android.providers.contacts.CallLogDatabaseHelper.DbProperties;
+ import com.android.providers.contacts.testutil.CommonDatabaseUtils;
++import com.android.providers.contacts.util.ContactsPermissions;
+ 
+ import android.content.ComponentName;
+ import android.content.ContentProvider;
+@@ -61,7 +62,7 @@ public class CallLogProviderTest extends BaseContactsProvider2Test {
+             Voicemails.DIRTY,
+             Voicemails.DELETED};
+     /** Total number of columns exposed by call_log provider. */
+-    private static final int NUM_CALLLOG_FIELDS = 34;
++    private static final int NUM_CALLLOG_FIELDS = 35;
+ 
+     private CallLogProviderTestable mCallLogProvider;
+ 
+@@ -189,9 +190,12 @@ public class CallLogProviderTest extends BaseContactsProvider2Test {
+         PhoneAccountHandle subscription = new PhoneAccountHandle(
+                 sComponentName, "sub0");
+ 
++        // Allow self-calls in order to add the call
++        ContactsPermissions.ALLOW_SELF_CALL = true;
+         Uri uri = Calls.addCall(ci, getMockContext(), "1-800-263-7643",
+                 PhoneConstants.PRESENTATION_ALLOWED, Calls.OUTGOING_TYPE, 0, subscription, 2000,
+                 40, null);
++        ContactsPermissions.ALLOW_SELF_CALL = false;
+         assertNotNull(uri);
+         assertEquals("0@" + CallLog.AUTHORITY, uri.getAuthority());
+ 
+-- 
+2.34.1
+

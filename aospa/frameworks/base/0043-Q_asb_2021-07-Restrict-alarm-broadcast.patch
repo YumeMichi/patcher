@@ -1,0 +1,100 @@
+From 4a7d68598a794fde094bb23d65e10d906e6147e7 Mon Sep 17 00:00:00 2001
+From: Julia Reynolds <juliacr@google.com>
+Date: Mon, 5 Apr 2021 16:58:17 -0400
+Subject: [PATCH 43/44] [Q_asb_2021-07] Restrict alarm broadcast
+
+To android only
+
+Test: NotificationManagerTest, NotificationManagerServiceTest
+Bug: 175614289
+Change-Id: I4f8e56729d90f8f5288d08881129b1c45d5790e7
+Merged-In: I4f8e56729d90f8f5288d08881129b1c45d5790e7
+(cherry picked from commit abf15b731af248f512b7cc31ea99019436841af4)
+(cherry picked from commit 4056976f1e7556873696e0a23ad612659669ebad)
+(cherry picked from commit f1e84b42b178f7db7fe1a3d3f19194c8845da130)
+(cherry picked from commit 5cccc6a2e6743f7e66f2710d595bce515b0cae97)
+---
+ .../NotificationManagerService.java           |  1 +
+ .../NotificationManagerServiceTest.java       | 26 +++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/services/core/java/com/android/server/notification/NotificationManagerService.java b/services/core/java/com/android/server/notification/NotificationManagerService.java
+index fe181f5f0e4a..42ed440be098 100755
+--- a/services/core/java/com/android/server/notification/NotificationManagerService.java
++++ b/services/core/java/com/android/server/notification/NotificationManagerService.java
+@@ -5905,6 +5905,7 @@ public class NotificationManagerService extends SystemService {
+             final PendingIntent pi = PendingIntent.getBroadcast(getContext(),
+                     REQUEST_CODE_TIMEOUT,
+                     new Intent(ACTION_NOTIFICATION_TIMEOUT)
++                            .setPackage(PackageManagerService.PLATFORM_PACKAGE_NAME)
+                             .setData(new Uri.Builder().scheme(SCHEME_TIMEOUT)
+                                     .appendPath(record.getKey()).build())
+                             .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+diff --git a/services/tests/uiservicestests/src/com/android/server/notification/NotificationManagerServiceTest.java b/services/tests/uiservicestests/src/com/android/server/notification/NotificationManagerServiceTest.java
+index f048e45cca14..88c663af4c08 100755
+--- a/services/tests/uiservicestests/src/com/android/server/notification/NotificationManagerServiceTest.java
++++ b/services/tests/uiservicestests/src/com/android/server/notification/NotificationManagerServiceTest.java
+@@ -75,6 +75,7 @@ import static org.mockito.Mockito.when;
+ 
+ import android.app.ActivityManager;
+ import android.app.ActivityManagerInternal;
++import android.app.AlarmManager;
+ import android.app.AppOpsManager;
+ import android.app.AutomaticZenRule;
+ import android.app.IActivityManager;
+@@ -147,6 +148,7 @@ import com.android.server.lights.Light;
+ import com.android.server.lights.LightsManager;
+ import com.android.server.notification.NotificationManagerService.NotificationAssistants;
+ import com.android.server.notification.NotificationManagerService.NotificationListeners;
++import com.android.server.pm.PackageManagerService;
+ import com.android.server.uri.UriGrantsManagerInternal;
+ import com.android.server.wm.WindowManagerInternal;
+ 
+@@ -243,6 +245,9 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
+     @Mock
+     UserManager mUm;
+ 
++    @Mock
++    AlarmManager mAlarmManager;
++
+     // Use a Testable subclass so we can simulate calls from the system without failing.
+     private static class TestableNotificationManagerService extends NotificationManagerService {
+         int countSystemChecks = 0;
+@@ -338,6 +343,7 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
+         LocalServices.addService(WindowManagerInternal.class, mWindowManagerInternal);
+         LocalServices.removeServiceForTest(ActivityManagerInternal.class);
+         LocalServices.addService(ActivityManagerInternal.class, mAmi);
++        mContext.addMockSystemService(Context.ALARM_SERVICE, mAlarmManager);
+ 
+         doNothing().when(mContext).sendBroadcastAsUser(any(), any(), any());
+ 
+@@ -602,6 +608,26 @@ public class NotificationManagerServiceTest extends UiServiceTestCase {
+         return nrSummary;
+     }
+ 
++    @Test
++    public void testLimitTimeOutBroadcast() {
++        NotificationChannel channel = new NotificationChannel("id", "name",
++                NotificationManager.IMPORTANCE_HIGH);
++        Notification.Builder nb = new Notification.Builder(mContext, channel.getId())
++                .setContentTitle("foo")
++                .setSmallIcon(android.R.drawable.sym_def_app_icon)
++                .setTimeoutAfter(1);
++
++        StatusBarNotification sbn = new StatusBarNotification(PKG, PKG, 8, "tag", mUid, 0,
++                nb.build(), UserHandle.getUserHandleForUid(mUid), null, 0);
++        NotificationRecord r = new NotificationRecord(mContext, sbn, channel);
++
++        mService.scheduleTimeoutLocked(r);
++        ArgumentCaptor<PendingIntent> captor = ArgumentCaptor.forClass(PendingIntent.class);
++        verify(mAlarmManager).setExactAndAllowWhileIdle(anyInt(), anyLong(), captor.capture());
++        assertEquals(PackageManagerService.PLATFORM_PACKAGE_NAME,
++                captor.getValue().getIntent().getPackage());
++    }
++
+     @Test
+     public void testCreateNotificationChannels_SingleChannel() throws Exception {
+         final NotificationChannel channel =
+-- 
+2.34.1
+

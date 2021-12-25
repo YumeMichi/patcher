@@ -1,0 +1,72 @@
+From a1b1e7bfe728be90609bfa1182ffabced469a22f Mon Sep 17 00:00:00 2001
+From: Nate Myren <ntmyren@google.com>
+Date: Thu, 29 Apr 2021 11:10:12 -0700
+Subject: [PATCH 42/44] [Q_asb_2021-07] Ensure storage permission revoke
+ happens for all users
+
+When revoking storage permissions due to storage escalation, ensure the
+revoke happens for all users
+
+Fixes: 186034260
+Bug: 171430330
+Test: atest --user-type secondary_user StorageEscalationTest
+Merged-In: Ieb8bb9cde1576e9eee131338d393b8a3528341ec
+Change-Id: Ieb8bb9cde1576e9eee131338d393b8a3528341ec
+(cherry picked from commit 387182eb494e596ef670d6fd919f85e92d156c79)
+---
+ .../permission/PermissionManagerService.java  | 37 +++++++++++--------
+ 1 file changed, 22 insertions(+), 15 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+index fe0657e1792b..82f963e1df2a 100644
+--- a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
++++ b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+@@ -618,23 +618,30 @@ public class PermissionManagerService {
+         }
+ 
+         final int callingUid = Binder.getCallingUid();
+-        final int userId = UserHandle.getUserId(newPackage.applicationInfo.uid);
+-        int numRequestedPermissions = newPackage.requestedPermissions.size();
+-        for (int i = 0; i < numRequestedPermissions; i++) {
+-            PermissionInfo permInfo = getPermissionInfo(newPackage.requestedPermissions.get(i),
+-                    newPackage.packageName, 0, callingUid);
+-            if (permInfo == null || !STORAGE_PERMISSIONS.contains(permInfo.name)) {
+-                continue;
+-            }
+ 
+-            EventLog.writeEvent(0x534e4554, "171430330", newPackage.applicationInfo.uid,
+-                    "Revoking permission " + permInfo.name + " from package "
+-                            + newPackage.packageName + " as either the sdk downgraded "
+-                            + downgradedSdk + " or newly requested legacy full storage "
+-                            + newlyRequestsLegacy);
++        for (int userId: mUserManagerInt.getUserIds()) {
++            int numRequestedPermissions = newPackage.requestedPermissions.size();
++            for (int i = 0; i < numRequestedPermissions; i++) {
++                PermissionInfo permInfo = getPermissionInfo(newPackage.requestedPermissions.get(i),
++                        newPackage.packageName, 0, callingUid);
++                if (permInfo == null || !STORAGE_PERMISSIONS.contains(permInfo.name)) {
++                    continue;
++                }
++
++                EventLog.writeEvent(0x534e4554, "171430330", newPackage.applicationInfo.uid,
++                        "Revoking permission " + permInfo.name + " from package "
++                                + newPackage.packageName + " as either the sdk downgraded "
++                                + downgradedSdk + " or newly requested legacy full storage "
++                                + newlyRequestsLegacy);
+ 
+-            revokeRuntimePermission(permInfo.name, newPackage.packageName,
+-                    false, userId, permissionCallback);
++                try {
++                    revokeRuntimePermission(permInfo.name, newPackage.packageName,
++                            false, userId, permissionCallback);
++                } catch (IllegalStateException | SecurityException e) {
++                    Log.e(TAG, "unable to revoke " + permInfo.name + " for "
++                            + newPackage.packageName + " user " + userId, e);
++                }
++            }
+         }
+ 
+     }
+-- 
+2.34.1
+

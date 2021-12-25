@@ -1,7 +1,7 @@
 From 0592bd05bc340bc1c7e47cc87032df5a5dfe9c5c Mon Sep 17 00:00:00 2001
 From: Phil Burk <philburk@google.com>
 Date: Fri, 5 Jun 2020 09:58:26 -0700
-Subject: [PATCH 08/12] [Q_asb_2021-05] aaudio: fix race when disconnecting
+Subject: [PATCH 08/13] [Q_asb_2021-05] aaudio: fix race when disconnecting
 
 When disconnecting more than one stream,
 and the apps reopen the streams,

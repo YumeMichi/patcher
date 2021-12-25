@@ -1,7 +1,7 @@
 From 81e7cdf08098bd557cf9e8c210414bd3fb03b24d Mon Sep 17 00:00:00 2001
 From: Gary Mai <garymai@google.com>
 Date: Tue, 2 Feb 2021 15:17:48 -0800
-Subject: [PATCH 2/2] [Q_asb_2021-04] Stop returning intent data in
+Subject: [PATCH 2/3] [Q_asb_2021-04] Stop returning intent data in
  QuickContact in onActivityResult
 
 Contacts code does not use the data, only the result code, and it is a potential URI permission grant attack angle.

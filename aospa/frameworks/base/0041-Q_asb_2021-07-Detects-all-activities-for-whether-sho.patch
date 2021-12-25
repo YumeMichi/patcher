@@ -1,0 +1,118 @@
+From 737f16cca5b0ef862952162065c2ff770ecfed93 Mon Sep 17 00:00:00 2001
+From: Louis Chang <louischang@google.com>
+Date: Wed, 14 Apr 2021 14:56:11 +0800
+Subject: [PATCH 41/44] [Q_asb_2021-07] Detects all activities for whether
+ showing work challenge
+
+Work challenge did not show when a work activity is not on top, but
+still visible after screen turns on.
+
+Also show work challenge even if the work activity is behind a top
+fullscreen activity of another profile because the user can still
+navigate back to the work activity when top activity finishes.
+
+Bug: 177457096
+Test: RootActivityContainerTests
+
+Change-Id: I5e09b09be547d04fdfd709cb9cd4bcd4a94bbf21
+Merged-In: I5e09b09be547d04fdfd709cb9cd4bcd4a94bbf21
+(cherry picked from commit 69b3a3cd046265165699cce5ba7919dad82f95dc)
+---
+ .../server/wm/RootActivityContainer.java      | 35 +++++--------------
+ .../server/wm/RootActivityContainerTests.java | 20 +++++++++++
+ 2 files changed, 28 insertions(+), 27 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/RootActivityContainer.java b/services/core/java/com/android/server/wm/RootActivityContainer.java
+index 602e986e98d4..cd32b9a2dc64 100644
+--- a/services/core/java/com/android/server/wm/RootActivityContainer.java
++++ b/services/core/java/com/android/server/wm/RootActivityContainer.java
+@@ -2132,13 +2132,14 @@ public class RootActivityContainer extends ConfigurationContainer
+                     final List<TaskRecord> tasks = stack.getAllTasks();
+                     for (int taskNdx = tasks.size() - 1; taskNdx >= 0; taskNdx--) {
+                         final TaskRecord task = tasks.get(taskNdx);
+-
+-                        // Check the task for a top activity belonging to userId, or returning a
+-                        // result to an activity belonging to userId. Example case: a document
+-                        // picker for personal files, opened by a work app, should still get locked.
+-                        if (taskTopActivityIsUser(task, userId)) {
+-                            mService.getTaskChangeNotificationController().notifyTaskProfileLocked(
+-                                    task.taskId, userId);
++                        for (int activityNdx = task.mActivities.size() - 1; activityNdx >= 0;
++                                activityNdx--) {
++                            final ActivityRecord activity = task.mActivities.get(activityNdx);
++                            if (!activity.finishing && activity.mUserId == userId) {
++                                mService.getTaskChangeNotificationController()
++                                        .notifyTaskProfileLocked(task.taskId, userId);
++                                break;
++                            }
+                         }
+                     }
+                 }
+@@ -2148,26 +2149,6 @@ public class RootActivityContainer extends ConfigurationContainer
+         }
+     }
+ 
+-    /**
+-     * Detects whether we should show a lock screen in front of this task for a locked user.
+-     * <p>
+-     * We'll do this if either of the following holds:
+-     * <ul>
+-     *   <li>The top activity explicitly belongs to {@param userId}.</li>
+-     *   <li>The top activity returns a result to an activity belonging to {@param userId}.</li>
+-     * </ul>
+-     *
+-     * @return {@code true} if the top activity looks like it belongs to {@param userId}.
+-     */
+-    private boolean taskTopActivityIsUser(TaskRecord task, @UserIdInt int userId) {
+-        // To handle the case that work app is in the task but just is not the top one.
+-        final ActivityRecord activityRecord = task.getTopActivity();
+-        final ActivityRecord resultTo = (activityRecord != null ? activityRecord.resultTo : null);
+-
+-        return (activityRecord != null && activityRecord.mUserId == userId)
+-                || (resultTo != null && resultTo.mUserId == userId);
+-    }
+-
+     void cancelInitializingActivities() {
+         for (int displayNdx = mActivityDisplays.size() - 1; displayNdx >= 0; --displayNdx) {
+             final ActivityDisplay display = mActivityDisplays.get(displayNdx);
+diff --git a/services/tests/wmtests/src/com/android/server/wm/RootActivityContainerTests.java b/services/tests/wmtests/src/com/android/server/wm/RootActivityContainerTests.java
+index baf1b0821982..99058865fede 100644
+--- a/services/tests/wmtests/src/com/android/server/wm/RootActivityContainerTests.java
++++ b/services/tests/wmtests/src/com/android/server/wm/RootActivityContainerTests.java
+@@ -60,6 +60,7 @@ import android.content.pm.ApplicationInfo;
+ import android.content.pm.ResolveInfo;
+ import android.content.res.Resources;
+ import android.graphics.Rect;
++import android.os.UserHandle;
+ import android.platform.test.annotations.Presubmit;
+ import android.util.Pair;
+ import android.view.DisplayInfo;
+@@ -818,6 +819,25 @@ public class RootActivityContainerTests extends ActivityTestsBase {
+         assertEquals(infoFake1.activityInfo.name, resolvedInfo.first.name);
+     }
+ 
++    @Test
++    public void testLockAllProfileTasks() {
++        // Make an activity visible with the user id set to 1
++        final TaskRecord task = new TaskBuilder(mSupervisor).setStack(mFullscreenStack).build();
++        final ActivityRecord activity = new ActivityBuilder(mService).setTask(task)
++                .setUid(UserHandle.PER_USER_RANGE + 1).build();
++
++        // Create another activity on top and the user id is 2
++        final ActivityRecord topActivity = new ActivityBuilder(mService)
++                .setTask(task).setUid(UserHandle.PER_USER_RANGE + 2).build();
++
++        // Make sure the listeners will be notified for putting the task to locked state
++        TaskChangeNotificationController controller =
++                mService.getTaskChangeNotificationController();
++        spyOn(controller);
++        mService.mRootActivityContainer.lockAllProfileTasks(1);
++        verify(controller).notifyTaskProfileLocked(eq(task.taskId), eq(1));
++    }
++
+     /**
+      * Test that {@link RootActivityContainer#getLaunchStack} with the real caller id will get the
+      * expected stack when requesting the activity launch on the secondary display.
+-- 
+2.34.1
+

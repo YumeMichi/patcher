@@ -1,7 +1,7 @@
 From 759cca20f790402a29f7a2a0f6be4d6213c37e33 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Fri, 11 Jun 2021 08:01:47 -0600
-Subject: [PATCH 9/9] [Q_asb_2021-06] Bump Security String to 2021-06-05
+Subject: [PATCH 09/10] [Q_asb_2021-06] Bump Security String to 2021-06-05
 
 Implemented:
 ============

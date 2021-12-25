@@ -1,7 +1,7 @@
 From a1db822bc59bc93fbfaf9b87eb91b5b0638255cd Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Fri, 20 Nov 2020 17:00:39 +0100
-Subject: [PATCH 2/3] [Q_asb_2021-02] Check if advertiserId value matches valid
+Subject: [PATCH 2/4] [Q_asb_2021-02] Check if advertiserId value matches valid
  advertiser
 
 Passing non-existing advertiserId can result in OOB

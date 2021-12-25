@@ -1,8 +1,8 @@
 From c78241caeef3fa1fd077fc369d0bfb3047f8b858 Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Wed, 19 Feb 2020 19:27:20 -0800
-Subject: [PATCH] [Q_asb_2021-04] Grant READ_PRIVILEGED_PHONE_STATE to contacts
- provider to access ICC ID
+Subject: [PATCH 1/2] [Q_asb_2021-04] Grant READ_PRIVILEGED_PHONE_STATE to
+ contacts provider to access ICC ID
 
 In Android 10 access to device identifiers was moved from a runtime
 permission to the privileged READ_PRIVILEGED_PHONE_STATE permission.
