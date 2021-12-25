@@ -32,6 +32,7 @@ REPOSITORIES=(
     'packages/apps/PermissionController'
     'packages/apps/Snap'
     'packages/apps/Settings'
+    'packages/providers/CalendarProvider'
     'packages/providers/ContactsProvider'
     'packages/providers/MediaProvider'
     'packages/services/Telecomm'

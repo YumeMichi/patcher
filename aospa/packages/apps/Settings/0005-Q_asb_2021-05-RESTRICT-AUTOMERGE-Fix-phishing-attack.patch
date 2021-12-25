@@ -1,0 +1,131 @@
+From 155c1505233729c27534d1118921bfdd7c728825 Mon Sep 17 00:00:00 2001
+From: Hugh Chen <hughchen@google.com>
+Date: Thu, 17 Dec 2020 11:29:31 +0800
+Subject: [PATCH 5/7] [Q_asb_2021-05] RESTRICT AUTOMERGE Fix phishing attacks
+ over Bluetooth due to unclear warning message
+
+Before this CL, there is a possible phishing attack allowing a malicious
+BT device to acquire permissions based on insufficient information
+presented to the user in the consent dialog. This could lead to local
+escalation of privilege with no additional execution privileges needed.
+User interaction is needed for exploitation.
+
+This CL add more prompts presented for users to avoid phishing attacks.
+
+Merge Conflict Notes:
+There were a number of entries in strings.xml that did not exist on this
+branch. However, as the CL only adds new entries rather than modifying
+old ones this should not cause a problem. There were no merge conflicts
+in the java files.
+
+Bug: 167403112
+Test: send intent to test right prompts message is pop up. make -j42 RunSettingsRoboTests
+Change-Id: Idc6ef558b692115bb82ea58cf223f5919b618633
+(cherry picked from commit bbe765f992f5852154a8e7aa6a4117f74fd99493)
+---
+ res/values/strings.xml                              | 13 +++++++++++++
+ .../bluetooth/BluetoothPermissionActivity.java      | 12 ++++++------
+ .../bluetooth/BluetoothPermissionRequest.java       |  9 +++++----
+ 3 files changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+index 2bb90a8cc4..9a4ad4bae0 100644
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -11502,4 +11502,17 @@
+     <!-- Subtext for showing the option of RTT setting. [CHAR LIMIT=NONE] -->
+     <string name="rtt_settings_always_visible"></string>
+ 
++    <!-- Bluetooth message permission alert for notification content [CHAR LIMIT=none] -->
++    <string name="bluetooth_message_access_notification_content">Untrusted device wants to access your messages. Tap for details.</string>
++    <!-- Bluetooth message permission alert for dialog title [CHAR LIMIT=none] -->
++    <string name="bluetooth_message_access_dialog_title">Allow access to messages?</string>
++    <!-- Bluetooth message permission alert for dialog content [CHAR LIMIT=none] -->
++    <string name="bluetooth_message_access_dialog_content">An untrusted Bluetooth device, [<xliff:g id="device_name" example="My device">%1$s</xliff:g>], wants to access your messages.\n\nYou haven\u2019t connected to [<xliff:g id="device_name" example="My device">%2$s</xliff:g>] before.</string>
++    <!-- Bluetooth phonebook permission alert for notification content [CHAR LIMIT=none] -->
++    <string name="bluetooth_phonebook_access_notification_content">Untrusted device wants to access your contacts and call log. Tap for details.</string>
++    <!-- Bluetooth phonebook permission alert for dialog title [CHAR LIMIT=none] -->
++    <string name="bluetooth_phonebook_access_dialog_title">Allow access to contacts and call log?</string>
++    <!-- Bluetooth phonebook permission alert for dialog content [CHAR LIMIT=none] -->
++    <string name="bluetooth_phonebook_access_dialog_content">An untrusted Bluetooth device, [<xliff:g id="device_name" example="My device">%1$s</xliff:g>], wants to access your contacts and call log. This includes data about incoming and outgoing calls.\n\nYou haven\u2019t connected to [<xliff:g id="device_name" example="My device">%2$s</xliff:g>] before.</string>
++
+ </resources>
+diff --git a/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java b/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
+index be383dc02b..e40e30dd0a 100644
+--- a/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
++++ b/src/com/android/settings/bluetooth/BluetoothPermissionActivity.java
+@@ -99,9 +99,9 @@ public class BluetoothPermissionActivity extends AlertActivity implements
+         if (mRequestType == BluetoothDevice.REQUEST_TYPE_PROFILE_CONNECTION) {
+             showDialog(getString(R.string.bluetooth_connection_permission_request), mRequestType);
+         } else if (mRequestType == BluetoothDevice.REQUEST_TYPE_PHONEBOOK_ACCESS) {
+-            showDialog(getString(R.string.bluetooth_phonebook_request), mRequestType);
++            showDialog(getString(R.string.bluetooth_phonebook_access_dialog_title), mRequestType);
+         } else if (mRequestType == BluetoothDevice.REQUEST_TYPE_MESSAGE_ACCESS) {
+-            showDialog(getString(R.string.bluetooth_map_request), mRequestType);
++            showDialog(getString(R.string.bluetooth_message_access_dialog_title), mRequestType);
+         } else if (mRequestType == BluetoothDevice.REQUEST_TYPE_SIM_ACCESS) {
+             showDialog(getString(R.string.bluetooth_sap_request), mRequestType);
+         }
+@@ -136,9 +136,9 @@ public class BluetoothPermissionActivity extends AlertActivity implements
+             p.mView = createSapDialogView();
+             break;
+         }
+-        p.mPositiveButtonText = getString(R.string.yes);
++        p.mPositiveButtonText = getString(R.string.allow);
+         p.mPositiveButtonListener = this;
+-        p.mNegativeButtonText = getString(R.string.no);
++        p.mNegativeButtonText = getString(R.string.deny);
+         p.mNegativeButtonListener = this;
+         mOkButton = mAlert.getButton(DialogInterface.BUTTON_POSITIVE);
+         setupAlert();
+@@ -168,7 +168,7 @@ public class BluetoothPermissionActivity extends AlertActivity implements
+         String mRemoteName = Utils.createRemoteName(this, mDevice);
+         mView = getLayoutInflater().inflate(R.layout.bluetooth_access, null);
+         messageView = (TextView)mView.findViewById(R.id.message);
+-        messageView.setText(getString(R.string.bluetooth_pb_acceptance_dialog_text,
++        messageView.setText(getString(R.string.bluetooth_phonebook_access_dialog_content,
+                 mRemoteName, mRemoteName));
+         return mView;
+     }
+@@ -177,7 +177,7 @@ public class BluetoothPermissionActivity extends AlertActivity implements
+         String mRemoteName = Utils.createRemoteName(this, mDevice);
+         mView = getLayoutInflater().inflate(R.layout.bluetooth_access, null);
+         messageView = (TextView)mView.findViewById(R.id.message);
+-        messageView.setText(getString(R.string.bluetooth_map_acceptance_dialog_text,
++        messageView.setText(getString(R.string.bluetooth_message_access_dialog_content,
+                 mRemoteName, mRemoteName));
+         return mView;
+     }
+diff --git a/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java b/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
+index 5fffa3a235..177bd89355 100644
+--- a/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
++++ b/src/com/android/settings/bluetooth/BluetoothPermissionRequest.java
+@@ -140,13 +140,13 @@ public final class BluetoothPermissionRequest extends BroadcastReceiver {
+                 switch (mRequestType) {
+                     case BluetoothDevice.REQUEST_TYPE_PHONEBOOK_ACCESS:
+                         title = context.getString(R.string.bluetooth_phonebook_request);
+-                        message = context.getString(R.string.bluetooth_pb_acceptance_dialog_text,
+-                                deviceAlias, deviceAlias);
++                        message = context.getString(
++                                R.string.bluetooth_phonebook_access_notification_content);
+                         break;
+                     case BluetoothDevice.REQUEST_TYPE_MESSAGE_ACCESS:
+                         title = context.getString(R.string.bluetooth_map_request);
+-                        message = context.getString(R.string.bluetooth_map_acceptance_dialog_text,
+-                                deviceAlias, deviceAlias);
++                        message = context.getString(
++                                R.string.bluetooth_message_access_notification_content);
+                         break;
+                     case BluetoothDevice.REQUEST_TYPE_SIM_ACCESS:
+                         title = context.getString(R.string.bluetooth_sap_request);
+@@ -172,6 +172,7 @@ public final class BluetoothPermissionRequest extends BroadcastReceiver {
+                         .setContentTitle(title)
+                         .setTicker(message)
+                         .setContentText(message)
++                        .setStyle(new Notification.BigTextStyle().bigText(message))
+                         .setSmallIcon(android.R.drawable.stat_sys_data_bluetooth)
+                         .setAutoCancel(true)
+                         .setPriority(Notification.PRIORITY_MAX)
+-- 
+2.34.1
+

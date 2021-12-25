@@ -1,0 +1,38 @@
+From 3936448630cb04862c5e25baeb6adfb85ed98be4 Mon Sep 17 00:00:00 2001
+From: Myles Watson <mylesgw@google.com>
+Date: Thu, 4 Feb 2021 12:54:28 -0800
+Subject: [PATCH 13/16] [Q_asb_2021-05] btif: Return after closing the socket
+
+Bug: 175686168
+Test: poc in bug
+Tag: #security
+Change-Id: I3af19be9bee9535e67e4dcbc2584d2084656b817
+Merged-In: I3af19be9bee9535e67e4dcbc2584d2084656b817
+(cherry picked from commit ff82e7d429902405e7e0a780f955a5b9ef2d9e1b)
+---
+ btif/src/btif_sock_l2cap.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/btif/src/btif_sock_l2cap.cc b/btif/src/btif_sock_l2cap.cc
+index a41f7e495..f2c0c5714 100644
+--- a/btif/src/btif_sock_l2cap.cc
++++ b/btif/src/btif_sock_l2cap.cc
+@@ -742,6 +742,7 @@ static void on_l2cap_data_ind(tBTA_JV* evt, uint32_t id) {
+           " fixed channel");
+       BTA_JvL2capCloseLE(sock->handle);
+       btsock_l2cap_free_l(sock);
++      return;
+     }
+ 
+   } else {
+@@ -761,6 +762,7 @@ static void on_l2cap_data_ind(tBTA_JV* evt, uint32_t id) {
+               " - closing channel");
+           BTA_JvL2capClose(sock->handle);
+           btsock_l2cap_free_l(sock);
++          return;
+         }
+       }
+     }
+-- 
+2.34.1
+

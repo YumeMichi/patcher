@@ -1,0 +1,155 @@
+From 79cd246f147885158ffa354e644bc7f0e943e408 Mon Sep 17 00:00:00 2001
+From: Nate Myren <ntmyren@google.com>
+Date: Mon, 30 Nov 2020 12:06:26 -0800
+Subject: [PATCH 35/36] [Q_asb_2021-05] Revoke storage on SDK downgrade or new
+ full storage request
+
+When an app downgrades from above API 28 to below, or when an app begins
+requesting full storage in api 29, revoke storage permissions
+
+Test: Atest StorageEscalationTest
+Bug: 171430330
+Merged-In: Ia6bd5658b77a26ab15fea013ec875050457473e0
+Change-Id: Ia6bd5658b77a26ab15fea013ec875050457473e0
+(cherry picked from commit ed2ff0f5da52fc81aa03e01dbcd0baa45103026a)
+---
+ .../server/pm/PackageManagerService.java      |  2 +
+ .../permission/PermissionManagerService.java  | 65 +++++++++++++++++++
+ .../PermissionManagerServiceInternal.java     | 11 ++++
+ 3 files changed, 78 insertions(+)
+
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index 980f70d3ba4b..1a7f76f25dfc 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -12464,6 +12464,8 @@ public class PackageManagerService extends IPackageManager.Stub
+                     if (hasOldPkg) {
+                         mPermissionManager.revokeRuntimePermissionsIfGroupChanged(pkg, oldPkg,
+                                 allPackageNames, mPermissionCallback);
++                        mPermissionManager.revokeStoragePermissionsIfScopeExpanded(pkg, oldPkg,
++                                mPermissionCallback);
+                     }
+                     if (hasPermissionDefinitionChanges) {
+                         mPermissionManager.revokeRuntimePermissionsIfPermissionDefinitionChanged(
+diff --git a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+index 594cd92396e9..fe0657e1792b 100644
+--- a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
++++ b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+@@ -150,6 +150,9 @@ public class PermissionManagerService {
+     private static final int USER_PERMISSION_FLAGS = FLAG_PERMISSION_USER_SET
+             | FLAG_PERMISSION_USER_FIXED;
+ 
++    /** All storage permissions */
++    private static final List<String> STORAGE_PERMISSIONS = new ArrayList<>();
++
+     /** If the permission of the value is granted, so is the key */
+     private static final Map<String, String> FULLER_PERMISSION_MAP = new HashMap<>();
+ 
+@@ -158,6 +161,9 @@ public class PermissionManagerService {
+                 Manifest.permission.ACCESS_FINE_LOCATION);
+         FULLER_PERMISSION_MAP.put(Manifest.permission.INTERACT_ACROSS_USERS,
+                 Manifest.permission.INTERACT_ACROSS_USERS_FULL);
++        STORAGE_PERMISSIONS.add(Manifest.permission.READ_EXTERNAL_STORAGE);
++        STORAGE_PERMISSIONS.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
++        STORAGE_PERMISSIONS.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+     }
+ 
+     /** Lock to protect internal data access */
+@@ -589,6 +595,50 @@ public class PermissionManagerService {
+         return protectionLevel;
+     }
+ 
++    /**
++     * If the app is updated, and has scoped storage permissions, then it is possible that the
++     * app updated in an attempt to get unscoped storage. If so, revoke all storage permissions.
++     * @param newPackage The new package that was installed
++     * @param oldPackage The old package that was updated
++     */
++    private void revokeStoragePermissionsIfScopeExpanded(
++            @NonNull PackageParser.Package newPackage,
++            @NonNull PackageParser.Package oldPackage,
++            @NonNull PermissionCallback permissionCallback) {
++        boolean downgradedSdk = oldPackage.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.Q
++                && newPackage.applicationInfo.targetSdkVersion < Build.VERSION_CODES.Q;
++        boolean upgradedSdk = oldPackage.applicationInfo.targetSdkVersion < Build.VERSION_CODES.Q
++                && newPackage.applicationInfo.targetSdkVersion >= Build.VERSION_CODES.Q;
++        boolean newlyRequestsLegacy = !upgradedSdk
++                && !oldPackage.applicationInfo.hasRequestedLegacyExternalStorage()
++                && newPackage.applicationInfo.hasRequestedLegacyExternalStorage();
++
++        if (!newlyRequestsLegacy && !downgradedSdk) {
++            return;
++        }
++
++        final int callingUid = Binder.getCallingUid();
++        final int userId = UserHandle.getUserId(newPackage.applicationInfo.uid);
++        int numRequestedPermissions = newPackage.requestedPermissions.size();
++        for (int i = 0; i < numRequestedPermissions; i++) {
++            PermissionInfo permInfo = getPermissionInfo(newPackage.requestedPermissions.get(i),
++                    newPackage.packageName, 0, callingUid);
++            if (permInfo == null || !STORAGE_PERMISSIONS.contains(permInfo.name)) {
++                continue;
++            }
++
++            EventLog.writeEvent(0x534e4554, "171430330", newPackage.applicationInfo.uid,
++                    "Revoking permission " + permInfo.name + " from package "
++                            + newPackage.packageName + " as either the sdk downgraded "
++                            + downgradedSdk + " or newly requested legacy full storage "
++                            + newlyRequestsLegacy);
++
++            revokeRuntimePermission(permInfo.name, newPackage.packageName,
++                    false, userId, permissionCallback);
++        }
++
++    }
++
+     /**
+      * We might auto-grant permissions if any permission of the group is already granted. Hence if
+      * the group of a granted permission changes we need to revoke it to avoid having permissions of
+@@ -3119,6 +3169,21 @@ public class PermissionManagerService {
+         public boolean isPermissionsReviewRequired(@NonNull Package pkg, @UserIdInt int userId) {
+             return PermissionManagerService.this.isPermissionsReviewRequired(pkg, userId);
+         }
++
++        /**
++         * If the app is updated, and has scoped storage permissions, then it is possible that the
++         * app updated in an attempt to get unscoped storage. If so, revoke all storage permissions.
++         * @param newPackage The new package that was installed
++         * @param oldPackage The old package that was updated
++         */
++        public void revokeStoragePermissionsIfScopeExpanded(
++                @NonNull PackageParser.Package newPackage,
++                @NonNull PackageParser.Package oldPackage,
++                @NonNull PermissionCallback permissionCallback) {
++            PermissionManagerService.this.revokeStoragePermissionsIfScopeExpanded(newPackage,
++                    oldPackage, permissionCallback);
++        }
++
+         @Override
+         public void revokeRuntimePermissionsIfGroupChanged(
+                 @NonNull PackageParser.Package newPackage,
+diff --git a/services/core/java/com/android/server/pm/permission/PermissionManagerServiceInternal.java b/services/core/java/com/android/server/pm/permission/PermissionManagerServiceInternal.java
+index 40ff4a231751..46fa4ffdbd45 100644
+--- a/services/core/java/com/android/server/pm/permission/PermissionManagerServiceInternal.java
++++ b/services/core/java/com/android/server/pm/permission/PermissionManagerServiceInternal.java
+@@ -126,6 +126,17 @@ public abstract class PermissionManagerServiceInternal extends PermissionManager
+             @NonNull ArrayList<String> allPackageNames,
+             @NonNull PermissionCallback permissionCallback);
+ 
++    /**
++     * If the app is updated, and has scoped storage permissions, then it is possible that the
++     * app updated in an attempt to get unscoped storage. If so, revoke all storage permissions.
++     * @param newPackage The new package that was installed
++     * @param oldPackage The old package that was updated
++     */
++    public abstract void revokeStoragePermissionsIfScopeExpanded(
++            @NonNull PackageParser.Package newPackage,
++            @NonNull PackageParser.Package oldPackage,
++            @NonNull PermissionCallback permissionCallback);
++
+     /**
+      * Add all permissions in the given package.
+      * <p>
+-- 
+2.34.1
+

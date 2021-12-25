@@ -1,7 +1,7 @@
 From 3528ddcff77c76bd08a7352b90914a6a12779c21 Mon Sep 17 00:00:00 2001
 From: Nathan Harold <nharold@google.com>
 Date: Tue, 26 May 2020 19:02:59 -0700
-Subject: [PATCH 05/33] [Q_asb_2020-12] [DO NOT MERGE][BACKPORT]Improve
+Subject: [PATCH 05/36] [Q_asb_2020-12] [DO NOT MERGE][BACKPORT]Improve
  location checks in TelephonyRegistry
 
 Improve location checking for apps targeting SDK28

@@ -1,0 +1,53 @@
+From 0592bd05bc340bc1c7e47cc87032df5a5dfe9c5c Mon Sep 17 00:00:00 2001
+From: Phil Burk <philburk@google.com>
+Date: Fri, 5 Jun 2020 09:58:26 -0700
+Subject: [PATCH 8/8] [Q_asb_2021-05] aaudio: fix race when disconnecting
+
+When disconnecting more than one stream,
+and the apps reopen the streams,
+there was a race condition that resulted
+in the first app getting a Legacy stream instead of an
+MMAP stream. That is because it was disconnected before the
+other streams had stopped.
+
+Now we run the stop loop before the disconnect loop
+to prevent the race.
+
+Bug: 153358911
+Bug: 158316262
+Test: test_steal_exclusive -r0 -d0 -s
+Change-Id: Ib8efde9c2f94f6ab1ba3475d88b45d373cc8d3bb
+Merged-In: Ib8efde9c2f94f6ab1ba3475d88b45d373cc8d3bb
+(cherry picked from commit 8e2255ad97be8c5665b6bc8973d37c241fb5814b)
+(cherry picked from commit 50fd22f3d7eaf0b8dba49e88e1feb6aa99005cff)
+---
+ services/oboeservice/AAudioServiceEndpoint.cpp | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/services/oboeservice/AAudioServiceEndpoint.cpp b/services/oboeservice/AAudioServiceEndpoint.cpp
+index d9e9db1368..1cffe015fb 100644
+--- a/services/oboeservice/AAudioServiceEndpoint.cpp
++++ b/services/oboeservice/AAudioServiceEndpoint.cpp
+@@ -95,10 +95,16 @@ void AAudioServiceEndpoint::disconnectRegisteredStreams() {
+     // Stop and disconnect outside mLockStreams to avoid reverse
+     // ordering of AAudioServiceStreamBase::mLock and mLockStreams
+     mConnected.store(false);
+-    for (const auto& stream : streamsToDisconnect) {
+-        ALOGD("disconnectRegisteredStreams() stop and disconnect port %d",
+-              stream->getPortHandle());
++    // We need to stop all the streams before we disconnect them.
++    // Otherwise there is a race condition where the first disconnected app
++    // tries to reopen a stream as MMAP but is blocked by the second stream,
++    // which hasn't stopped yet. Then the first app ends up with a Legacy stream.
++    for (const auto &stream : streamsToDisconnect) {
++        ALOGD("%s() - stop(), port = %d", __func__, stream->getPortHandle());
+         stream->stop();
++    }
++    for (const auto &stream : streamsToDisconnect) {
++        ALOGD("%s() - disconnect(), port = %d", __func__, stream->getPortHandle());
+         stream->disconnect();
+     }
+ }
+-- 
+2.34.1
+

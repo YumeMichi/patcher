@@ -1,0 +1,47 @@
+From 50d8193b0c0b383d29d6c9914eb837a74159eae9 Mon Sep 17 00:00:00 2001
+From: Andras Kloczl <andraskloczl@google.com>
+Date: Tue, 9 Mar 2021 20:38:56 +0000
+Subject: [PATCH 7/7] [Q_asb_2021-05] Prevent using invalid result uri during
+ multi user image change
+
+Test: manual
+Bug: 172939189
+Change-Id: I3e6f6200e82e86d6a2085652906ad2d0d44814f5
+Merged-In: I3e6f6200e82e86d6a2085652906ad2d0d44814f5
+Merged-In: Id2e598878b3250e8b3590905c6def561e2437d55
+Merged-In: I15e15ad88b768a5b679de32c5429d921d850a3cb
+(cherry picked from commit e0f8214e80372b2578a40e37296e8b8180c1443b)
+---
+ .../android/settings/users/EditUserPhotoController.java  | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/com/android/settings/users/EditUserPhotoController.java b/src/com/android/settings/users/EditUserPhotoController.java
+index 3253f79d9d..f62a2d5970 100644
+--- a/src/com/android/settings/users/EditUserPhotoController.java
++++ b/src/com/android/settings/users/EditUserPhotoController.java
+@@ -37,6 +37,7 @@ import android.os.UserHandle;
+ import android.os.UserManager;
+ import android.provider.ContactsContract.DisplayPhoto;
+ import android.provider.MediaStore;
++import android.util.EventLog;
+ import android.util.Log;
+ import android.view.Gravity;
+ import android.view.View;
+@@ -116,6 +117,14 @@ public class EditUserPhotoController {
+         }
+         final Uri pictureUri = data != null && data.getData() != null
+                 ? data.getData() : mTakePictureUri;
++
++        // Check if the result is a content uri
++        if (!ContentResolver.SCHEME_CONTENT.equals(pictureUri.getScheme())) {
++            Log.e(TAG, "Invalid pictureUri scheme: " + pictureUri.getScheme());
++            EventLog.writeEvent(0x534e4554, "172939189", -1, pictureUri.getPath());
++            return false;
++        }
++
+         switch (requestCode) {
+             case REQUEST_CODE_CROP_PHOTO:
+                 onPhotoCropped(pictureUri, true);
+-- 
+2.34.1
+

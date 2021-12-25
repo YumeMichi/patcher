@@ -1,7 +1,7 @@
 From 9b33f6005d5dada679ed420b4c79c02b0bc05983 Mon Sep 17 00:00:00 2001
 From: Pinyao Ting <pinyaoting@google.com>
 Date: Thu, 8 Oct 2020 10:14:05 -0700
-Subject: [PATCH 11/33] [Q_asb_2021-01] remove sensitive pii from safetynet
+Subject: [PATCH 11/36] [Q_asb_2021-01] remove sensitive pii from safetynet
  logging
 
 Bug: 159145361

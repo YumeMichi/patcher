@@ -1,7 +1,7 @@
 From de6f13d9fd47ce22d3098e6c23b5c54ed157736d Mon Sep 17 00:00:00 2001
 From: Edwin Wong <edwinwong@google.com>
 Date: Tue, 5 Jan 2021 22:21:23 -0800
-Subject: [PATCH 5/5] [Q_asb_2021-04] Fix double free of play policy in a race
+Subject: [PATCH 5/8] [Q_asb_2021-04] Fix double free of play policy in a race
  condition.
 
 The mPlayPolicy can be freed twice if there is a race condition.

@@ -1,7 +1,7 @@
 From a0da51b26a4f03c74addee08c2103977af450ccc Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Fri, 20 Mar 2020 13:13:36 -0700
-Subject: [PATCH 30/33] [Q_asb_2021-04] Add method to clear out
+Subject: [PATCH 30/36] [Q_asb_2021-04] Add method to clear out
  SubscriptionInfo#getCardString
 
 In Androird 10 access to device identifiers was limited to apps with

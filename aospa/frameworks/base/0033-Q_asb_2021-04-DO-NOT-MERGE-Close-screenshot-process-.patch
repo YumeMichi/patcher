@@ -1,7 +1,7 @@
 From 64825d6755ffe3e3f335bfeb3a68c43279e31fe6 Mon Sep 17 00:00:00 2001
 From: Miranda Kephart <mkephart@google.com>
 Date: Mon, 16 Nov 2020 11:22:13 -0500
-Subject: [PATCH 33/33] [Q_asb_2021-04] [DO NOT MERGE] Close screenshot process
+Subject: [PATCH 33/36] [Q_asb_2021-04] [DO NOT MERGE] Close screenshot process
  on user switched
 
 Currently, we keep the process up even if the user switches,

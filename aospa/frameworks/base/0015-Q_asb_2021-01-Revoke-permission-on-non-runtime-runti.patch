@@ -1,7 +1,7 @@
 From 4bd7848f3cecc6c126fafdcc0072bc3557e29bff Mon Sep 17 00:00:00 2001
 From: "Philip P. Moltmann" <moltmann@google.com>
 Date: Tue, 3 Nov 2020 15:12:44 -0800
-Subject: [PATCH 15/33] [Q_asb_2021-01] Revoke permission on non-runtime ->
+Subject: [PATCH 15/36] [Q_asb_2021-01] Revoke permission on non-runtime ->
  runtime upgrade
 
 Not only on normal -> runtime.

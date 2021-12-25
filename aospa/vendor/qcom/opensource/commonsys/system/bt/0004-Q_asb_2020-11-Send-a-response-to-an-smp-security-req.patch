@@ -1,7 +1,7 @@
 From e724ba76842a5ef18344f2def0e6a4058d5f8b7a Mon Sep 17 00:00:00 2001
 From: Rahul Sabnis <rahulsabnis@google.com>
 Date: Mon, 24 Aug 2020 16:36:36 -0700
-Subject: [PATCH 04/12] [Q_asb_2020-11] Send a response to an smp security
+Subject: [PATCH 04/16] [Q_asb_2020-11] Send a response to an smp security
  request depending on the callback event
 
 Tag: #feature

@@ -1,0 +1,76 @@
+From f1599d37a33124cc922bee88eac32a720977701d Mon Sep 17 00:00:00 2001
+From: Jonathan Scott <scottjonathan@google.com>
+Date: Wed, 3 Feb 2021 17:24:10 +0000
+Subject: [PATCH 34/36] [Q_asb_2021-05] [RESTRICT AUTOMERGE] Use userId instead
+ of USER_CURRENT in shouldLockKeyguard.
+
+USER_CURRENT is not an acceptable input to isSecure(). The test has also
+been updated as the use of any() for the mock hid this bug.
+
+Test: atest LockTaskControllerTest
+Bug: 176801033
+Change-Id: Ib8a11ed4fc895bcd6eda8cf777a8dd2ce253e11e
+(cherry picked from commit bb4eded37926916f8f9c45dede6bc6315cf15b18)
+---
+ .../java/com/android/server/wm/LockTaskController.java | 10 +++++-----
+ .../com/android/server/wm/LockTaskControllerTest.java  |  3 +--
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/services/core/java/com/android/server/wm/LockTaskController.java b/services/core/java/com/android/server/wm/LockTaskController.java
+index b30da5e156e2..457d69f407a6 100644
+--- a/services/core/java/com/android/server/wm/LockTaskController.java
++++ b/services/core/java/com/android/server/wm/LockTaskController.java
+@@ -485,7 +485,7 @@ public class LockTaskController {
+             setStatusBarState(LOCK_TASK_MODE_NONE, userId);
+             setKeyguardState(LOCK_TASK_MODE_NONE, userId);
+             if (mLockTaskModeState == LOCK_TASK_MODE_PINNED) {
+-                lockKeyguardIfNeeded();
++                lockKeyguardIfNeeded(userId);
+             }
+             if (getDevicePolicyManager() != null) {
+                 getDevicePolicyManager().notifyLockTaskModeChanged(false, null, userId);
+@@ -801,15 +801,15 @@ public class LockTaskController {
+      * Helper method for locking the device immediately. This may be necessary when the device
+      * leaves the pinned mode.
+      */
+-    private void lockKeyguardIfNeeded() {
+-        if (shouldLockKeyguard()) {
++    private void lockKeyguardIfNeeded(int userId) {
++        if (shouldLockKeyguard(userId)) {
+             mWindowManager.lockNow(null);
+             mWindowManager.dismissKeyguard(null /* callback */, null /* message */);
+             getLockPatternUtils().requireCredentialEntry(USER_ALL);
+         }
+     }
+ 
+-    private boolean shouldLockKeyguard() {
++    private boolean shouldLockKeyguard(int userId) {
+         // This functionality should be kept consistent with
+         // com.android.settings.security.ScreenPinningSettings (see b/127605586)
+         try {
+@@ -819,7 +819,7 @@ public class LockTaskController {
+         } catch (Settings.SettingNotFoundException e) {
+             // Log to SafetyNet for b/127605586
+             android.util.EventLog.writeEvent(0x534e4554, "127605586", -1, "");
+-            return getLockPatternUtils().isSecure(USER_CURRENT);
++            return getLockPatternUtils().isSecure(userId);
+         }
+     }
+ 
+diff --git a/services/tests/wmtests/src/com/android/server/wm/LockTaskControllerTest.java b/services/tests/wmtests/src/com/android/server/wm/LockTaskControllerTest.java
+index 47c76fc28d15..9cc24a542efc 100644
+--- a/services/tests/wmtests/src/com/android/server/wm/LockTaskControllerTest.java
++++ b/services/tests/wmtests/src/com/android/server/wm/LockTaskControllerTest.java
+@@ -446,8 +446,7 @@ public class LockTaskControllerTest {
+         Settings.Secure.clearProviderForTest();
+ 
+         // AND a password is set
+-        when(mLockPatternUtils.isSecure(anyInt()))
+-                .thenReturn(true);
++        when(mLockPatternUtils.isSecure(TEST_USER_ID)).thenReturn(true);
+ 
+         // AND there is a task record
+         TaskRecord tr1 = getTaskRecord(TaskRecord.LOCK_TASK_AUTH_WHITELISTED);
+-- 
+2.34.1
+

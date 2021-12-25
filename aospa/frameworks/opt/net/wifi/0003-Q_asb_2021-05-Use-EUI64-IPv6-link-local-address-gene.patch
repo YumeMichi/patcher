@@ -1,0 +1,92 @@
+From 76ac1f87bd32180109379b67d904e725269010dd Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bram=20Bonn=C3=A9?= <brambonne@google.com>
+Date: Mon, 19 Oct 2020 18:08:55 +0200
+Subject: [PATCH 3/3] [Q_asb_2021-05] Use EUI64 IPv6 link-local address
+ generation only when randomizing MAC
+
+When connected MAC address randomization is used, generate IPv6
+link-local addresses using EUI64 with the per-network defined MAC
+address.
+Networks that do not use MAC address randomization keep using RFC7217
+stable privacy address generation instead.
+
+Bug: 154114734
+
+Test: atest ClientModeImplTest
+Test: atest WifiManagerTest
+Test: Connect to network
+Test: Set up hotspot
+Test: Observe that IPv6 link-local address differs for two networks
+using randomization
+Test: Observe that stable-privacy link-local address is used for network
+when not using randomization
+
+Merged-In: Iefb027b17657031116e068bbccdb7b2231a65238
+Merged-In: I0a59c750511aacddb38b19bf64b56fd18ff545c5
+Change-Id: I4512b87459d036630925ca5ac5ea42179c42ea71
+(cherry picked from commit becf46bfdff50dab319210b69d30185f87db7f17)
+---
+ .../android/server/wifi/ClientModeImpl.java   | 20 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/service/java/com/android/server/wifi/ClientModeImpl.java b/service/java/com/android/server/wifi/ClientModeImpl.java
+index 05f421c0e..4c85d8639 100644
+--- a/service/java/com/android/server/wifi/ClientModeImpl.java
++++ b/service/java/com/android/server/wifi/ClientModeImpl.java
+@@ -5936,12 +5936,17 @@ public class ClientModeImpl extends StateMachine {
+             final WifiConfiguration currentConfig = getCurrentWifiConfiguration();
+             final boolean isUsingStaticIp =
+                     (currentConfig.getIpAssignment() == IpConfiguration.IpAssignment.STATIC);
++            final boolean isUsingMacRandomization =
++                    currentConfig.macRandomizationSetting
++                            == WifiConfiguration.RANDOMIZATION_PERSISTENT
++                            && isConnectedMacRandomizationEnabled();
+             if (mVerboseLoggingEnabled) {
+                 final String key = currentConfig.configKey();
+                 log("enter ObtainingIpState netId=" + Integer.toString(mLastNetworkId)
+                         + " " + key + " "
+                         + " roam=" + mIsAutoRoaming
+-                        + " static=" + isUsingStaticIp);
++                        + " static=" + isUsingStaticIp
++                        + " randomMac=" + isUsingMacRandomization);
+             }
+ 
+             // Send event to CM & network change broadcast
+@@ -5981,7 +5986,7 @@ public class ClientModeImpl extends StateMachine {
+                     mIpClient.setTcpBufferSizes(mTcpBufferSizes);
+                 }
+             }
+-            final ProvisioningConfiguration prov;
++            final ProvisioningConfiguration.Builder prov;
+ 
+             if (mIsFilsConnection && mIsIpClientStarted) {
+                 setPowerSaveForFilsDhcp();
+@@ -5991,19 +5996,20 @@ public class ClientModeImpl extends StateMachine {
+                                 .withPreDhcpAction()
+                                 .withApfCapabilities(mWifiNative.getApfCapabilities(mInterfaceName))
+                                 .withNetwork(getCurrentNetwork())
+-                                .withDisplayName(currentConfig.SSID)
+-                                .build();
++                                .withDisplayName(currentConfig.SSID);
++                    if (isUsingMacRandomization) {
++                        prov.withRandomMacAddress();
++                    }
+                 } else {
+                     StaticIpConfiguration staticIpConfig = currentConfig.getStaticIpConfiguration();
+                     prov = new ProvisioningConfiguration.Builder()
+                                 .withStaticConfiguration(staticIpConfig)
+                                 .withApfCapabilities(mWifiNative.getApfCapabilities(mInterfaceName))
+                                 .withNetwork(getCurrentNetwork())
+-                                .withDisplayName(currentConfig.SSID)
+-                                .build();
++                                .withDisplayName(currentConfig.SSID);
+                 }
+                 if (mIpClient != null) {
+-                  mIpClient.startProvisioning(prov);
++                  mIpClient.startProvisioning(prov.build());
+                   mIsIpClientStarted = true;
+                 }
+             }
+-- 
+2.34.1
+

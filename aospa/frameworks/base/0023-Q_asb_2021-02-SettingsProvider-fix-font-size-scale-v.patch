@@ -1,7 +1,7 @@
 From 7a8ccf8970de69f672c6b5e840f01b9a9e70e296 Mon Sep 17 00:00:00 2001
 From: Songchun Fan <schfan@google.com>
 Date: Mon, 7 Dec 2020 14:06:31 -0800
-Subject: [PATCH 23/33] [Q_asb_2021-02] [SettingsProvider] fix font size scale
+Subject: [PATCH 23/36] [Q_asb_2021-02] [SettingsProvider] fix font size scale
  validator
 
 BUG: 156260178

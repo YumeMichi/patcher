@@ -1,0 +1,56 @@
+From f7f6cf7b965f8c3cf491a10f588e8d24078daac9 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Fri, 7 May 2021 16:05:42 -0600
+Subject: [PATCH 8/8] [Q_asb_2021-05] Bump Security String to 2021-05-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0466   A-154114734  ID     High       10
+CVE-2021-0472   A-176801033  EoP    High       9, 10, 11
+CVE-2021-0473   A-179687208  RCE    Critical   8.1, 9, 10, 11
+CVE-2021-0474   A-177611958  RCE    Critical   8.1, 9, 10, 11
+CVE-2021-0475   A-175686168  RCE    Critical   10, 11
+CVE-2021-0476   A-169252501  EoP    High       9, 10, 11
+CVE-2021-0480   A-174493336  ID     High       8.1, 9, 10, 11
+CVE-2021-0481   A-172939189  EoP    High       8.1, 9, 10, 11
+CVE-2021-0484   A-173720767  ID     High       8.1, 9, 10, 11
+CVE-2021-0487   A-174046397  EoP    High       11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:  Prior Change:
+CVE-2021-0477   A-178189250  EoP    High       8.1, 9, 10, 11          1f80494fd7ef8
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2019-2219   A-119041698  ID     High       11
+CVE-2021-0482   A-173791720  EoP    High       11
+CVE-2021-0485   A-174302616  EoP    High       11
+
+Change-Id: Iad6ebf4c5b8c3de97a351a3fe01f7679807d7bd6
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index e1c569413..d3f5ba45f 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2021-04-05
++      PLATFORM_SECURITY_PATCH := 2021-05-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+
