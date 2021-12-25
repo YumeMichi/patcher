@@ -1,7 +1,7 @@
 From aeb1b3ff1451ce972dc3afb623e206e531ed5ab7 Mon Sep 17 00:00:00 2001
 From: weichinweng <weichinweng@google.com>
 Date: Tue, 28 Jul 2020 16:56:33 +0800
-Subject: [PATCH 01/18] [Q_asb_2020-10] Fix possible OOB when receive gatt read
+Subject: [PATCH 01/19] [Q_asb_2020-10] Fix possible OOB when receive gatt read
  type response data
 
 Bug: 158833854

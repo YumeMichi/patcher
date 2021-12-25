@@ -1,7 +1,7 @@
 From 123b740293c3f39c8b84b1c65d23cbb3c401a989 Mon Sep 17 00:00:00 2001
 From: Hai Zhang <zhanghai@google.com>
 Date: Mon, 15 Jun 2020 18:18:33 -0700
-Subject: [PATCH 10/61] [Q_asb_2021-01] DO NOT MERGE Revoke install permissions
+Subject: [PATCH 10/66] [Q_asb_2021-01] DO NOT MERGE Revoke install permissions
  when the permission defining app is uninstalled.
 
 Bug: 155648771

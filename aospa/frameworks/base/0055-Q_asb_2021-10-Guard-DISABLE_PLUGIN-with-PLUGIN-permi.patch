@@ -1,7 +1,7 @@
 From 630b22939def885b57264ac7a78186fff562d20a Mon Sep 17 00:00:00 2001
 From: Dave Mankoff <mankoff@google.com>
 Date: Wed, 21 Jul 2021 10:08:04 -0400
-Subject: [PATCH 55/61] [Q_asb_2021-10] Guard DISABLE_PLUGIN with PLUGIN
+Subject: [PATCH 55/66] [Q_asb_2021-10] Guard DISABLE_PLUGIN with PLUGIN
  permission.
 
 Fixes a p0 security bug. We already have the plugin permission

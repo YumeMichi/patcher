@@ -1,7 +1,7 @@
 From 927c4fe4261bda565718066397bf654ef4b42987 Mon Sep 17 00:00:00 2001
 From: Hai Zhang <zhanghai@google.com>
 Date: Thu, 13 Aug 2020 01:45:09 +0000
-Subject: [PATCH 01/61] [Q_asb_2020-11] DO NOT MERGE Don't allow non-instant
+Subject: [PATCH 01/66] [Q_asb_2020-11] DO NOT MERGE Don't allow non-instant
  permissions for instant apps.
 
 Bug: 140256621

@@ -1,7 +1,7 @@
 From 9bbfef386aa92fffd5957144ea9a4990c449b575 Mon Sep 17 00:00:00 2001
 From: John Shao <johnshao@google.com>
 Date: Wed, 25 Aug 2021 23:29:56 +0000
-Subject: [PATCH 4/4] [Q_asb_2021-11] Add permission to start NFC activity to
+Subject: [PATCH 4/5] [Q_asb_2021-11] Add permission to start NFC activity to
  ensure it is from NFC stack
 
 Bug: 191053931

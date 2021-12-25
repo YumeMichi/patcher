@@ -1,7 +1,7 @@
 From be15fe261e204ff308004808bb3ff267666676d0 Mon Sep 17 00:00:00 2001
 From: Ray Essick <essick@google.com>
 Date: Thu, 1 Oct 2020 12:09:00 -0700
-Subject: [PATCH 01/16] [Q_asb_2020-12] Move an orphaned analytics reference
+Subject: [PATCH 01/18] [Q_asb_2020-12] Move an orphaned analytics reference
  under a mutex
 
 Bug: 167695677

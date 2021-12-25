@@ -1,7 +1,7 @@
 From 4dfb97e802703a9fcc601f376e7664aa14443dc0 Mon Sep 17 00:00:00 2001
 From: Harish Mahendrakar <harish.mahendrakar@ittiam.com>
 Date: Thu, 21 Nov 2019 10:33:05 -0800
-Subject: [PATCH 14/16] [Q_asb_2021-08] C2SoftAvcEnc: Allocate output buffer as
+Subject: [PATCH 14/18] [Q_asb_2021-08] C2SoftAvcEnc: Allocate output buffer as
  per clip's dimensions
 
 Instead of allocating a fixed size output buffer, allocate it as per

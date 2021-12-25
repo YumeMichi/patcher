@@ -1,0 +1,30 @@
+From 1543e4d47f0f98149e1670656bac137b0e0f7de9 Mon Sep 17 00:00:00 2001
+From: Chen Chen <cncn@google.com>
+Date: Tue, 5 Oct 2021 17:46:02 -0700
+Subject: [PATCH 17/17] [Q_asb_2021-12] BluetoothSecurity: Add
+ BLUETOOTH_PRIVILEGED permission for pairing dialog
+
+Bug: 194300867
+Test: Build
+
+Change-Id: I5a496df50550ea7ee6986c960e28ae3e4a056b4b
+(cherry picked from commit 65a63e76b10c56641d9f84940a77822fd5daa99a)
+---
+ AndroidManifest.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 584cb396f8..591e557f75 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -2095,6 +2095,7 @@
+                   android:label="@string/select_webview_provider_dialog_title" />
+ 
+         <activity android:name=".bluetooth.BluetoothPairingDialog"
++                  android:permission="android.permission.BLUETOOTH_PRIVILEGED"
+                   android:excludeFromRecents="true"
+                   android:windowSoftInputMode="stateVisible|adjustResize"
+                   android:theme="@style/Theme.AlertDialog"
+-- 
+2.34.1
+

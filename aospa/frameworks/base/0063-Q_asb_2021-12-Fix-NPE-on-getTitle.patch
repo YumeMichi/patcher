@@ -1,0 +1,66 @@
+From 90870d618b5a20726ddde756533875f1befcde57 Mon Sep 17 00:00:00 2001
+From: cnchen <cnchen@google.com>
+Date: Mon, 6 Jul 2020 19:58:44 +0800
+Subject: [PATCH 63/66] [Q_asb_2021-12] Fix NPE on getTitle()
+
+Bug: 199922685
+Test: make RunSettingsLibRoboTests -j40
+Change-Id: I35bf6f5911dc0ee56e43af7faddaceb479362863
+(cherry picked from commit f00f2203b578e919e56f21f3a4119a974b942243)
+Merged-In: I35bf6f5911dc0ee56e43af7faddaceb479362863
+(cherry picked from commit ced3af1e05995c4af1d0c16cd0329a04520825bb)
+---
+ .../src/com/android/settingslib/wifi/AccessPoint.java | 10 ++++++----
+ .../com/android/settingslib/wifi/AccessPointTest.java | 11 +++++++++++
+ 2 files changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java b/packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java
+index cf2c7a2556ad..076eb94ff6da 100644
+--- a/packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java
++++ b/packages/SettingsLib/src/com/android/settingslib/wifi/AccessPoint.java
+@@ -1338,14 +1338,16 @@ public class AccessPoint implements Comparable<AccessPoint> {
+      * Returns the display title for the AccessPoint, such as for an AccessPointPreference's title.
+      */
+     public String getTitle() {
+-        if (isPasspoint()) {
++        if (isPasspoint() && !TextUtils.isEmpty(mConfig.providerFriendlyName)) {
+             return mConfig.providerFriendlyName;
+-        } else if (isPasspointConfig()) {
++        } else if (isPasspointConfig() && !TextUtils.isEmpty(mProviderFriendlyName)) {
+             return mProviderFriendlyName;
+-        } else if (isOsuProvider()) {
++        } else if (isOsuProvider() && !TextUtils.isEmpty(mOsuProvider.getFriendlyName())) {
+             return mOsuProvider.getFriendlyName();
+-        } else {
++        } else if (!TextUtils.isEmpty(getSsidStr())) {
+             return getSsidStr();
++        } else {
++            return "";
+         }
+     }
+ 
+diff --git a/packages/SettingsLib/tests/integ/src/com/android/settingslib/wifi/AccessPointTest.java b/packages/SettingsLib/tests/integ/src/com/android/settingslib/wifi/AccessPointTest.java
+index 77473f52f4be..72fd8ef3f48f 100644
+--- a/packages/SettingsLib/tests/integ/src/com/android/settingslib/wifi/AccessPointTest.java
++++ b/packages/SettingsLib/tests/integ/src/com/android/settingslib/wifi/AccessPointTest.java
+@@ -146,6 +146,17 @@ public class AccessPointTest {
+         assertThat(ssid instanceof SpannableString).isFalse();
+     }
+ 
++    @Test
++    public void testCompareTo_GivesNull() {
++        WifiConfiguration spyConfig = spy(new WifiConfiguration());
++
++        when(spyConfig.isPasspoint()).thenReturn(true);
++        spyConfig.providerFriendlyName = null;
++        AccessPoint passpointAp = new AccessPoint(mContext, spyConfig);
++
++        assertThat(passpointAp.getTitle()).isEqualTo("");
++    }
++
+     @Test
+     public void testCompareTo_GivesActiveBeforeInactive() {
+         AccessPoint activeAp = new TestAccessPointBuilder(mContext).setActive(true).build();
+-- 
+2.34.1
+

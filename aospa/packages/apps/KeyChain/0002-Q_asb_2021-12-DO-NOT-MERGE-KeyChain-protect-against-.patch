@@ -1,0 +1,33 @@
+From e8b14720edd195c9d038f3a8a12fbda7381a4848 Mon Sep 17 00:00:00 2001
+From: Rubin Xu <rubinxu@google.com>
+Date: Wed, 15 Sep 2021 21:43:18 +0800
+Subject: [PATCH 2/2] [Q_asb_2021-12] DO NOT MERGE KeyChain protect against
+ overlays.
+
+Set setFilterTouchesWhenObsucred on positive confirmation button.
+
+Test: N/A
+Bug: 199754277
+Change-Id: I096afafb74b69e86e82f89f6121ba52d65c99564
+(cherry picked from commit 2b7ea9710d2069f9768cc3c2350df74b60f9ecbf)
+---
+ src/com/android/keychain/KeyChainActivity.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/com/android/keychain/KeyChainActivity.java b/src/com/android/keychain/KeyChainActivity.java
+index 8fc70ea..f8cb0d3 100644
+--- a/src/com/android/keychain/KeyChainActivity.java
++++ b/src/com/android/keychain/KeyChainActivity.java
+@@ -394,6 +394,9 @@ public class KeyChainActivity extends Activity {
+                 finish(null);
+             }
+         });
++        dialog.create();
++        // Prevents screen overlay attack.
++        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setFilterTouchesWhenObscured(true);
+         dialog.show();
+     }
+ 
+-- 
+2.34.1
+

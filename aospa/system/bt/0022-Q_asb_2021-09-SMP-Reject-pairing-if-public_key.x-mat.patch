@@ -1,7 +1,7 @@
 From cc0628e330fbbf8df65426e7fde4332aa3e48da7 Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Mon, 7 Jun 2021 11:06:17 -0700
-Subject: [PATCH 22/22] [Q_asb_2021-09] SMP: Reject pairing if public_key.x
+Subject: [PATCH 22/23] [Q_asb_2021-09] SMP: Reject pairing if public_key.x
  match
 
 Bug: 189329824

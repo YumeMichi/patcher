@@ -1,7 +1,7 @@
 From e67ffbba30d6993a591bb55fa99c831c1579b3c9 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 4 Feb 2021 17:30:55 -0800
-Subject: [PATCH 16/22] [Q_asb_2021-05] avrcp: Ignore AVCT commands that are
+Subject: [PATCH 16/23] [Q_asb_2021-05] avrcp: Ignore AVCT commands that are
  too long
 
 Bug: 177611958

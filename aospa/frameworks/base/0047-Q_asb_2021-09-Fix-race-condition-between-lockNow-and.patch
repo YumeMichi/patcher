@@ -1,7 +1,7 @@
 From 77784ef766fbdff8506be65ac0e24482a46a353f Mon Sep 17 00:00:00 2001
 From: Jorim Jaggi <jjaggi@google.com>
 Date: Thu, 20 May 2021 18:35:30 +0200
-Subject: [PATCH 47/61] [Q_asb_2021-09] Fix race condition between lockNow()
+Subject: [PATCH 47/66] [Q_asb_2021-09] Fix race condition between lockNow()
  and updateLockscreenTimeout
 
 If updateLockscreenTimeout gets called before the Runnable queued

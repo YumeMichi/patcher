@@ -1,7 +1,7 @@
 From 0e356333dc0d35b17c6f582617ee56ffba52089c Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Sun, 21 Mar 2021 15:51:18 -0700
-Subject: [PATCH 17/18] [Q_asb_2021-06] RESTRICT AUTOMERGE Contain
+Subject: [PATCH 17/19] [Q_asb_2021-06] RESTRICT AUTOMERGE Contain
  avrc_ctrl_pars_vendor_cmd OOB write
 
 Bug: 181860042

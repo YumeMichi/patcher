@@ -1,7 +1,7 @@
 From 365f3e61861b492d3a786751adbb5f54c8dda5d2 Mon Sep 17 00:00:00 2001
 From: John Shao <johnshao@google.com>
 Date: Wed, 28 Apr 2021 19:48:40 +0000
-Subject: [PATCH 3/4] [Q_asb_2021-07] Hide non system overlays in
+Subject: [PATCH 3/5] [Q_asb_2021-07] Hide non system overlays in
  ContactSelectionActivity
 
 Bug: 182809425

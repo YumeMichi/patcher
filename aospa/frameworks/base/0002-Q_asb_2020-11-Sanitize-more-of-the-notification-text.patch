@@ -1,7 +1,7 @@
 From c201f314c8f37e8c21d924ea7776722cc8af59a3 Mon Sep 17 00:00:00 2001
 From: Julia Reynolds <juliacr@google.com>
 Date: Wed, 26 Aug 2020 17:07:53 -0400
-Subject: [PATCH 02/61] [Q_asb_2020-11] Sanitize more of the notification text
+Subject: [PATCH 02/66] [Q_asb_2020-11] Sanitize more of the notification text
  fields
 
 Test: manual; monitor SystemUI performance when an app tries to

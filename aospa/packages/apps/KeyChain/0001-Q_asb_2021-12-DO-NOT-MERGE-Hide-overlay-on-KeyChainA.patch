@@ -1,0 +1,60 @@
+From 9818338533a90c38216a717aa030891655d55ef4 Mon Sep 17 00:00:00 2001
+From: Tianyi Hu <hutianyi@bytedance.com>
+Date: Wed, 15 Sep 2021 21:43:18 +0800
+Subject: [PATCH 1/2] [Q_asb_2021-12] DO NOT MERGE Hide overlay on
+ KeyChainActivity
+
+Hide non system overlay to improve security.
+
+Test: N/A
+Bug: 199754277
+Merged-In: Ia0e97f40d79a7f89035572e0175990694870938f
+Change-Id: Ia0e97f40d79a7f89035572e0175990694870938f
+(cherry picked from commit 7771b58966715ef430f5cb6d81344192ab6d258f)
+---
+ AndroidManifest.xml                            | 2 ++
+ src/com/android/keychain/KeyChainActivity.java | 8 ++++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 662b670..1722c7c 100755
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -3,6 +3,8 @@
+           package="com.android.keychain"
+           android:sharedUserId="android.uid.system"
+           >
++    <uses-permission android:name="android.permission.HIDE_NON_SYSTEM_OVERLAY_WINDOWS"/>
++
+     <application android:label="@string/app_name"
+             android:allowBackup="false"
+             android:usesCleartextTraffic="false" >
+diff --git a/src/com/android/keychain/KeyChainActivity.java b/src/com/android/keychain/KeyChainActivity.java
+index 4a4083a..8fc70ea 100644
+--- a/src/com/android/keychain/KeyChainActivity.java
++++ b/src/com/android/keychain/KeyChainActivity.java
+@@ -65,6 +65,8 @@ import java.util.stream.Collectors;
+ 
+ import javax.security.auth.x500.X500Principal;
+ 
++import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
++
+ public class KeyChainActivity extends Activity {
+     private static final String TAG = "KeyChain";
+ 
+@@ -82,6 +84,12 @@ public class KeyChainActivity extends Activity {
+     // be done on the UI thread.
+     private KeyStore mKeyStore = KeyStore.getInstance();
+ 
++    @Override
++    protected void onCreate(Bundle savedState) {
++        super.onCreate(savedState);
++        getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++    }
++
+     @Override public void onResume() {
+         super.onResume();
+ 
+-- 
+2.34.1
+

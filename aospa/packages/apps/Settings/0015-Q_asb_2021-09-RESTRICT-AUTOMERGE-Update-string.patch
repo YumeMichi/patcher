@@ -1,7 +1,7 @@
 From 7934750fec86764d5db29d62a3a0fcdc90cf90e8 Mon Sep 17 00:00:00 2001
 From: Hugh Chen <hughchen@google.com>
 Date: Thu, 3 Jun 2021 16:38:24 +0800
-Subject: [PATCH 15/16] [Q_asb_2021-09] RESTRICT AUTOMERGE Update string
+Subject: [PATCH 15/17] [Q_asb_2021-09] RESTRICT AUTOMERGE Update string
 
 1. Replace "An untrusted Bluetooth device" to "A Bluetooth device".
 2. Replace "Deny" to "Don't allow"

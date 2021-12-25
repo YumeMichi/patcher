@@ -1,0 +1,66 @@
+From 90112850e66176e16b5c86d8f4727694551fe1ad Mon Sep 17 00:00:00 2001
+From: Collin Fijalkovich <cfijalkovich@google.com>
+Date: Mon, 5 Oct 2020 13:10:33 -0700
+Subject: [PATCH 65/66] [Q_asb_2021-12] Disallow overlays for ResolverActivity
+
+Prevents non-system apps from placing a window over the app selection
+screen.
+
+Bug: 143559931
+Test: Installed test app and attempted to overlay
+Change-Id: Ied05088a5007e0f10cd3e1abd8d7da8ffeb3b674
+Merged-In: Ied05088a5007e0f10cd3e1abd8d7da8ffeb3b674
+(cherry picked from commit 34534e1fd2057ea6d858ce82f8505cbdb1026d9a)
+(cherry picked from commit 9bd0b2f9d067b917399c56f979ffc6a3e5a3860b)
+---
+ .../android/internal/app/ResolverActivity.java   | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/core/java/com/android/internal/app/ResolverActivity.java b/core/java/com/android/internal/app/ResolverActivity.java
+index 996158755c6a..070e3c101c8e 100644
+--- a/core/java/com/android/internal/app/ResolverActivity.java
++++ b/core/java/com/android/internal/app/ResolverActivity.java
+@@ -17,6 +17,7 @@
+ package com.android.internal.app;
+ 
+ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
++import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
+ 
+ import android.annotation.Nullable;
+ import android.annotation.StringRes;
+@@ -68,7 +69,9 @@ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ import android.view.ViewGroup.LayoutParams;
++import android.view.Window;
+ import android.view.WindowInsets;
++import android.view.WindowManager;
+ import android.widget.AbsListView;
+ import android.widget.AdapterView;
+ import android.widget.BaseAdapter;
+@@ -789,9 +792,22 @@ public class ResolverActivity extends Activity {
+         bindProfileView();
+     }
+ 
++    @Override
++    protected void onStart() {
++        super.onStart();
++
++        this.getWindow().addSystemFlags(SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
++    }
++
+     @Override
+     protected void onStop() {
+         super.onStop();
++
++        final Window window = this.getWindow();
++        final WindowManager.LayoutParams attrs = window.getAttributes();
++        attrs.privateFlags &= ~SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
++        window.setAttributes(attrs);
++
+         if (mRegistered) {
+             mPackageMonitor.unregister();
+             mRegistered = false;
+-- 
+2.34.1
+

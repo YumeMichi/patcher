@@ -1,7 +1,7 @@
 From 22658e05e60d69b29806363040ed8787d64304d2 Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Mon, 10 May 2021 19:26:13 +0200
-Subject: [PATCH 12/16] [Q_asb_2021-07] Prevent drawing on top of
+Subject: [PATCH 12/17] [Q_asb_2021-07] Prevent drawing on top of
  DevicePickerActivity
 
 Bug: 182584940
