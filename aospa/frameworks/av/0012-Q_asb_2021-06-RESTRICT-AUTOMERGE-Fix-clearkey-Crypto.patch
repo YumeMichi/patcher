@@ -1,7 +1,7 @@
 From 3ed4f566348a74fee11e716da8837597e9c681f1 Mon Sep 17 00:00:00 2001
 From: Edwin Wong <edwinwong@google.com>
 Date: Fri, 22 Jan 2021 20:38:33 -0800
-Subject: [PATCH 12/18] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix clearkey
+Subject: [PATCH 12/28] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix clearkey
  CryptoPlugin use after free vulnerability.
 
 The shared memory buffer used by srcPtr can be freed by another

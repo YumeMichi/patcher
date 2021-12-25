@@ -1,7 +1,7 @@
 From 7ed502ad6159c99f93e0c5c16471fb4b0bb1768a Mon Sep 17 00:00:00 2001
 From: Phil Burk <philburk@google.com>
 Date: Thu, 15 Apr 2021 23:40:25 +0000
-Subject: [PATCH 16/18] [Q_asb_2021-10] aaudio: unlock when joining the
+Subject: [PATCH 16/28] [Q_asb_2021-10] aaudio: unlock when joining the
  timestamp thread
 
 This will prevent a deadlock in case the timestamp

@@ -1,7 +1,7 @@
 From 92d1f0a34e6a093ce4526f6209244f58f1ff46c4 Mon Sep 17 00:00:00 2001
 From: Manisha Jajoo <manisha.jajoo@ittiam.com>
 Date: Fri, 23 Jul 2021 23:03:50 +0530
-Subject: [PATCH 18/18] [Q_asb_2021-12] C2SoftMp3Dec: fix OOB write in output
+Subject: [PATCH 18/28] [Q_asb_2021-12] C2SoftMp3Dec: fix OOB write in output
  buffer
 
 outputFrameSize, calOutSize and outSize are calculated at 8bit level

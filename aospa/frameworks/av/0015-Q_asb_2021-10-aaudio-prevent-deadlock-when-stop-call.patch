@@ -1,7 +1,7 @@
 From ead6a9dfa9abee5856d32b06073dd4b130e1ca99 Mon Sep 17 00:00:00 2001
 From: Phil Burk <philburk@google.com>
 Date: Wed, 7 Apr 2021 06:30:50 +0000
-Subject: [PATCH 15/18] [Q_asb_2021-10] aaudio: prevent deadlock when stop()
+Subject: [PATCH 15/28] [Q_asb_2021-10] aaudio: prevent deadlock when stop()
  calls disconnect()
 
 Move all calls to send the timestamp into the one timestamp thread.
