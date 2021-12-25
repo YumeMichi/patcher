@@ -1,0 +1,53 @@
+From f973c6a9808fae0d87ec78557a1357a32b03b819 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Sat, 9 Oct 2021 03:56:19 -0600
+Subject: [PATCH 13/13] [Q_asb_2021-10] Bump Security String to 2021-10-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0483   A-153358911  EoP    High       10, 11
+CVE-2021-0643   A-183612370  ID     High       10, 11
+CVE-2021-0651   A-67013844   DoS    High       9, 10, 11
+CVE-2021-0652   A-185178568  EoP    High       8.1, 9, 10, 11
+CVE-2021-0705   A-185388103  EoP    High       10, 11
+CVE-2021-0706   A-193444889  DoS    High       8.1, 9, 10, 11
+CVE-2021-0870   A-192472262  RCE    Critical   8.1, 9, 10, 11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:  Prior Change:
+CVE-2021-0708   A-183262161  EoP    High       8.1, 9, 10, 11          5dd2109eca6a
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2020-15358  A-192605364  ID     High       11
+CVE-2021-0702   A-193932765  ID     High       11
+CVE-2021-0703   A-184569329  EoP    High       11
+
+Change-Id: I57d80cc47cf66376d569ed6c794b16def1676f30
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index 6b8ef7545..ed3630594 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2021-09-05
++      PLATFORM_SECURITY_PATCH := 2021-10-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+

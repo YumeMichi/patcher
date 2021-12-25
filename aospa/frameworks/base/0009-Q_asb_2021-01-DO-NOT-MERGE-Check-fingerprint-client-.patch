@@ -1,7 +1,7 @@
 From 17669be74cf6f096ec5855c1364aa2ff5f82efd8 Mon Sep 17 00:00:00 2001
 From: Curtis Belmonte <curtislb@google.com>
 Date: Fri, 2 Oct 2020 16:18:37 -0700
-Subject: [PATCH 09/51] [Q_asb_2021-01] DO NOT MERGE Check fingerprint client
+Subject: [PATCH 09/57] [Q_asb_2021-01] DO NOT MERGE Check fingerprint client
  against top activity in auth callback
 
 Due to a race condition with activity task stack broadcasts, it's

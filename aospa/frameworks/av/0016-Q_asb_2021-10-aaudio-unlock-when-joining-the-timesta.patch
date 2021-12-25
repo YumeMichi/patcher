@@ -1,0 +1,39 @@
+From 7ed502ad6159c99f93e0c5c16471fb4b0bb1768a Mon Sep 17 00:00:00 2001
+From: Phil Burk <philburk@google.com>
+Date: Thu, 15 Apr 2021 23:40:25 +0000
+Subject: [PATCH 16/16] [Q_asb_2021-10] aaudio: unlock when joining the
+ timestamp thread
+
+This will prevent a deadlock in case the timestamp
+thread tries to acquire the same lock.
+
+Bug: 182852602
+Bug: 153358911
+Test: plug and unplug headphones while playing
+Change-Id: I625d191906c7e280f3a223f476716ef17b9098ea
+Merged-In: I625d191906c7e280f3a223f476716ef17b9098ea
+(cherry picked from commit 52efb588f61bcc49e204af56beba3861d31ba5e7)
+---
+ services/oboeservice/AAudioServiceStreamBase.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/services/oboeservice/AAudioServiceStreamBase.cpp b/services/oboeservice/AAudioServiceStreamBase.cpp
+index 1c6c44d447..85d94989b7 100644
+--- a/services/oboeservice/AAudioServiceStreamBase.cpp
++++ b/services/oboeservice/AAudioServiceStreamBase.cpp
+@@ -262,7 +262,12 @@ aaudio_result_t AAudioServiceStreamBase::stop_l() {
+ 
+     setState(AAUDIO_STREAM_STATE_STOPPING);
+ 
++    // Temporarily unlock because we are joining the timestamp thread and it may try
++    // to acquire mLock.
++    mLock.unlock();
+     result = stopTimestampThread();
++    mLock.lock();
++
+     if (result != AAUDIO_OK) {
+         disconnect_l();
+         return result;
+-- 
+2.34.1
+

@@ -1,7 +1,7 @@
 From 4a21c57a1eda6583dbad098fb01e9d5c44a66b31 Mon Sep 17 00:00:00 2001
 From: Alisher Alikhodjaev <alisher@google.com>
 Date: Fri, 19 Feb 2021 15:38:43 -0800
-Subject: [PATCH 3/3] [Q_asb_2021-05] Memory Disclosure, OOB Write, and Double
+Subject: [PATCH 3/4] [Q_asb_2021-05] Memory Disclosure, OOB Write, and Double
  Free in NFC T3T tag
 
 Bug: 179687208

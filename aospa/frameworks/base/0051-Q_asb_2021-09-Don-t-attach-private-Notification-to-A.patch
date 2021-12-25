@@ -1,7 +1,7 @@
 From b58987c0b08773b3c3276068f2b98529d7ea5eca Mon Sep 17 00:00:00 2001
 From: Steve Elliott <steell@google.com>
 Date: Tue, 22 Jun 2021 13:58:48 -0400
-Subject: [PATCH 51/51] [Q_asb_2021-09] Don't attach private Notification to
+Subject: [PATCH 51/57] [Q_asb_2021-09] Don't attach private Notification to
  A11yEvent when user locked
 
 Fixes: 159624555

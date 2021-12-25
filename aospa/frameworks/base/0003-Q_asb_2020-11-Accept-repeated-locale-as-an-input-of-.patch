@@ -1,7 +1,7 @@
 From f82b38a419cb19a1b876809eff28922b8715a399 Mon Sep 17 00:00:00 2001
 From: Seigo Nonaka <nona@google.com>
 Date: Wed, 26 Aug 2020 14:42:08 -0700
-Subject: [PATCH 03/51] [Q_asb_2020-11] Accept repeated locale as an input of
+Subject: [PATCH 03/57] [Q_asb_2020-11] Accept repeated locale as an input of
  LocaleList construction.
 
 Repeated locale has not been accepted and IllegalArgumentException

@@ -1,0 +1,45 @@
+From fbf63439062bffd2a95baccc1901d311e19f88e3 Mon Sep 17 00:00:00 2001
+From: John Reck <jreck@google.com>
+Date: Thu, 22 Apr 2021 16:55:09 -0400
+Subject: [PATCH 52/57] [Q_asb_2021-10] Fix a potential thread safety issue in
+ VectorDrawable
+
+Bug: 158839504
+Bug: 185178568
+Test: speculative
+Change-Id: Id9f229f08fe5897dda25441fbaa15c98f8130de9
+(cherry picked from commit e9831122e6c0fad4b0ddf394c239b6cfc039f221)
+---
+ .../java/android/graphics/drawable/VectorDrawable.java | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/graphics/java/android/graphics/drawable/VectorDrawable.java b/graphics/java/android/graphics/drawable/VectorDrawable.java
+index aa19b2a0e94c..ad5b3b3885be 100644
+--- a/graphics/java/android/graphics/drawable/VectorDrawable.java
++++ b/graphics/java/android/graphics/drawable/VectorDrawable.java
+@@ -348,15 +348,19 @@ public class VectorDrawable extends Drawable {
+     private final Rect mTmpBounds = new Rect();
+ 
+     public VectorDrawable() {
+-        this(new VectorDrawableState(null), null);
++        this(null, null);
+     }
+ 
+     /**
+      * The one constructor to rule them all. This is called by all public
+      * constructors to set the state and initialize local properties.
+      */
+-    private VectorDrawable(@NonNull VectorDrawableState state, @Nullable Resources res) {
+-        mVectorState = state;
++    private VectorDrawable(@Nullable VectorDrawableState state, @Nullable Resources res) {
++        // As the mutable, not-thread-safe native instance is stored in VectorDrawableState, we
++        // need to always do a defensive copy even if mutate() isn't called. Otherwise
++        // draw() being called on 2 different VectorDrawable instances could still hit the same
++        // underlying native object.
++        mVectorState = new VectorDrawableState(state);
+         updateLocalState(res);
+     }
+ 
+-- 
+2.34.1
+

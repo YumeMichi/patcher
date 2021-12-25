@@ -14,6 +14,7 @@ REPOSITORIES=(
     'external/libexif'
     'external/okhttp'
     'external/skia'
+    'external/sonivox'
     'external/sqlite'
     'external/v8'
     'external/wpa_supplicant_8'

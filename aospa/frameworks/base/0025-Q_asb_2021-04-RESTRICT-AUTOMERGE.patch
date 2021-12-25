@@ -1,7 +1,7 @@
 From a8cecac6bd393f3c9ba2f6f7333e99e7f7fcee2c Mon Sep 17 00:00:00 2001
 From: Eugene Susla <eugenesusla@google.com>
 Date: Mon, 26 Oct 2020 09:08:49 -0700
-Subject: [PATCH 25/51] [Q_asb_2021-04] RESTRICT AUTOMERGE Prevent non-system
+Subject: [PATCH 25/57] [Q_asb_2021-04] RESTRICT AUTOMERGE Prevent non-system
  overlays from showing over CDM UI
 
 Since CDM grants privileges, it should have the same overlay

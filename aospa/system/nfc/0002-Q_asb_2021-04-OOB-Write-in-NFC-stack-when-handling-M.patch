@@ -1,7 +1,7 @@
 From 437e3efeb832677a60dbf73223b857250d88995d Mon Sep 17 00:00:00 2001
 From: Alisher Alikhodjaev <alisher@google.com>
 Date: Mon, 1 Feb 2021 21:50:48 -0800
-Subject: [PATCH 2/3] [Q_asb_2021-04] OOB Write in NFC stack when handling
+Subject: [PATCH 2/4] [Q_asb_2021-04] OOB Write in NFC stack when handling
  MIFARE Classic TLVs
 
 Bug: 178725766

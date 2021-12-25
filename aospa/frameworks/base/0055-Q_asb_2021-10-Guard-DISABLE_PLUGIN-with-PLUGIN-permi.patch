@@ -1,0 +1,39 @@
+From 630b22939def885b57264ac7a78186fff562d20a Mon Sep 17 00:00:00 2001
+From: Dave Mankoff <mankoff@google.com>
+Date: Wed, 21 Jul 2021 10:08:04 -0400
+Subject: [PATCH 55/57] [Q_asb_2021-10] Guard DISABLE_PLUGIN with PLUGIN
+ permission.
+
+Fixes a p0 security bug. We already have the plugin permission
+defined in our manifest. Ensure that senders of the DISABLE_PLUGIN
+broadcast have that permission.
+
+Bug: 193444889
+Test: manual
+Change-Id: Iebaba435c17c5644c5357c0683858447f5ffb897
+Merged-In: Iebaba435c17c5644c5357c0683858447f5ffb897
+(cherry picked from commit 55cd8952c051cf8aaac144c914e8f5997ae80363)
+---
+ .../com/android/systemui/shared/plugins/PluginManagerImpl.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/packages/SystemUI/shared/src/com/android/systemui/shared/plugins/PluginManagerImpl.java b/packages/SystemUI/shared/src/com/android/systemui/shared/plugins/PluginManagerImpl.java
+index 53403aa4dbf1..fb109d2bda5b 100644
+--- a/packages/SystemUI/shared/src/com/android/systemui/shared/plugins/PluginManagerImpl.java
++++ b/packages/SystemUI/shared/src/com/android/systemui/shared/plugins/PluginManagerImpl.java
+@@ -190,9 +190,12 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
+         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+         filter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
++        filter.addDataScheme("package");
++        mContext.registerReceiver(this, filter);
+         filter.addAction(PLUGIN_CHANGED);
+         filter.addAction(DISABLE_PLUGIN);
+         filter.addDataScheme("package");
++        mContext.registerReceiver(this, filter, PluginInstanceManager.PLUGIN_PERMISSION, null);
+         mContext.registerReceiver(this, filter);
+         filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
+         mContext.registerReceiver(this, filter);
+-- 
+2.34.1
+

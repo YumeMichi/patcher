@@ -1,7 +1,7 @@
 From 1cffd45b6853ed73282a111212890ca76111c143 Mon Sep 17 00:00:00 2001
 From: Beth Thibodeau <ethibodeau@google.com>
 Date: Wed, 27 Jan 2021 13:33:34 -0500
-Subject: [PATCH 38/51] [Q_asb_2021-06] Limit maximum allowed size for a status
+Subject: [PATCH 38/57] [Q_asb_2021-06] Limit maximum allowed size for a status
  bar icon
 
 Bug: 169255797

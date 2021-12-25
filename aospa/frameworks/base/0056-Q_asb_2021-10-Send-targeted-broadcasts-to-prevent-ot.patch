@@ -1,0 +1,69 @@
+From ae43cffe3f53c9be89cccc1dd155a0001aa52b78 Mon Sep 17 00:00:00 2001
+From: Sudheer Shanka <sudheersai@google.com>
+Date: Tue, 11 May 2021 17:01:11 -0700
+Subject: [PATCH 56/57] [Q_asb_2021-10] Send targeted broadcasts to prevent
+ other apps from receiving them.
+
+When sending broadcasts ACTION_SNOOZE_WARNING in NPMS, which may
+contain sensitive information, explicitly set the package name
+that should receive it to prevent other apps from receiving them.
+
+Bug: 177931370
+Test: manual
+Change-Id: I11d736771d859d2af27d5c84a502ab038974e2e2
+Merged-In: I11d736771d859d2af27d5c84a502ab038974e2e2
+(cherry picked from commit 1494979a6ac772fa49a26748f047a4c3d64baf51)
+(cherry picked from commit 29eb352baad77de762ce68cae74b3247b9127352)
+---
+ .../server/net/NetworkPolicyManagerService.java      | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/services/core/java/com/android/server/net/NetworkPolicyManagerService.java b/services/core/java/com/android/server/net/NetworkPolicyManagerService.java
+index 01d8a3037198..fd0ab5708716 100644
+--- a/services/core/java/com/android/server/net/NetworkPolicyManagerService.java
++++ b/services/core/java/com/android/server/net/NetworkPolicyManagerService.java
+@@ -1352,7 +1352,8 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
+ 
+                 builder.setSmallIcon(R.drawable.stat_notify_error);
+ 
+-                final Intent snoozeIntent = buildSnoozeWarningIntent(policy.template);
++                final Intent snoozeIntent = buildSnoozeWarningIntent(policy.template,
++                        mContext.getPackageName());
+                 builder.setDeleteIntent(PendingIntent.getBroadcast(
+                         mContext, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+ 
+@@ -1438,7 +1439,8 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
+ 
+                 builder.setSmallIcon(R.drawable.stat_notify_error);
+ 
+-                final Intent snoozeIntent = buildSnoozeRapidIntent(policy.template);
++                final Intent snoozeIntent = buildSnoozeRapidIntent(policy.template,
++                        mContext.getPackageName());
+                 builder.setDeleteIntent(PendingIntent.getBroadcast(
+                         mContext, 0, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+ 
+@@ -4950,17 +4952,19 @@ public class NetworkPolicyManagerService extends INetworkPolicyManager.Stub {
+         return new Intent(ACTION_ALLOW_BACKGROUND);
+     }
+ 
+-    private static Intent buildSnoozeWarningIntent(NetworkTemplate template) {
++    private static Intent buildSnoozeWarningIntent(NetworkTemplate template, String targetPackage) {
+         final Intent intent = new Intent(ACTION_SNOOZE_WARNING);
+         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+         intent.putExtra(EXTRA_NETWORK_TEMPLATE, template);
++        intent.setPackage(targetPackage);
+         return intent;
+     }
+ 
+-    private static Intent buildSnoozeRapidIntent(NetworkTemplate template) {
++    private static Intent buildSnoozeRapidIntent(NetworkTemplate template, String targetPackage) {
+         final Intent intent = new Intent(ACTION_SNOOZE_RAPID);
+         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+         intent.putExtra(EXTRA_NETWORK_TEMPLATE, template);
++        intent.setPackage(targetPackage);
+         return intent;
+     }
+ 
+-- 
+2.34.1
+

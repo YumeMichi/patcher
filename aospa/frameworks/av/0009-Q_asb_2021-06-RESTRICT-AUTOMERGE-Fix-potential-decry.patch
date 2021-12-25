@@ -1,7 +1,7 @@
 From a642a447e6928000fbcd2bf1ac540cb4dd80d8e5 Mon Sep 17 00:00:00 2001
 From: Edwin Wong <edwinwong@google.com>
 Date: Tue, 2 Feb 2021 09:51:14 -0800
-Subject: [PATCH 09/14] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix potential
+Subject: [PATCH 09/16] [Q_asb_2021-06] [RESTRICT AUTOMERGE] Fix potential
  decrypt destPtr overflow.
 
 There is a potential integer overflow to bypass the
