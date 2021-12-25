@@ -1,0 +1,32 @@
+From 5de14f5e827e866dae1b05deb5d580214b6b3e16 Mon Sep 17 00:00:00 2001
+From: Eugene Susla <eugenesusla@google.com>
+Date: Fri, 4 Dec 2020 16:01:46 -0800
+Subject: [PATCH 26/33] [Q_asb_2021-04] RESTRICT AUTOMERGE Allow CDM to hide
+ overlays
+
+Since CDM has sensitive user consent UIs, it should be able to hide
+non-system overlays
+
+Test: use a 3p overlay app with a visible overlay to ensure overlay disappears when CDM is shown
+Bug: 171221090
+Change-Id: I3274cb7f03f63e1fa99a9ca06759972ce2a51309
+(cherry picked from commit 30e9d28c22e7c21ab8e06ba54d2df665fba9ed5e)
+---
+ packages/CompanionDeviceManager/AndroidManifest.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/packages/CompanionDeviceManager/AndroidManifest.xml b/packages/CompanionDeviceManager/AndroidManifest.xml
+index 42885e8193a7..c975c95b8b7c 100644
+--- a/packages/CompanionDeviceManager/AndroidManifest.xml
++++ b/packages/CompanionDeviceManager/AndroidManifest.xml
+@@ -29,6 +29,7 @@
+     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
++    <uses-permission android:name="android.permission.HIDE_NON_SYSTEM_OVERLAY_WINDOWS"/>
+ 
+     <application
+         android:allowClearUserData="true"
+-- 
+2.34.1
+

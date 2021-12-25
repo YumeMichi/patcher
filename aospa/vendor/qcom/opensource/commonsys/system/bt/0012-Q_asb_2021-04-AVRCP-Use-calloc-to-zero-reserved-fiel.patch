@@ -1,0 +1,157 @@
+From 4d4c1def018ec9e5f619e35921adf60b9a30b11d Mon Sep 17 00:00:00 2001
+From: Myles Watson <mylesgw@google.com>
+Date: Fri, 4 Dec 2020 12:54:27 -0800
+Subject: [PATCH 12/12] [Q_asb_2021-04] AVRCP: Use calloc to zero reserved
+ fields
+
+Bug: 174150451
+Test: compilation
+Tag: #security
+Change-Id: I7a30edacf8377a9feecbb988b099d60d69b46f87
+(cherry picked from commit 1f169323d335ab0dc260952c2dd3821144448b11)
+Merged-In: I7a30edacf8377a9feecbb988b099d60d69b46f87
+(cherry picked from commit 8d461a866a12cd3d7d6d68551a5d2a7139fab2b9)
+(cherry picked from commit 41584e84a3288d4dc9770773fa3db81df209ae4c)
+---
+ stack/avrc/avrc_api.cc     | 8 ++++----
+ stack/avrc/avrc_bld_ct.cc  | 2 +-
+ stack/avrc/avrc_bld_tg.cc  | 2 +-
+ stack/avrc/avrc_opt.cc     | 8 ++++----
+ stack/avrc/avrc_pars_ct.cc | 6 +++---
+ 5 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/stack/avrc/avrc_api.cc b/stack/avrc/avrc_api.cc
+index d557782ff..15bab1336 100644
+--- a/stack/avrc/avrc_api.cc
++++ b/stack/avrc/avrc_api.cc
+@@ -341,7 +341,7 @@ static uint16_t avrc_send_continue_frag(uint8_t handle, uint8_t label) {
+   if (p_pkt->len > AVRC_MAX_CTRL_DATA_LEN) {
+     int offset_len = MAX(AVCT_MSG_OFFSET, p_pkt->offset);
+     p_pkt_old = p_fcb->p_fmsg;
+-    p_pkt = (BT_HDR*)osi_malloc(AVRC_PACKET_LEN + offset_len + BT_HDR_SIZE);
++    p_pkt = (BT_HDR*)osi_calloc(AVRC_PACKET_LEN + offset_len + BT_HDR_SIZE);
+     p_pkt->len = AVRC_MAX_CTRL_DATA_LEN;
+     p_pkt->offset = AVCT_MSG_OFFSET;
+     p_pkt->layer_specific = p_pkt_old->layer_specific;
+@@ -513,7 +513,7 @@ static uint8_t avrc_proc_far_msg(uint8_t handle, uint8_t label, uint8_t cr,
+     if (pkt_type == AVRC_PKT_START) {
+       /* Allocate buffer for re-assembly */
+       p_rcb->rasm_pdu = *p_data;
+-      p_rcb->p_rmsg = (BT_HDR*)osi_malloc(BT_DEFAULT_BUFFER_SIZE);
++      p_rcb->p_rmsg = (BT_HDR*)osi_calloc(BT_DEFAULT_BUFFER_SIZE);
+       /* Copy START packet to buffer for re-assembling fragments */
+       memcpy(p_rcb->p_rmsg, p_pkt, sizeof(BT_HDR)); /* Copy bt hdr */
+ 
+@@ -1018,7 +1018,7 @@ static BT_HDR* avrc_pass_msg(tAVRC_MSG_PASS* p_msg) {
+   CHECK(p_msg != NULL);
+   CHECK(AVRC_CMD_BUF_SIZE > (AVRC_MIN_CMD_LEN + p_msg->pass_len));
+ 
+-  BT_HDR* p_cmd = (BT_HDR*)osi_malloc(AVRC_CMD_BUF_SIZE);
++  BT_HDR* p_cmd = (BT_HDR*)osi_calloc(AVRC_CMD_BUF_SIZE);
+   p_cmd->offset = AVCT_MSG_OFFSET;
+   p_cmd->layer_specific = AVCT_DATA_CTRL;
+ 
+@@ -1291,7 +1291,7 @@ uint16_t AVRC_MsgReq(uint8_t handle, uint8_t label, uint8_t ctype,
+     if (p_pkt->len > AVRC_MAX_CTRL_DATA_LEN) {
+       int offset_len = MAX(AVCT_MSG_OFFSET, p_pkt->offset);
+       BT_HDR* p_pkt_new =
+-          (BT_HDR*)osi_malloc(AVRC_PACKET_LEN + offset_len + BT_HDR_SIZE);
++          (BT_HDR*)osi_calloc(AVRC_PACKET_LEN + offset_len + BT_HDR_SIZE);
+       if (p_start != NULL) {
+         p_fcb->frag_enabled = true;
+         p_fcb->p_fmsg = p_pkt;
+diff --git a/stack/avrc/avrc_bld_ct.cc b/stack/avrc/avrc_bld_ct.cc
+index 2cb12467e..f0b9e5383 100644
+--- a/stack/avrc/avrc_bld_ct.cc
++++ b/stack/avrc/avrc_bld_ct.cc
+@@ -520,7 +520,7 @@ static BT_HDR* avrc_bld_init_cmd_buffer(tAVRC_COMMAND* p_cmd) {
+   }
+ 
+   /* allocate and initialize the buffer */
+-  BT_HDR* p_pkt = (BT_HDR*)osi_malloc(AVRC_META_CMD_BUF_SIZE);
++  BT_HDR* p_pkt = (BT_HDR*)osi_calloc(AVRC_META_CMD_BUF_SIZE);
+   uint8_t *p_data, *p_start;
+ 
+   p_pkt->layer_specific = chnl;
+diff --git a/stack/avrc/avrc_bld_tg.cc b/stack/avrc/avrc_bld_tg.cc
+index a4736cfba..2a6445cd4 100644
+--- a/stack/avrc/avrc_bld_tg.cc
++++ b/stack/avrc/avrc_bld_tg.cc
+@@ -1332,7 +1332,7 @@ static BT_HDR* avrc_bld_init_rsp_buffer(tAVRC_RESPONSE* p_rsp) {
+   }
+ 
+   /* allocate and initialize the buffer */
+-  BT_HDR* p_pkt = (BT_HDR*)osi_malloc(BT_DEFAULT_BUFFER_SIZE);
++  BT_HDR* p_pkt = (BT_HDR*)osi_calloc(BT_DEFAULT_BUFFER_SIZE);
+   uint8_t *p_data, *p_start;
+ 
+   p_pkt->layer_specific = chnl;
+diff --git a/stack/avrc/avrc_opt.cc b/stack/avrc/avrc_opt.cc
+index 1c0acb838..48f52dc4d 100644
+--- a/stack/avrc/avrc_opt.cc
++++ b/stack/avrc/avrc_opt.cc
+@@ -52,10 +52,10 @@ static BT_HDR* avrc_vendor_msg(tAVRC_MSG_VENDOR* p_msg) {
+ 
+ #if (AVRC_METADATA_INCLUDED == TRUE)
+   CHECK(AVRC_META_CMD_BUF_SIZE > (AVRC_MIN_CMD_LEN + p_msg->vendor_len));
+-  p_cmd = (BT_HDR*)osi_malloc(AVRC_META_CMD_BUF_SIZE);
++  p_cmd = (BT_HDR*)osi_calloc(AVRC_META_CMD_BUF_SIZE);
+ #else
+   CHECK(AVRC_CMD_BUF_SIZE > (AVRC_MIN_CMD_LEN + p_msg->vendor_len));
+-  p_cmd = (BT_HDR*)osi_malloc(AVRC_CMD_BUF_SIZE);
++  p_cmd = (BT_HDR*)osi_calloc(AVRC_CMD_BUF_SIZE);
+ #endif
+ 
+   p_cmd->offset = AVCT_MSG_OFFSET;
+@@ -96,7 +96,7 @@ static BT_HDR* avrc_vendor_msg(tAVRC_MSG_VENDOR* p_msg) {
+  *
+  *****************************************************************************/
+ uint16_t AVRC_UnitCmd(uint8_t handle, uint8_t label) {
+-  BT_HDR* p_cmd = (BT_HDR*)osi_malloc(AVRC_CMD_BUF_SIZE);
++  BT_HDR* p_cmd = (BT_HDR*)osi_calloc(AVRC_CMD_BUF_SIZE);
+   uint8_t* p_data;
+ 
+   p_cmd->offset = AVCT_MSG_OFFSET;
+@@ -139,7 +139,7 @@ uint16_t AVRC_UnitCmd(uint8_t handle, uint8_t label) {
+  *
+  *****************************************************************************/
+ uint16_t AVRC_SubCmd(uint8_t handle, uint8_t label, uint8_t page) {
+-  BT_HDR* p_cmd = (BT_HDR*)osi_malloc(AVRC_CMD_BUF_SIZE);
++  BT_HDR* p_cmd = (BT_HDR*)osi_calloc(AVRC_CMD_BUF_SIZE);
+   uint8_t* p_data;
+ 
+   p_cmd->offset = AVCT_MSG_OFFSET;
+diff --git a/stack/avrc/avrc_pars_ct.cc b/stack/avrc/avrc_pars_ct.cc
+index bd222479a..50084e43f 100644
+--- a/stack/avrc/avrc_pars_ct.cc
++++ b/stack/avrc/avrc_pars_ct.cc
+@@ -306,7 +306,7 @@ static tAVRC_STS avrc_pars_browse_rsp(tAVRC_MSG_BROWSE* p_msg,
+             BE_STREAM_TO_UINT16(player->name.str_len, p);
+             min_len += player->name.str_len;
+             if (pkt_len < min_len) goto browse_length_error;
+-            player->name.p_str = (uint8_t*)osi_malloc(
++            player->name.p_str = (uint8_t*)osi_calloc(
+                 (player->name.str_len + 1) * sizeof(uint8_t));
+             BE_STREAM_TO_ARRAY(p, player->name.p_str, player->name.str_len);
+             AVRC_TRACE_DEBUG(
+@@ -334,7 +334,7 @@ static tAVRC_STS avrc_pars_browse_rsp(tAVRC_MSG_BROWSE* p_msg,
+             BE_STREAM_TO_UINT16(folder->name.str_len, p);
+             min_len += folder->name.str_len;
+             if (pkt_len < min_len) goto browse_length_error;
+-            folder->name.p_str = (uint8_t*)osi_malloc(
++            folder->name.p_str = (uint8_t*)osi_calloc(
+                 (folder->name.str_len + 1) * sizeof(uint8_t));
+             BE_STREAM_TO_ARRAY(p, folder->name.p_str, folder->name.str_len);
+             AVRC_TRACE_DEBUG("%s type %d playable %d cs %d name len %d",
+@@ -462,7 +462,7 @@ static tAVRC_STS avrc_pars_browse_rsp(tAVRC_MSG_BROWSE* p_msg,
+         AVRC_TRACE_DEBUG("%s AVRC_PDU_SET_BROWSED_PLAYER item: %d len: %d",
+                          __func__, i, folder_name->str_len);
+         folder_name->p_str =
+-            (uint8_t*)osi_malloc((folder_name->str_len + 1) * sizeof(uint8_t));
++            (uint8_t*)osi_calloc((folder_name->str_len + 1) * sizeof(uint8_t));
+         BE_STREAM_TO_ARRAY(p, folder_name->p_str, folder_name->str_len);
+       }
+       break;
+-- 
+2.34.1
+

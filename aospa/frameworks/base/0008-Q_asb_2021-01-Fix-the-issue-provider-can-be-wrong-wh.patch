@@ -1,7 +1,7 @@
 From 47fff3ea452c999ea54e29f951ef2731a182a343 Mon Sep 17 00:00:00 2001
 From: Pinyao Ting <pinyaoting@google.com>
 Date: Thu, 16 Jul 2020 16:49:06 -0700
-Subject: [PATCH 08/24] [Q_asb_2021-01] Fix the issue provider can be wrong
+Subject: [PATCH 08/33] [Q_asb_2021-01] Fix the issue provider can be wrong
  when requesting slice permission
 
 SlicePermissionActivity reads provider_pkg from intent, which can be

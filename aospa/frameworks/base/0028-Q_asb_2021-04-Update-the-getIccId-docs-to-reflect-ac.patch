@@ -1,0 +1,90 @@
+From 29c21b6694370cd2e63a67578cd808e183ec3ff1 Mon Sep 17 00:00:00 2001
+From: Michael Groover <mpgroover@google.com>
+Date: Tue, 21 Jan 2020 20:00:41 -0800
+Subject: [PATCH 28/33] [Q_asb_2021-04] Update the getIccId docs to reflect
+ access requirements
+
+In Android 10 access to device identifiers was limited to apps with
+the READ_PRIVILEGED_PHONE_STATE permission, carrier privileges, the
+READ_DEVICE_IDENTIFIERS appop set to allow, or those that pass a
+device / profile owner check. TelephonyManager#getSimSerialNumber
+was guarded behind these new access requirements, but the same value
+is still accessible via SubscriptionInfo#getIccId. This change
+updates the documentation to reflect that the getIccId will no
+longer be accessible if the caller does not meet the new access
+requirements.
+
+Bug: 131909991
+Bug: 173421434
+Test: Builds
+Change-Id: I03072c65e1c7101538a7a20541d2ac59a2d213e3
+Merged-In: I03072c65e1c7101538a7a20541d2ac59a2d213e3
+(cherry picked from commit a13fc7f314ac56e75eca09c94db8090f928023ff)
+---
+ .../android/telephony/SubscriptionInfo.java   | 31 ++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
+diff --git a/telephony/java/android/telephony/SubscriptionInfo.java b/telephony/java/android/telephony/SubscriptionInfo.java
+index 628dc9348246..99e3801b6039 100644
+--- a/telephony/java/android/telephony/SubscriptionInfo.java
++++ b/telephony/java/android/telephony/SubscriptionInfo.java
+@@ -44,6 +44,8 @@ import java.util.Collections;
+ import java.util.List;
+ import java.util.Objects;
+ 
++import com.android.telephony.Rlog;
++
+ /**
+  * A Parcelable class for Subscription Information.
+  */
+@@ -208,6 +210,19 @@ public class SubscriptionInfo implements Parcelable {
+      */
+     private int mSubscriptionType;
+ 
++    /**
++     * Public copy constructor.
++     * @hide
++     */
++    public SubscriptionInfo(SubscriptionInfo info) {
++        this(info.mId, info.mIccId, info.mSimSlotIndex, info.mDisplayName, info.mCarrierName,
++                info.mNameSource, info.mIconTint, info.mNumber, info.mDataRoaming, info.mIconBitmap,
++                info.mMcc, info.mMnc, info.mCountryIso, info.mIsEmbedded, info.mAccessRules,
++                info.mCardString, info.mCardId, info.mIsOpportunistic,
++                info.mGroupUUID == null ? null : info.mGroupUUID.toString(), info.mIsGroupDisabled,
++                info.mCarrierId, info.mProfileClass, info.mSubscriptionType, info.mGroupOwner);
++    }
++
+     /**
+      * @hide
+      */
+@@ -281,12 +296,26 @@ public class SubscriptionInfo implements Parcelable {
+     }
+ 
+     /**
+-     * @return the ICC ID.
++     * Returns the ICC ID if the calling app has been granted the READ_PRIVILEGED_PHONE_STATE
++     * permission, has carrier privileges (see {@link TelephonyManager#hasCarrierPrivileges}), or
++     * is a device owner or profile owner that has been granted the READ_PHONE_STATE permission.
++     * The profile owner is an app that owns a managed profile on the device; for more details see
++     * <a href="https://developer.android.com/work/managed-profiles">Work profiles</a>. Profile
++     * owner access is deprecated and will be removed in a future release.
++     *
++     * @return the ICC ID, or an empty string if one of these requirements is not met
+      */
+     public String getIccId() {
+         return this.mIccId;
+     }
+ 
++    /**
++     * @hide
++     */
++    public void clearIccId() {
++        this.mIccId = "";
++    }
++
+     /**
+      * @return the slot index of this Subscription's SIM card.
+      */
+-- 
+2.34.1
+

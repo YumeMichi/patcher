@@ -1,0 +1,92 @@
+From b8da6ec9e0d65e72237c6fab91c9c008b8cdfe4c Mon Sep 17 00:00:00 2001
+From: Robert Carr <racarr@google.com>
+Date: Fri, 11 Dec 2020 12:59:08 -0800
+Subject: [PATCH 27/33] [Q_asb_2021-04] DO NOT MERGE: WM: Only allow system to
+ use NO_INPUT_CHANNEL.
+
+NO_INPUT_CHANNEL is a hidden WM flag that allows creation of a window
+without an input channel. Unfortunately in releases prior to Android R
+this would allow creation of a Window which will not be known to the
+InputDispatcher at all. This means that the logic generating
+FLAG_OBSCURED will work and a window will be able to overlay another
+window without the overlayed window being notified. In Android R and
+later this isn't a problem as the InputDispatcher is informed of all
+windows, input channel or not. For past Android releases, this patch
+disables NO_INPUT_CHANNEL for use outside of the WM.
+
+Bug: 152064592
+Test: Existing tests pass
+Change-Id: I7e1f45cba139eab92e7df88d1e052baba0ae2cc6
+(cherry picked from commit 514b3297768f4a7469117a7005556663124040f9)
+---
+ core/java/android/view/InputChannel.java                 | 7 +++++++
+ core/java/android/view/ViewRootImpl.java                 | 7 ++-----
+ .../java/com/android/server/wm/WindowManagerService.java | 9 +++++++--
+ 3 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/core/java/android/view/InputChannel.java b/core/java/android/view/InputChannel.java
+index ecb727c79016..346628bbdabd 100644
+--- a/core/java/android/view/InputChannel.java
++++ b/core/java/android/view/InputChannel.java
+@@ -110,6 +110,13 @@ public final class InputChannel implements Parcelable {
+         return name != null ? name : "uninitialized";
+     }
+ 
++    /**
++     * @hide
++     */
++    public boolean isValid() {
++        return mPtr != 0;
++    }
++
+     /**
+      * Disposes the input channel.
+      * Explicitly releases the reference this object is holding on the input channel.
+diff --git a/core/java/android/view/ViewRootImpl.java b/core/java/android/view/ViewRootImpl.java
+index f889c38e9fc1..89dbd7f0ddde 100644
+--- a/core/java/android/view/ViewRootImpl.java
++++ b/core/java/android/view/ViewRootImpl.java
+@@ -876,10 +876,7 @@ public final class ViewRootImpl implements ViewParent,
+                 // manager, to make sure we do the relayout before receiving
+                 // any other events from the system.
+                 requestLayout();
+-                if ((mWindowAttributes.inputFeatures
+-                        & WindowManager.LayoutParams.INPUT_FEATURE_NO_INPUT_CHANNEL) == 0) {
+-                    mInputChannel = new InputChannel();
+-                }
++		mInputChannel = new InputChannel();
+                 mForceDecorViewVisibility = (mWindowAttributes.privateFlags
+                         & PRIVATE_FLAG_FORCE_DECOR_VIEW_VISIBILITY) != 0;
+                 try {
+@@ -972,7 +969,7 @@ public final class ViewRootImpl implements ViewParent,
+                     mInputQueueCallback =
+                         ((RootViewSurfaceTaker)view).willYouTakeTheInputQueue();
+                 }
+-                if (mInputChannel != null) {
++                if (mInputChannel.isValid()) {
+                     if (mInputQueueCallback != null) {
+                         mInputQueue = new InputQueue();
+                         mInputQueueCallback.onInputQueueCreated(mInputQueue);
+diff --git a/services/core/java/com/android/server/wm/WindowManagerService.java b/services/core/java/com/android/server/wm/WindowManagerService.java
+index bc91204085a5..495bba46124c 100644
+--- a/services/core/java/com/android/server/wm/WindowManagerService.java
++++ b/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -1466,8 +1466,13 @@ public class WindowManagerService extends IWindowManager.Stub
+                 return res;
+             }
+ 
+-            final boolean openInputChannels = (outInputChannel != null
+-                    && (attrs.inputFeatures & INPUT_FEATURE_NO_INPUT_CHANNEL) == 0);
++            boolean openInputChannels = (outInputChannel != null
++                && (attrs.inputFeatures & INPUT_FEATURE_NO_INPUT_CHANNEL) == 0);
++            if (callingUid != SYSTEM_UID) {
++                Slog.e(TAG_WM,
++                    "App trying to use insecure INPUT_FEATURE_NO_INPUT_CHANNEL flag. Ignoring");
++                openInputChannels = true;
++            }
+             if  (openInputChannels) {
+                 win.openInputChannel(outInputChannel);
+             }
+-- 
+2.34.1
+

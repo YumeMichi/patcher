@@ -1,0 +1,39 @@
+From ff02b79bb31bc1a63fc7d89b78863addc9c0f16f Mon Sep 17 00:00:00 2001
+From: Michael Groover <mpgroover@google.com>
+Date: Wed, 19 Feb 2020 23:37:42 -0800
+Subject: [PATCH 29/33] [Q_asb_2021-04] Whitelist READ_PRIVILEGED_PHONE_STATE
+ for the contacts provider
+
+In Android 10 access to device identifiers was moved from a runtime
+permission to the privileged READ_PRIVILEGED_PHONE_STATE permission.
+One of the non-resettable identifiers missed was SubscriptionInfo#
+getIccId. The contacts provider currently uses this ID to upgrade
+to version 1003 of the database; to ensure there are no issues with
+this upgrade this permission is being whitelisted for the contacts
+provider.
+
+Bug: 131909991
+Bug: 173421434
+Test: atest ContactsProviderTests
+Change-Id: I7574f787a7e55aa0337237b9fe916ee143a2f697
+Merged-In: I7574f787a7e55aa0337237b9fe916ee143a2f697
+(cherry picked from commit 1c1bc30ce345f770de44b4348420e860d0958534)
+---
+ data/etc/privapp-permissions-platform.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/data/etc/privapp-permissions-platform.xml b/data/etc/privapp-permissions-platform.xml
+index 918f6cbfc6a2..df14565324ee 100644
+--- a/data/etc/privapp-permissions-platform.xml
++++ b/data/etc/privapp-permissions-platform.xml
+@@ -178,6 +178,7 @@ applications that come with the platform
+         <permission name="android.permission.GET_ACCOUNTS_PRIVILEGED"/>
+         <permission name="android.permission.INTERACT_ACROSS_USERS"/>
+         <permission name="android.permission.MANAGE_USERS"/>
++        <permission name="android.permission.READ_PRIVILEGED_PHONE_STATE"/>
+         <permission name="android.permission.UPDATE_APP_OPS_STATS"/>
+         <permission name="android.permission.USE_RESERVED_DISK"/>
+     </privapp-permissions>
+-- 
+2.34.1
+

@@ -1,0 +1,39 @@
+From c78241caeef3fa1fd077fc369d0bfb3047f8b858 Mon Sep 17 00:00:00 2001
+From: Michael Groover <mpgroover@google.com>
+Date: Wed, 19 Feb 2020 19:27:20 -0800
+Subject: [PATCH] [Q_asb_2021-04] Grant READ_PRIVILEGED_PHONE_STATE to contacts
+ provider to access ICC ID
+
+In Android 10 access to device identifiers was moved from a runtime
+permission to the privileged READ_PRIVILEGED_PHONE_STATE permission.
+One of the non-resettable identifiers missed was SubscriptionInfo#
+getIccId. The contacts provider currently uses this ID to upgrade
+to version 1003 of the database; to ensure there are no issues with
+this upgrade this permission is being granted to the contacts
+provider.
+
+Bug: 131909991
+Bug: 173421434
+Test: atest ContactsProviderTests
+Change-Id: Iafd9d036993a2d8d765d9ca001c91076d8df18b0
+Merged-In: Iafd9d036993a2d8d765d9ca001c91076d8df18b0
+(cherry picked from commit 129cc56868dfc198de41909ff9d6c542a84a4c21)
+---
+ AndroidManifest.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 2da56fc0..cd0b23b8 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -11,6 +11,7 @@
+     <uses-permission android:name="android.permission.PROCESS_PHONE_ACCOUNT_REGISTRATION" />
+     <uses-permission android:name="android.permission.READ_CONTACTS" />
+     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
++    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+     <uses-permission android:name="android.permission.SEND_CALL_LOG_CHANGE" />
+     <uses-permission android:name="android.permission.UPDATE_APP_OPS_STATS" />
+-- 
+2.34.1
+

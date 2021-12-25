@@ -1,0 +1,36 @@
+From 2955d961d08ec7051f301340d2cad3068a59429f Mon Sep 17 00:00:00 2001
+From: Hansong Zhang <hsz@google.com>
+Date: Mon, 7 Dec 2020 13:11:10 -0800
+Subject: [PATCH 10/12] [Q_asb_2021-04] Legacy pairing: Reject device with same
+ BD_ADDR
+
+Change-Id: If3daec91c3d108a4e7e988608e0600c79ea5f053
+Tag: #vulnerability
+Test: manual
+Bug: 174626251
+(cherry picked from commit 374bb0401a5649af4a97e8d8c7373c7daf37f6ac)
+---
+ stack/btm/btm_sec.cc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/stack/btm/btm_sec.cc b/stack/btm/btm_sec.cc
+index 28594e937..c733ed55f 100644
+--- a/stack/btm/btm_sec.cc
++++ b/stack/btm/btm_sec.cc
+@@ -5178,6 +5178,13 @@ void btm_sec_pin_code_request(const RawAddress& p_bda) {
+   VLOG(2) << __func__ << " BDA: " << p_bda
+           << " state: " << btm_pair_state_descr(btm_cb.pairing_state);
+ 
++  RawAddress local_bd_addr = *controller_get_interface()->get_address();
++  if (p_bda == local_bd_addr) {
++    android_errorWriteLog(0x534e4554, "174626251");
++    btsnd_hcic_pin_code_neg_reply(p_bda);
++    return;
++  }
++
+   if (btm_cb.pairing_state != BTM_PAIR_STATE_IDLE) {
+     if ((p_bda == btm_cb.pairing_bda) &&
+         (btm_cb.pairing_state == BTM_PAIR_STATE_WAIT_AUTH_COMPLETE)) {
+-- 
+2.34.1
+

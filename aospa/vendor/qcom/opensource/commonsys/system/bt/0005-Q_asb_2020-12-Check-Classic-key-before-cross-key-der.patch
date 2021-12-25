@@ -1,7 +1,7 @@
 From ec7d939feef0bf84f8bbc853bc59849c8eb4b3ed Mon Sep 17 00:00:00 2001
 From: Chen Chen <cncn@google.com>
 Date: Wed, 23 Sep 2020 17:02:58 -0700
-Subject: [PATCH 5/9] [Q_asb_2020-12] Check Classic key before cross-key
+Subject: [PATCH 05/12] [Q_asb_2020-12] Check Classic key before cross-key
  derivation
 
 Bug: 158854097

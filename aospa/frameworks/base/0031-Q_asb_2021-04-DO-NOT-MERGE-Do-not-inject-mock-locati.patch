@@ -1,0 +1,41 @@
+From 348346f4ecc5ae812daed403c65f4ee9972693ba Mon Sep 17 00:00:00 2001
+From: Yu-Han Yang <yuhany@google.com>
+Date: Fri, 15 Jan 2021 15:23:52 -0800
+Subject: [PATCH 31/33] [Q_asb_2021-04] DO NOT MERGE: Do not inject mock
+ location to chipset
+
+Bug: 177561690
+Test: on device
+Change-Id: Icafbdf54fe807f8779377b13cb4e4eb265db692e
+(cherry picked from commit c59cbd13f62586bf1eaeb75767859ed08f3adeb1)
+---
+ .../com/android/server/location/GnssLocationProvider.java   | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/core/java/com/android/server/location/GnssLocationProvider.java b/services/core/java/com/android/server/location/GnssLocationProvider.java
+index de280c5566ab..1eaf7cf7f1a6 100644
+--- a/services/core/java/com/android/server/location/GnssLocationProvider.java
++++ b/services/core/java/com/android/server/location/GnssLocationProvider.java
+@@ -808,6 +808,9 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
+     }
+ 
+     private void injectBestLocation(Location location) {
++        if (location.isFromMockProvider()) {
++            return;
++        }
+         if (DEBUG) {
+             Log.d(TAG, "injectBestLocation: " + location);
+         }
+@@ -914,6 +917,9 @@ public class GnssLocationProvider extends AbstractLocationProvider implements
+     }
+ 
+     private void handleUpdateLocation(Location location) {
++        if (location.isFromMockProvider()) {
++            return;
++        }
+         if (location.hasAccuracy()) {
+             if (DEBUG) {
+                 Log.d(TAG, "injectLocation: " + location);
+-- 
+2.34.1
+

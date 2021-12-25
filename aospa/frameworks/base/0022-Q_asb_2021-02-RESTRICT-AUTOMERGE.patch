@@ -1,7 +1,7 @@
 From 1aa6a6d3fbc1bf9cd151eea92d3cfef7d3a3be74 Mon Sep 17 00:00:00 2001
 From: Varun Shah <varunshah@google.com>
 Date: Wed, 18 Nov 2020 19:59:44 +0000
-Subject: [PATCH 22/24] [Q_asb_2021-02] RESTRICT AUTOMERGE Ensure caller
+Subject: [PATCH 22/33] [Q_asb_2021-02] RESTRICT AUTOMERGE Ensure caller
  identity is restored in CP quick-path.
 
 Bug: 172935267

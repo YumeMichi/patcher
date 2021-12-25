@@ -1,0 +1,74 @@
+From a0da51b26a4f03c74addee08c2103977af450ccc Mon Sep 17 00:00:00 2001
+From: Michael Groover <mpgroover@google.com>
+Date: Fri, 20 Mar 2020 13:13:36 -0700
+Subject: [PATCH 30/33] [Q_asb_2021-04] Add method to clear out
+ SubscriptionInfo#getCardString
+
+In Androird 10 access to device identifiers was limited to apps with
+the READ_PRIVILEGED_PHONE_STATE permission, carrier privileges, the
+READ_DEVICE_IDENTIFIERS appop set to allow, or those that pass a
+device / profile owner check. TelephonyManager#getSimSerialNumber
+was guarded behind these new access requirements, but the same value
+is still accessible as the cardString from the SubscriptionInfo.
+While getCardString is a hidden API SubscriptionInfo#toString can
+be used to obtain this value.
+
+Bug: 152057778
+Bug: 173421434
+Test: atest SubscriptionControllerTest
+Change-Id: I9b8786a321b1ba79d81b74c3041589f30df8e9c8
+Merged-In: I9b8786a321b1ba79d81b74c3041589f30df8e9c8
+(cherry picked from commit 5aba70130d3539fc77cfdfb4b550d8e86acd8a60)
+---
+ .../android/telephony/SubscriptionInfo.java   | 21 +++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/telephony/java/android/telephony/SubscriptionInfo.java b/telephony/java/android/telephony/SubscriptionInfo.java
+index 99e3801b6039..a90a75d670dd 100644
+--- a/telephony/java/android/telephony/SubscriptionInfo.java
++++ b/telephony/java/android/telephony/SubscriptionInfo.java
+@@ -44,8 +44,6 @@ import java.util.Collections;
+ import java.util.List;
+ import java.util.Objects;
+ 
+-import com.android.telephony.Rlog;
+-
+ /**
+  * A Parcelable class for Subscription Information.
+  */
+@@ -653,8 +651,16 @@ public class SubscriptionInfo implements Parcelable {
+     }
+ 
+     /**
+-     * @return the card string of the SIM card which contains the subscription. The card string is
+-     * the ICCID for UICCs or the EID for eUICCs.
++     * Returns the card string if the calling app has been granted the READ_PRIVILEGED_PHONE_STATE
++     * permission, has carrier privileges (see {@link TelephonyManager#hasCarrierPrivileges}), or
++     * is a device owner or profile owner on an organization owned device that has been granted the
++     * READ_PHONE_STATE permission. The profile owner is an app that owns a managed profile on the
++     * device; for more details see <a href="https://developer.android.com/work/managed-profiles">
++     * Work profiles</a>.
++     *
++     * @return the card string of the SIM card which contains the subscription or an empty string
++     * if these requirements are not met. The card string is the ICCID for UICCs or the EID for
++     * eUICCs.
+      * @hide
+      * //TODO rename usages in LPA: UiccSlotUtil.java, UiccSlotsManager.java, UiccSlotInfoTest.java
+      */
+@@ -662,6 +668,13 @@ public class SubscriptionInfo implements Parcelable {
+         return this.mCardString;
+     }
+ 
++    /**
++     * @hide
++     */
++    public void clearCardString() {
++        this.mCardString = "";
++    }
++
+     /**
+      * Returns the card ID of the SIM card which contains the subscription (see
+      * {@link UiccCardInfo#getCardId()}.
+-- 
+2.34.1
+

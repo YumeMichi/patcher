@@ -1,0 +1,38 @@
+From dedc632df369405f06975e0079be740c6fd8828c Mon Sep 17 00:00:00 2001
+From: Songchun Fan <schfan@google.com>
+Date: Fri, 15 Jan 2021 16:15:00 -0800
+Subject: [PATCH 32/33] [Q_asb_2021-04] [SettingsProvider] extend font size
+ scale range
+
+As per requested in b/176940932#comment3 and b/156260178#comment32,
+extending the valid font size scale range to [0.25, 5].
+
+Existing CTS tests still pass.
+
+BUG: 156260178
+Test: atest android.provider.cts.settings.Settings_SystemTest
+Test: atest android.app.cts.ApplicationTest
+Change-Id: Icff82d727d63da4353342b0f9a5ca3c2ae1671c1
+(cherry picked from commit df8852a0b596f28a4588f553a631fd7122fefac1)
+Merged-In: Icff82d727d63da4353342b0f9a5ca3c2ae1671c1
+(cherry picked from commit c0b28414d5cd686bf621fd71978699ec28177b21)
+---
+ core/java/android/provider/Settings.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/java/android/provider/Settings.java b/core/java/android/provider/Settings.java
+index 056f5009b755..f82e9d419808 100644
+--- a/core/java/android/provider/Settings.java
++++ b/core/java/android/provider/Settings.java
+@@ -3437,7 +3437,7 @@ public final class Settings {
+         public static final String FONT_SCALE = "font_scale";
+ 
+         private static final Validator FONT_SCALE_VALIDATOR =
+-                new SettingsValidators.InclusiveFloatRangeValidator(0.85f, 1.3f);
++                new SettingsValidators.InclusiveFloatRangeValidator(0.25f, 5.0f);
+ 
+         /**
+          * The serialized system locale value.
+-- 
+2.34.1
+

@@ -1,0 +1,71 @@
+From 437e3efeb832677a60dbf73223b857250d88995d Mon Sep 17 00:00:00 2001
+From: Alisher Alikhodjaev <alisher@google.com>
+Date: Mon, 1 Feb 2021 21:50:48 -0800
+Subject: [PATCH 2/2] [Q_asb_2021-04] OOB Write in NFC stack when handling
+ MIFARE Classic TLVs
+
+Bug: 178725766
+Test: build ok
+Change-Id: I6b987168a552f286171dc610af691390853bc126
+(cherry picked from commit 147b052f8456872081c18af85573eeb186c6efc2)
+---
+ src/nfc/tags/rw_mfc.cc | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/src/nfc/tags/rw_mfc.cc b/src/nfc/tags/rw_mfc.cc
+index 7fff8c8..e78f3fc 100644
+--- a/src/nfc/tags/rw_mfc.cc
++++ b/src/nfc/tags/rw_mfc.cc
+@@ -22,6 +22,7 @@
+  ******************************************************************************/
+ #include <android-base/stringprintf.h>
+ #include <base/logging.h>
++#include <log/log.h>
+ #include <string.h>
+ #include "bt_types.h"
+ #include "nfc_target.h"
+@@ -1001,6 +1002,7 @@ static void rw_mfc_handle_read_op(uint8_t* data) {
+   NFC_HDR* mfc_data;
+   uint16_t len;
+   uint16_t offset;
++  uint16_t saved_length;
+   bool failed = false;
+   bool done = false;
+   tRW_READ_DATA evt_data;
+@@ -1022,6 +1024,7 @@ static void rw_mfc_handle_read_op(uint8_t* data) {
+       /* On the first read, adjust for any partial block offset */
+       offset = 0;
+       len = RW_MFC_1K_BLOCK_SIZE;
++      saved_length = p_mfc->ndef_length;
+ 
+       if (p_mfc->work_offset == 0) {
+         /* The Ndef Message offset may be present in the read 16 bytes */
+@@ -1033,14 +1036,18 @@ static void rw_mfc_handle_read_op(uint8_t* data) {
+         }
+       }
+ 
+-      /* Skip all reserved and lock bytes */
+-      while ((offset < len) && (p_mfc->work_offset < p_mfc->ndef_length))
++      if (!failed && saved_length >= p_mfc->ndef_length) {
++        /* Skip all reserved and lock bytes */
++        while ((offset < len) && (p_mfc->work_offset < p_mfc->ndef_length))
+ 
+-      {
+-        /* Collect the NDEF Message */
+-        p_mfc->p_ndef_buffer[p_mfc->work_offset] = p[offset];
+-        p_mfc->work_offset++;
+-        offset++;
++        {
++          /* Collect the NDEF Message */
++          p_mfc->p_ndef_buffer[p_mfc->work_offset] = p[offset];
++          p_mfc->work_offset++;
++          offset++;
++        }
++      } else {
++        android_errorWriteLog(0x534e4554, "178725766");
+       }
+ 
+       if (p_mfc->work_offset >= p_mfc->ndef_length) {
+-- 
+2.34.1
+

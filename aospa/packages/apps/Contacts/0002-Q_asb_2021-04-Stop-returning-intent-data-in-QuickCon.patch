@@ -1,0 +1,71 @@
+From 81e7cdf08098bd557cf9e8c210414bd3fb03b24d Mon Sep 17 00:00:00 2001
+From: Gary Mai <garymai@google.com>
+Date: Tue, 2 Feb 2021 15:17:48 -0800
+Subject: [PATCH 2/2] [Q_asb_2021-04] Stop returning intent data in
+ QuickContact in onActivityResult
+
+Contacts code does not use the data, only the result code, and it is a potential URI permission grant attack angle.
+Clean up unused code in ImplicitIntentsUtil
+
+Bug: 178825358
+Test: Manual test with POC app. Observed crash instead of contacts data
+read.
+
+Change-Id: Ie8da7faef3611eacd14eda7c0067e2aa24805a10
+(cherry picked from commit cec9f9094baa5225ca2ce9a64c8fcd6af7000b00)
+---
+ .../quickcontact/QuickContactActivity.java    |  2 +-
+ .../contacts/util/ImplicitIntentsUtil.java    | 21 +------------------
+ 2 files changed, 2 insertions(+), 21 deletions(-)
+
+diff --git a/src/com/android/contacts/quickcontact/QuickContactActivity.java b/src/com/android/contacts/quickcontact/QuickContactActivity.java
+index d6128b4ac..b8ccd1167 100644
+--- a/src/com/android/contacts/quickcontact/QuickContactActivity.java
++++ b/src/com/android/contacts/quickcontact/QuickContactActivity.java
+@@ -768,7 +768,7 @@ public class QuickContactActivity extends ContactsActivity {
+         final boolean deletedOrSplit = requestCode == REQUEST_CODE_CONTACT_EDITOR_ACTIVITY &&
+                 (resultCode == ContactDeletionInteraction.RESULT_CODE_DELETED ||
+                 resultCode == ContactEditorActivity.RESULT_CODE_SPLIT);
+-        setResult(resultCode, data);
++        setResult(resultCode);
+         if (deletedOrSplit) {
+             finish();
+         } else if (requestCode == REQUEST_CODE_CONTACT_SELECTION_ACTIVITY &&
+diff --git a/src/com/android/contacts/util/ImplicitIntentsUtil.java b/src/com/android/contacts/util/ImplicitIntentsUtil.java
+index a7b503c00..df7d0edfd 100644
+--- a/src/com/android/contacts/util/ImplicitIntentsUtil.java
++++ b/src/com/android/contacts/util/ImplicitIntentsUtil.java
+@@ -103,29 +103,10 @@ public class ImplicitIntentsUtil {
+      */
+     public static void startQuickContact(Activity activity, Uri contactLookupUri,
+             int previousScreenType) {
+-        startQuickContact(activity, contactLookupUri, previousScreenType, /* requestCode */ -1);
+-    }
+-
+-    /**
+-     * Starts QuickContact for result with the default mode and specified previous screen type.
+-     */
+-    public static void startQuickContactForResult(Activity activity, Uri contactLookupUri,
+-            int previousScreenType, int requestCode) {
+-        startQuickContact(activity, contactLookupUri, previousScreenType, requestCode);
+-    }
+-
+-    private static void startQuickContact(Activity activity, Uri contactLookupUri,
+-            int previousScreenType, int requestCode) {
+         final Intent intent = ImplicitIntentsUtil.composeQuickContactIntent(
+                 activity, contactLookupUri, previousScreenType);
+ 
+-        // We only start "for result" if specifically requested.
+-        if (requestCode >= 0) {
+-            intent.setPackage(activity.getPackageName());
+-            activity.startActivityForResult(intent, requestCode);
+-        } else {
+-            startActivityInApp(activity, intent);
+-        }
++        startActivityInApp(activity, intent);
+     }
+ 
+     /**
+-- 
+2.34.1
+
