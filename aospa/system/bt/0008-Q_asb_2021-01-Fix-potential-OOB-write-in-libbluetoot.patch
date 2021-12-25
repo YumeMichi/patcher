@@ -1,7 +1,7 @@
 From 4648df7efd93e17145adb88dfb15aad9b8ac25ba Mon Sep 17 00:00:00 2001
 From: Ted Wang <tedwang@google.com>
 Date: Tue, 6 Oct 2020 20:20:16 +0800
-Subject: [PATCH 08/18] [Q_asb_2021-01] Fix potential OOB write in libbluetooth
+Subject: [PATCH 08/20] [Q_asb_2021-01] Fix potential OOB write in libbluetooth
 
 Check event id if of register notification command from remote to avoid
 OOB write.

@@ -1,7 +1,7 @@
 From 3b4d855f4dc8a445016a549f24d358926f969ceb Mon Sep 17 00:00:00 2001
 From: Hugh Chen <hughchen@google.com>
 Date: Tue, 22 Dec 2020 14:26:44 +0800
-Subject: [PATCH 6/7] [Q_asb_2021-05] RESTRICT AUTOMERGE Update String
+Subject: [PATCH 6/9] [Q_asb_2021-05] RESTRICT AUTOMERGE Update String
 
 Remove brackets.
 

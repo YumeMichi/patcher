@@ -1,7 +1,7 @@
 From 2fe6e8bb031d6ed2e320f85c9f4f9f3e7209223f Mon Sep 17 00:00:00 2001
 From: Rahul Sabnis <rahulsabnis@google.com>
 Date: Fri, 31 Jul 2020 19:44:27 -0700
-Subject: [PATCH 03/18] [Q_asb_2020-11] Check whether local device is an ATV
+Subject: [PATCH 03/20] [Q_asb_2020-11] Check whether local device is an ATV
  device to determine whether to show the consent dialog for BLE pairing in
  JUSTWORKS and ENCRYPTION_ONLY mode
 

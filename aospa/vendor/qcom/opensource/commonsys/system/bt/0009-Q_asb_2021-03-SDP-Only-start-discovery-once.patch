@@ -1,7 +1,7 @@
 From a03decd211f34e2fe8f8a1b31a9e4dd53ef9bf3b Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 3 Dec 2020 18:54:14 -0800
-Subject: [PATCH 09/16] [Q_asb_2021-03] SDP: Only start discovery once
+Subject: [PATCH 09/17] [Q_asb_2021-03] SDP: Only start discovery once
 
 Bug: 174052148
 Test: pair with headphones

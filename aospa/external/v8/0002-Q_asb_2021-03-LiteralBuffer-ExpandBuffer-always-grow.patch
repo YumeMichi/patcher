@@ -1,7 +1,7 @@
 From 59761139536999ff275ef3ec7e4aa8d39207c457 Mon Sep 17 00:00:00 2001
 From: Toon Verwaest <verwaest@chromium.org>
 Date: Fri, 11 Jan 2019 11:27:18 +0100
-Subject: [PATCH 2/2] [Q_asb_2021-03] LiteralBuffer::ExpandBuffer always grows
+Subject: [PATCH 2/3] [Q_asb_2021-03] LiteralBuffer::ExpandBuffer always grows
 
 Upstream: https://chromium-review.googlesource.com/c/1405859
 

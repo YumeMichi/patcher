@@ -1,7 +1,7 @@
 From dedc632df369405f06975e0079be740c6fd8828c Mon Sep 17 00:00:00 2001
 From: Songchun Fan <schfan@google.com>
 Date: Fri, 15 Jan 2021 16:15:00 -0800
-Subject: [PATCH 32/36] [Q_asb_2021-04] [SettingsProvider] extend font size
+Subject: [PATCH 32/40] [Q_asb_2021-04] [SettingsProvider] extend font size
  scale range
 
 As per requested in b/176940932#comment3 and b/156260178#comment32,

@@ -1,8 +1,8 @@
 From 091bbe392c035ffe6e7902c4c2f587aa6b527956 Mon Sep 17 00:00:00 2001
 From: Jimmy Chen <jimmycmchen@google.com>
 Date: Mon, 9 Nov 2020 11:43:12 +0200
-Subject: [PATCH] [Q_asb_2021-02] P2P: Fix copying of secondary device types
- for P2P group client
+Subject: [PATCH 1/2] [Q_asb_2021-02] P2P: Fix copying of secondary device
+ types for P2P group client
 
 Parsing and copying of WPS secondary device types list was verifying
 that the contents is not too long for the internal maximum in the case

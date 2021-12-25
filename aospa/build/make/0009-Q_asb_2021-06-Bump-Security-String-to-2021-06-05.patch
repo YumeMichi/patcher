@@ -1,0 +1,60 @@
+From 759cca20f790402a29f7a2a0f6be4d6213c37e33 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Fri, 11 Jun 2021 08:01:47 -0600
+Subject: [PATCH 9/9] [Q_asb_2021-06] Bump Security String to 2021-06-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0478   A-169255797  EoP    High       8.1, 9, 10, 11
+CVE-2021-0506   A-181962311  EoP    High       8.1, 9, 10, 11
+CVE-2021-0507   A-181860042  RCE    Critical   8.1, 9, 10, 11
+CVE-2021-0508   A-176444154  EoP    High       8.1, 9, 10, 11
+CVE-2021-0509   A-176444161  EoP    High       8.1, 9, 10, 11
+CVE-2021-0510   A-176444622  EoP    High       8.1, 9, 10, 11
+CVE-2021-0511   A-178055795  EoP    High       9, 10, 11
+CVE-2021-0513   A-156090809  EoP    High       8.1, 9, 10, 11
+CVE-2021-0516   A-181660448  EoP    Critical   8.1, 9, 10, 11
+CVE-2021-0520   A-176237595  EoP    High       10, 11
+CVE-2021-0521   A-174661955  ID     High       8.1, 9, 10, 11
+CVE-2021-0522   A-174182139  ID     High       9, 10, 11
+CVE-2021-0523   A-174047492  EoP    High       10, 11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:  Prior Change:
+CVE-2020-26555  A-174626251  EoP    High       8.1, 9, 10, 11          09ec6a0dc, fef3f3513
+CVE-2020-26558  A-174886838  EoP    High       8.1, 9, 10, 11          76da71cbf, 9976bfe24
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0504   A-179162665  ID     High       11
+CVE-2021-0505   A-179975048  EoP    High       11
+CVE-2021-0517   A-179053823  ID     High       11
+
+Change-Id: I7a2a2678f8b9f384d9d73b1d3ca4ad45b77a30dd
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index d3f5ba45f..eb9d16a7c 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2021-05-05
++      PLATFORM_SECURITY_PATCH := 2021-06-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+

@@ -1,7 +1,7 @@
 From 1ab0b7ba5acbe05ceb95b752d71b138fcd024d4d Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Mon, 8 Feb 2021 14:38:57 -0800
-Subject: [PATCH 17/18] [Q_asb_2021-05] smp: Reject pairing if the public keys
+Subject: [PATCH 17/20] [Q_asb_2021-05] smp: Reject pairing if the public keys
  match
 
 Bug: 174886838

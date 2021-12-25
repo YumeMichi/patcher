@@ -1,7 +1,7 @@
 From 348346f4ecc5ae812daed403c65f4ee9972693ba Mon Sep 17 00:00:00 2001
 From: Yu-Han Yang <yuhany@google.com>
 Date: Fri, 15 Jan 2021 15:23:52 -0800
-Subject: [PATCH 31/36] [Q_asb_2021-04] DO NOT MERGE: Do not inject mock
+Subject: [PATCH 31/40] [Q_asb_2021-04] DO NOT MERGE: Do not inject mock
  location to chipset
 
 Bug: 177561690

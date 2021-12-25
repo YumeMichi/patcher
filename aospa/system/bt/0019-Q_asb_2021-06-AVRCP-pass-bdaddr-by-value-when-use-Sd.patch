@@ -1,0 +1,47 @@
+From d37aa7149d793d10b0775c8f05b2988aa7467312 Mon Sep 17 00:00:00 2001
+From: Chienyuan <chienyuanhuang@google.com>
+Date: Mon, 8 Feb 2021 17:27:17 +0800
+Subject: [PATCH 19/20] [Q_asb_2021-06] AVRCP: pass bdaddr by value when use
+ SdpCb
+
+TAG: #security
+Bug: 174182139
+Test: compilation
+Ignore-AOSP-First: security fix
+Change-Id: Icd34986b6798e39c9b157588b943f5a883745129
+Merged-In: I7f5b2a3dd0540a922b64ce213d871d355bd6dac6
+(cherry picked from commit 5160c8d0bad685f7831d47e6048cfcb0998bbc84)
+---
+ profile/avrcp/connection_handler.cc | 2 +-
+ profile/avrcp/connection_handler.h  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/profile/avrcp/connection_handler.cc b/profile/avrcp/connection_handler.cc
+index 686f89be6f..e9a4c72e93 100644
+--- a/profile/avrcp/connection_handler.cc
++++ b/profile/avrcp/connection_handler.cc
+@@ -405,7 +405,7 @@ void ConnectionHandler::MessageCb(uint8_t handle, uint8_t label, uint8_t opcode,
+   device_map_[handle]->MessageReceived(label, Packet::Parse(pkt));
+ }
+ 
+-void ConnectionHandler::SdpCb(const RawAddress& bdaddr, SdpCallback cb,
++void ConnectionHandler::SdpCb(RawAddress bdaddr, SdpCallback cb,
+                               tSDP_DISCOVERY_DB* disc_db, uint16_t status) {
+   LOG(INFO) << __PRETTY_FUNCTION__ << ": SDP lookup callback received";
+ 
+diff --git a/profile/avrcp/connection_handler.h b/profile/avrcp/connection_handler.h
+index e22cb6a71c..9a4e27b13e 100644
+--- a/profile/avrcp/connection_handler.h
++++ b/profile/avrcp/connection_handler.h
+@@ -136,7 +136,7 @@ class ConnectionHandler {
+   using SdpCallback = base::Callback<void(uint16_t status, uint16_t version,
+                                           uint16_t features)>;
+   virtual bool SdpLookup(const RawAddress& bdaddr, SdpCallback cb);
+-  void SdpCb(const RawAddress& bdaddr, SdpCallback cb,
++  void SdpCb(RawAddress bdaddr, SdpCallback cb,
+              tSDP_DISCOVERY_DB* disc_db, uint16_t status);
+ 
+   virtual bool AvrcpConnect(bool initiator, const RawAddress& bdaddr);
+-- 
+2.34.1
+

@@ -1,7 +1,7 @@
 From 8825632d09b948f69332896f625e8d8e1eea0183 Mon Sep 17 00:00:00 2001
 From: Vladimir Marko <vmarko@google.com>
 Date: Fri, 4 Dec 2020 15:50:30 +0000
-Subject: [PATCH 2/2] [Q_asb_2021-03] Add SafetyNet logging to
+Subject: [PATCH 2/4] [Q_asb_2021-03] Add SafetyNet logging to
  JNI::NewStringUTF.
 
 (cherry picked from commit ed4b3e0958d3de6a92d82abb9f81e49e84d5c673)

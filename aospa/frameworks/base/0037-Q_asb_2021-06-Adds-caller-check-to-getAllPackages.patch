@@ -1,0 +1,33 @@
+From 1054a87c4f0135f3e95b6d3a8c39ebed928b6fcc Mon Sep 17 00:00:00 2001
+From: yawanng <yawanng@google.com>
+Date: Mon, 8 Feb 2021 22:38:28 +0000
+Subject: [PATCH 37/40] [Q_asb_2021-06] Adds caller check to getAllPackages()
+
+This change enforces that only system, root or shell may call
+getAllPackages(), a hidden API that shares all package names regardless
+of user, instant app or package visibility rules.
+
+Bug: 174661955
+Change-Id: I77460ae19a4d41151577646441f11e2eddbb741a
+Merged-In: I77460ae19a4d41151577646441f11e2eddbb741a
+(cherry picked from commit 8124efd57b50056d22e1b63c32c366ebdf049598)
+(cherry picked from commit 83cc106ca0907f977d12fbf1a75f4090038fdccc)
+---
+ .../core/java/com/android/server/pm/PackageManagerService.java   | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.java b/services/core/java/com/android/server/pm/PackageManagerService.java
+index 1a7f76f25dfc..495362ca3364 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -6454,6 +6454,7 @@ public class PackageManagerService extends IPackageManager.Stub
+ 
+     @Override
+     public List<String> getAllPackages() {
++        enforceSystemOrRootOrShell("getAllPackages is limited to privileged callers");
+         final int callingUid = Binder.getCallingUid();
+         final int callingUserId = UserHandle.getUserId(callingUid);
+         synchronized (mPackages) {
+-- 
+2.34.1
+

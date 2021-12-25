@@ -1,0 +1,46 @@
+From 169bffa8e38fc6350c4f0227eb6776c320a4e067 Mon Sep 17 00:00:00 2001
+From: Weng Su <wengsu@google.com>
+Date: Fri, 29 Jan 2021 17:24:51 +0800
+Subject: [PATCH 8/9] [Q_asb_2021-06] [Security Report] Fix Settings
+ WifiScanModeActivity Overlaid issue
+
+- Disallowed non system overlay windows
+
+- Screenshot
+  https://screenshot.googleplex.com/77fJ9QN6pV4zFYc
+
+Bug: 174047492
+Test: manual test
+
+Merged-In: Ia7acad6d456ce5ebea2d982d4cb063d4f28cbfff
+Change-Id: Ia7acad6d456ce5ebea2d982d4cb063d4f28cbfff
+(cherry picked from commit d47d8e4fc5959ea5cc57dc074d572a81ec6ddcb0)
+(cherry picked from commit faa5f6b5f6b67421f1327690f358f2fc5ee12c33)
+---
+ src/com/android/settings/wifi/WifiScanModeActivity.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/com/android/settings/wifi/WifiScanModeActivity.java b/src/com/android/settings/wifi/WifiScanModeActivity.java
+index 53427299df..33cedde7c4 100644
+--- a/src/com/android/settings/wifi/WifiScanModeActivity.java
++++ b/src/com/android/settings/wifi/WifiScanModeActivity.java
+@@ -26,6 +26,7 @@ import android.net.wifi.WifiManager;
+ import android.os.Bundle;
+ import android.provider.Settings;
+ import android.text.TextUtils;
++import android.view.WindowManager;
+ 
+ import androidx.appcompat.app.AlertDialog;
+ import androidx.fragment.app.DialogFragment;
+@@ -44,6 +45,8 @@ public class WifiScanModeActivity extends FragmentActivity {
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
++        getWindow().addSystemFlags(
++                WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS);
+         Intent intent = getIntent();
+         if (savedInstanceState == null) {
+             if (intent != null && intent.getAction()
+-- 
+2.34.1
+

@@ -1,7 +1,7 @@
 From 68eb754893a840f94e310d6b6ea8726301f153e9 Mon Sep 17 00:00:00 2001
 From: Phil Burk <philburk@google.com>
 Date: Wed, 13 May 2020 15:55:17 -0700
-Subject: [PATCH 7/8] [Q_asb_2021-05] aaudio: lock transport methods
+Subject: [PATCH 07/12] [Q_asb_2021-05] aaudio: lock transport methods
 
 The start/pause/stop/flush/close and other binder methods
 need to be thread safe. They do not need to run

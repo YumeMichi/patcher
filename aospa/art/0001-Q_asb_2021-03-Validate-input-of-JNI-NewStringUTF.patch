@@ -1,7 +1,7 @@
 From 26d2c883c0ec1601ff19607ee93c4211876bb23d Mon Sep 17 00:00:00 2001
 From: Vladimir Marko <vmarko@google.com>
 Date: Thu, 12 Nov 2020 15:18:40 +0000
-Subject: [PATCH 1/2] [Q_asb_2021-03] Validate input of JNI::NewStringUTF().
+Subject: [PATCH 1/4] [Q_asb_2021-03] Validate input of JNI::NewStringUTF().
 
 Do a minimal validation needed to construct valid strings.
 If the validation fails, replace invalid sequences with '?'.
