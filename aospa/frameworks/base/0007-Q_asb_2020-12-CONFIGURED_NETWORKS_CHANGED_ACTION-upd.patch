@@ -1,7 +1,7 @@
 From 8d0ace79e46b016789e36ef104311d98c401975e Mon Sep 17 00:00:00 2001
 From: David Su <dysu@google.com>
 Date: Wed, 17 Jun 2020 17:29:40 -0700
-Subject: [PATCH 07/23] [Q_asb_2020-12] CONFIGURED_NETWORKS_CHANGED_ACTION:
+Subject: [PATCH 07/24] [Q_asb_2020-12] CONFIGURED_NETWORKS_CHANGED_ACTION:
  update docs since we stop sending WifiConfiguration
 
 WifiConfiguration contains sensitive location

@@ -1,0 +1,44 @@
+From a03decd211f34e2fe8f8a1b31a9e4dd53ef9bf3b Mon Sep 17 00:00:00 2001
+From: Myles Watson <mylesgw@google.com>
+Date: Thu, 3 Dec 2020 18:54:14 -0800
+Subject: [PATCH 9/9] [Q_asb_2021-03] SDP: Only start discovery once
+
+Bug: 174052148
+Test: pair with headphones
+Tag: #security
+Change-Id: I1d014a7b793bb1b66e26652f6696499ea36a6510
+(cherry picked from commit cfa5a74ea90a09e1c7413a25f04332ee2d1e3f21)
+Merged-In: I1d014a7b793bb1b66e26652f6696499ea36a6510
+(cherry picked from commit f0994f6e4723eddaa617b68139f064d945d9389e)
+---
+ bta/ag/bta_ag_sdp.cc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/bta/ag/bta_ag_sdp.cc b/bta/ag/bta_ag_sdp.cc
+index 5e9c07077..04401f04e 100644
+--- a/bta/ag/bta_ag_sdp.cc
++++ b/bta/ag/bta_ag_sdp.cc
+@@ -33,6 +33,7 @@
+ #include "bta_api.h"
+ #include "bta_sys.h"
+ #include "btm_api.h"
++#include "osi/include/log.h"
+ #include "osi/include/osi.h"
+ #include "sdp_api.h"
+ #include "utl.h"
+@@ -452,6 +453,12 @@ void bta_ag_do_disc(tBTA_AG_SCB* p_scb, tBTA_SERVICE_MASK service) {
+     }
+   }
+ 
++  if (p_scb->p_disc_db != nullptr) {
++    android_errorWriteLog(0x534e4554, "174052148");
++    APPL_TRACE_ERROR("Discovery already in progress... returning.");
++    return;
++  }
++
+   /* allocate buffer for sdp database */
+   p_scb->p_disc_db = (tSDP_DISCOVERY_DB*)osi_malloc(BTA_AG_DISC_BUF_SIZE);
+   /* set up service discovery database; attr happens to be attr_list len */
+-- 
+2.34.1
+

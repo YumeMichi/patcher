@@ -1,7 +1,7 @@
 From 827643b74a75cffc550afca98b1e08a293865658 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 12 Dec 2020 15:58:04 -0700
-Subject: [PATCH 3/5] [Q_asb_2020-12] Bump Security String to 2020-12-05
+Subject: [PATCH 3/6] [Q_asb_2020-12] Bump Security String to 2020-12-05
 
 Implemented:
 ============

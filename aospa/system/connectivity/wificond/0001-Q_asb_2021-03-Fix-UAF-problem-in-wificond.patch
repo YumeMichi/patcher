@@ -1,0 +1,40 @@
+From 61a05b94a8a47c7328c7e9a77323023fe1c86bd1 Mon Sep 17 00:00:00 2001
+From: xshu <xshu@google.com>
+Date: Tue, 22 Dec 2020 19:12:32 -0800
+Subject: [PATCH] [Q_asb_2021-03] Fix UAF problem in wificond
+
+This is a security upstream patch.
+
+Bug: 175124730
+Test: Verified the crash in rvc-qpr-dev using poc.cpp and test
+instructions provided in the bug and verified the fix works.
+
+Change-Id: Iabccac7f9fbed9d856bee41c5443e3b8479c3e62
+Merged-In: Iabccac7f9fbed9d856bee41c5443e3b8479c3e62
+(cherry picked from commit fae786e5bbc4adfbe5239b3bb3df0cd6122283a6)
+(cherry picked from commit 67d87a0e7e2213959f505e6a355c50079b062037)
+---
+ main.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/main.cpp b/main.cpp
+index eae82e9..c190a20 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -157,11 +157,11 @@ int main(int argc, char** argv) {
+   android::wificond::NetlinkUtils netlink_utils(&netlink_manager);
+   android::wificond::ScanUtils scan_utils(&netlink_manager);
+ 
+-  unique_ptr<android::wificond::Server> server(new android::wificond::Server(
++  android::sp<android::wificond::Server> server(new android::wificond::Server(
+       unique_ptr<InterfaceTool>(new InterfaceTool),
+       &netlink_utils,
+       &scan_utils));
+-  RegisterServiceOrCrash(server.get());
++  RegisterServiceOrCrash(server);
+ 
+   event_dispatcher->Poll();
+   LOG(INFO) << "wificond is about to exit";
+-- 
+2.34.1
+

@@ -1,0 +1,47 @@
+From e7115a5f57d503673c6005af27131e864d653464 Mon Sep 17 00:00:00 2001
+From: Rubin Xu <rubinxu@google.com>
+Date: Tue, 24 Nov 2020 22:20:56 +0000
+Subject: [PATCH 1/2] [Q_asb_2021-03] [parser] Fix off-by-one in parameter
+ count check
+
+Upstream: https://chromium-review.googlesource.com/c/1326029
+
+Bug: 160610106
+Test: atest proxy_resolver_v8_unittest
+Change-Id: I547b1a0cb88094ed79bf6ffe034df7f8834be4d1
+(cherry picked from commit 089e85f552ec92402d9fcd19d110b0c7521c4601)
+---
+ src/messages.h            | 2 +-
+ src/parsing/parser-base.h | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/messages.h b/src/messages.h
+index 030fc0b9..e94ce16e 100644
+--- a/src/messages.h
++++ b/src/messages.h
+@@ -695,7 +695,7 @@ class ErrorUtils : public AllStatic {
+   T(TooManyArguments,                                                          \
+     "Too many arguments in function call (only 65535 allowed)")                \
+   T(TooManyParameters,                                                         \
+-    "Too many parameters in function definition (only 65535 allowed)")         \
++    "Too many parameters in function definition (only 65534 allowed)")         \
+   T(TooManySpreads,                                                            \
+     "Literal containing too many nested spreads (up to 65534 allowed)")        \
+   T(TooManyVariables, "Too many variables declared (only 4194303 allowed)")    \
+diff --git a/src/parsing/parser-base.h b/src/parsing/parser-base.h
+index 9d13724f..60d5e11f 100644
+--- a/src/parsing/parser-base.h
++++ b/src/parsing/parser-base.h
+@@ -3830,7 +3830,8 @@ void ParserBase<Impl>::ParseFormalParameterList(FormalParametersT* parameters,
+ 
+   if (peek() != Token::RPAREN) {
+     while (true) {
+-      if (parameters->arity > Code::kMaxArguments) {
++      // Add one since we're going to be adding a parameter.
++      if (parameters->arity + 1 > Code::kMaxArguments) {
+         ReportMessage(MessageTemplate::kTooManyParameters);
+         *ok = false;
+         return;
+-- 
+2.34.1
+

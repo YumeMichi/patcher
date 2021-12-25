@@ -1,0 +1,37 @@
+From 9a9547f20ad11e6867df586e8084cd0af4d0dbac Mon Sep 17 00:00:00 2001
+From: Steven Moreland <smoreland@google.com>
+Date: Wed, 18 Nov 2020 00:32:42 +0000
+Subject: [PATCH 4/5] [Q_asb_2021-03] libbinder: check null bytes in
+ readString*Inplace
+
+This is entirely defensive, since the only real guarantee we have here
+from these APIs is that a buffer of a given length is available.
+However, since we write 0's here, presumably to guard against people
+assuming these are null-terminated strings, we might as well enforce
+that they are actually null terminated.
+
+Bug: 172655291
+Test: binderParcelTest (added in newer CL)
+Change-Id: Ie879112540155f6a93b97aeaf3d41ed8ba4ae79f
+Merged-In: Ie879112540155f6a93b97aeaf3d41ed8ba4ae79f
+(cherry picked from commit 51e02b16c397c44ddf81a0736cf6045cd4c44128)
+---
+ libs/binder/Parcel.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libs/binder/Parcel.cpp b/libs/binder/Parcel.cpp
+index 6f492dcd04..d4f1052cd8 100644
+--- a/libs/binder/Parcel.cpp
++++ b/libs/binder/Parcel.cpp
+@@ -2192,7 +2192,7 @@ const char16_t* Parcel::readString16Inplace(size_t* outLen) const
+     if (size >= 0 && size < INT32_MAX) {
+         *outLen = size;
+         const char16_t* str = (const char16_t*)readInplace((size+1)*sizeof(char16_t));
+-        if (str != nullptr) {
++        if (str != nullptr && str[size] == u'\0') {
+             return str;
+         }
+     }
+-- 
+2.34.1
+

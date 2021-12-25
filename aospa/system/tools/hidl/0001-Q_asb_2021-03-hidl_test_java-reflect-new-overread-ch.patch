@@ -1,0 +1,45 @@
+From 8b25330d649c225b61258dbbd5be2e1040f222c9 Mon Sep 17 00:00:00 2001
+From: Steven Moreland <smoreland@google.com>
+Date: Wed, 18 Nov 2020 01:16:39 +0000
+Subject: [PATCH] [Q_asb_2021-03] hidl_test_java: reflect new overread check in
+ art
+
+This was passing before because of some other checks which caught the
+mismatch resulting from an overread.
+
+Ignore-AOSP-First: security
+
+Bug: 172655291
+Test: atest hidl_test_java
+Merged-In: Ie3766d20597ed9714ab3c3beead8af01226f58ba
+Change-Id: Ie3766d20597ed9714ab3c3beead8af01226f58ba
+(cherry picked from commit aeae74893c6973959fe58b6e8e045fc4be2b8d32)
+(cherry picked from commit e8544d4fae9e8b7f1b31068c1bbd817c792315c7)
+---
+ test/java_test/hidl_test_java_native.cpp | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/test/java_test/hidl_test_java_native.cpp b/test/java_test/hidl_test_java_native.cpp
+index a7467d7e..ba126255 100644
+--- a/test/java_test/hidl_test_java_native.cpp
++++ b/test/java_test/hidl_test_java_native.cpp
+@@ -178,13 +178,11 @@ TEST_F(HidlTest, SomeOtherBaseMethodInvalidString) {
+         }
+     };
+ 
+-    auto ret = baz->someOtherBaseMethod(foo, [&](const auto&) {
+-        ADD_FAILURE() << "Should not accept invalid UTF-8 String";
++    auto ret = baz->someOtherBaseMethod(foo, [](const IBase::Foo& ret) {
++        EXPECT_EQ(ret.y.s, "?");  // :)
+     });
+ 
+-    EXPECT_FALSE(ret.isOk());
+-
+-    EXPECT_OK(baz->ping());
++    EXPECT_TRUE(ret.isOk());
+ }
+ 
+ TEST_F(HidlTest, BazSomeMethodWithFooArraysTest) {
+-- 
+2.34.1
+

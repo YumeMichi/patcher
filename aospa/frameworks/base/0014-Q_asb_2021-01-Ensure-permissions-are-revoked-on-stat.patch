@@ -1,7 +1,7 @@
 From 75da50457d1f96607fb03635f756f724c60c4a4a Mon Sep 17 00:00:00 2001
 From: Nate Myren <ntmyren@google.com>
 Date: Wed, 14 Oct 2020 15:14:04 -0700
-Subject: [PATCH 14/23] [Q_asb_2021-01] Ensure permissions are revoked on state
+Subject: [PATCH 14/24] [Q_asb_2021-01] Ensure permissions are revoked on state
  changes
 
 If a permission owner changes, or a permission level is upgraded, revoke

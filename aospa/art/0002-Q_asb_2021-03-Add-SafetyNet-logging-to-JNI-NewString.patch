@@ -1,0 +1,40 @@
+From 8825632d09b948f69332896f625e8d8e1eea0183 Mon Sep 17 00:00:00 2001
+From: Vladimir Marko <vmarko@google.com>
+Date: Fri, 4 Dec 2020 15:50:30 +0000
+Subject: [PATCH 2/2] [Q_asb_2021-03] Add SafetyNet logging to
+ JNI::NewStringUTF.
+
+(cherry picked from commit ed4b3e0958d3de6a92d82abb9f81e49e84d5c673)
+
+Test: blueline-userdebug boots.
+Bug: 172655291
+Merged-In: I653db8be0c0a45302f0d1c54285c02d2d052a9f4
+Change-Id: I653db8be0c0a45302f0d1c54285c02d2d052a9f4
+(cherry picked from commit 69fc841b8460943c2b2224f61585942cbc9f3f40)
+---
+ runtime/jni/jni_internal.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/runtime/jni/jni_internal.cc b/runtime/jni/jni_internal.cc
+index b35085d5d3..d22677a319 100644
+--- a/runtime/jni/jni_internal.cc
++++ b/runtime/jni/jni_internal.cc
+@@ -17,6 +17,7 @@
+ #include "jni_internal.h"
+ 
+ #include <cstdarg>
++#include <log/log.h>
+ #include <memory>
+ #include <mutex>
+ #include <utility>
+@@ -2078,6 +2079,7 @@ class JNI {
+         /*bad=*/ []() { return true; });  // Abort processing and return 0 for bad characters.
+     if (UNLIKELY(utf8_length != 0u && utf16_length == 0u)) {
+       // VisitModifiedUtf8Chars() aborted for a bad character.
++      android_errorWriteLog(0x534e4554, "172655291");  // Report to SafetyNet.
+       // Report the error to logcat but avoid too much spam.
+       static const uint64_t kMinDelay = UINT64_C(10000000000);  // 10s
+       static std::atomic<uint64_t> prev_bad_input_time(UINT64_C(0));
+-- 
+2.34.1
+
