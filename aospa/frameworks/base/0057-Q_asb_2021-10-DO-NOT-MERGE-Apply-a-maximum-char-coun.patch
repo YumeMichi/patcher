@@ -1,7 +1,7 @@
 From 07c91f3aaa83ccc88e7274cb3815b93870504786 Mon Sep 17 00:00:00 2001
 From: Rhed Jao <rhedjao@google.com>
 Date: Fri, 30 Jul 2021 15:52:05 +0800
-Subject: [PATCH 57/66] [Q_asb_2021-10] DO NOT MERGE Apply a maximum char count
+Subject: [PATCH 57/67] [Q_asb_2021-10] DO NOT MERGE Apply a maximum char count
  to the load label api
 
 The system is overwhelmed by an enormous label string returned by

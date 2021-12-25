@@ -1,0 +1,47 @@
+From 112c74e51bde0b587734cb1b515962337d6f9da8 Mon Sep 17 00:00:00 2001
+From: YumeMichi <do4suki@gmail.com>
+Date: Sat, 25 Dec 2021 20:11:57 +0800
+Subject: [PATCH 67/67] Fix 2021-04 ASB mismerge
+
+Signed-off-by: YumeMichi <do4suki@gmail.com>
+Change-Id: Iaabdc7dfb383ba5947adee0fcb2860efc1fd0953
+---
+ core/java/com/android/internal/util/ScreenshotHelper.java | 3 ++-
+ telephony/java/android/telephony/SubscriptionInfo.java    | 5 +++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/core/java/com/android/internal/util/ScreenshotHelper.java b/core/java/com/android/internal/util/ScreenshotHelper.java
+index eb7add73a4b5..96b654afb2c9 100644
+--- a/core/java/com/android/internal/util/ScreenshotHelper.java
++++ b/core/java/com/android/internal/util/ScreenshotHelper.java
+@@ -135,7 +135,8 @@ public class ScreenshotHelper {
+             final Intent serviceIntent = new Intent();
+ 
+             final Runnable mScreenshotTimeout = () -> {
+-                    synchronized (mScreenshotLock) {
++                synchronized (mScreenshotLock) {
++                    if (mScreenshotConnection != null) {
+                         Log.e(TAG, "Timed out before getting screenshot capture response");
+                         resetConnection();
+                         notifyScreenshotError();
+diff --git a/telephony/java/android/telephony/SubscriptionInfo.java b/telephony/java/android/telephony/SubscriptionInfo.java
+index e5bc5cd1e53c..471edad80bc6 100644
+--- a/telephony/java/android/telephony/SubscriptionInfo.java
++++ b/telephony/java/android/telephony/SubscriptionInfo.java
+@@ -215,10 +215,11 @@ public class SubscriptionInfo implements Parcelable {
+     public SubscriptionInfo(SubscriptionInfo info) {
+         this(info.mId, info.mIccId, info.mSimSlotIndex, info.mDisplayName, info.mCarrierName,
+                 info.mNameSource, info.mIconTint, info.mNumber, info.mDataRoaming, info.mIconBitmap,
+-                info.mMcc, info.mMnc, info.mCountryIso, info.mIsEmbedded, info.mAccessRules,
++                info.mMcc, info.mMnc, info.mCountryIso, info.mIsEmbedded, info.mNativeAccessRules,
+                 info.mCardString, info.mCardId, info.mIsOpportunistic,
+                 info.mGroupUUID == null ? null : info.mGroupUUID.toString(), info.mIsGroupDisabled,
+-                info.mCarrierId, info.mProfileClass, info.mSubscriptionType, info.mGroupOwner);
++                info.mCarrierId, info.mProfileClass, info.mSubscriptionType, info.mGroupOwner,
++                info.mCarrierConfigAccessRules);
+     }
+ 
+     /**
+-- 
+2.34.1
+

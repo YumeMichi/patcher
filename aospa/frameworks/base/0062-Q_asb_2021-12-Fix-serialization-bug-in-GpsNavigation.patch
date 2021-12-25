@@ -1,7 +1,7 @@
 From 1daea46e8887bff910e63eac77ece2273fb0783d Mon Sep 17 00:00:00 2001
 From: Yu-Han Yang <yuhany@google.com>
 Date: Tue, 21 Sep 2021 12:29:34 -0700
-Subject: [PATCH 62/66] [Q_asb_2021-12] Fix serialization bug in
+Subject: [PATCH 62/67] [Q_asb_2021-12] Fix serialization bug in
  GpsNavigationMessage
 
 Bug: 196970023
