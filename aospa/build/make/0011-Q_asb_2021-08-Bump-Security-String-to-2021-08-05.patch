@@ -1,0 +1,52 @@
+From 102b2b6c684148191c80603f80b8f946c81b90f2 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Fri, 6 Aug 2021 07:54:21 -0600
+Subject: [PATCH 11/11] [Q_asb_2021-08] Bump Security String to 2021-08-05
+
+Implemented:
+============
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0584   A-179289794  ID     High       8.1, 9, 10, 11
+CVE-2021-0591   A-179386960  EoP    High       8.1, 9, 10, 11
+CVE-2021-0593   A-179386068  EoP    High       8.1, 9, 10, 11
+CVE-2021-0640   A-187957589  EoP    High       9, 10, 11
+CVE-2021-0641   A-185235454  ID     High       8.1, 9, 10, 11
+CVE-2021-0642   A-185126149  ID     High       8.1, 9, 10, 11
+CVE-2021-0646   A-153352319  EoP    High       8.1, 9, 10, 11
+
+Previously Implemented:
+=======================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:  Prior Change:
+CVE-2021-0519   A-176533109  ID     High       10, 11                  8adb0eb
+                             EoP    High       8.1, 9
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:  Type:  Severity:  Updated AOSP versions:
+CVE-2021-0645   A-157320644  EoP    High       11
+
+Change-Id: I058d30a872b972fb70b471bc339ff439c91f5bdb
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index e58a1572d..8540ecb97 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2021-07-05
++      PLATFORM_SECURITY_PATCH := 2021-08-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.34.1
+

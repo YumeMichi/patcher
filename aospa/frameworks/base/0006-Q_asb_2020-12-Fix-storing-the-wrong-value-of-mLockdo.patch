@@ -1,7 +1,7 @@
 From 4f9a1ce99d17f395d73f4b29767e4cc2638491a6 Mon Sep 17 00:00:00 2001
 From: lucaslin <lucaslin@google.com>
 Date: Mon, 5 Oct 2020 20:00:07 +0800
-Subject: [PATCH 06/44] [Q_asb_2020-12] Fix storing the wrong value of
+Subject: [PATCH 06/45] [Q_asb_2020-12] Fix storing the wrong value of
  mLockdown in setting
 
 When user is stopped, the Vpn#onUserStopped() will be called and

@@ -1,7 +1,7 @@
 From 29c21b6694370cd2e63a67578cd808e183ec3ff1 Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Tue, 21 Jan 2020 20:00:41 -0800
-Subject: [PATCH 28/44] [Q_asb_2021-04] Update the getIccId docs to reflect
+Subject: [PATCH 28/45] [Q_asb_2021-04] Update the getIccId docs to reflect
  access requirements
 
 In Android 10 access to device identifiers was limited to apps with

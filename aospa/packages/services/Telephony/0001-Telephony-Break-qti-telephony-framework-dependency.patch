@@ -1,7 +1,7 @@
 From 2568f04156bf3ba1dd22f0eb2182c257615606fd Mon Sep 17 00:00:00 2001
 From: maxwen <max.weninger@gmail.com>
 Date: Fri, 13 Jan 2017 16:44:08 +0100
-Subject: [PATCH] Telephony: Break qti-telephony-framework dependency
+Subject: [PATCH 1/2] Telephony: Break qti-telephony-framework dependency
 
 Change-Id: I3c09525c3d1fe2c58a7ef2a1521adcd82d7dd6f8
 ---

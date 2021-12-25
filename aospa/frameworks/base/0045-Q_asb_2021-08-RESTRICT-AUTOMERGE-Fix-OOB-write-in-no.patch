@@ -1,0 +1,42 @@
+From 98d2fd09c65da5d17dc9589a300a2967094ad826 Mon Sep 17 00:00:00 2001
+From: Tej Singh <singhtejinder@google.com>
+Date: Wed, 19 May 2021 20:12:46 -0700
+Subject: [PATCH 45/45] [Q_asb_2021-08] [RESTRICT AUTOMERGE] Fix OOB write in
+ noteAtomLogged
+
+It's possible for bad atoms to have negative atom ids. This results in
+an OOB write when we note that the atom was logged. This adds a
+validation check on the logging.
+
+Also added safetynet logging for negative atoms
+
+Bug: 187957589
+Test: POC in bug no longer led to the OOB write & crash
+Test: checked event log for safetynet logging
+Change-Id: I8a6b094c94309d7b02430fb860891ef814efb426
+(cherry picked from commit b13b741a94a3d1fc85277de22644c62778bd3adc)
+---
+ cmds/statsd/src/guardrail/StatsdStats.cpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/cmds/statsd/src/guardrail/StatsdStats.cpp b/cmds/statsd/src/guardrail/StatsdStats.cpp
+index a836bd14c012..936a8751fd1d 100644
+--- a/cmds/statsd/src/guardrail/StatsdStats.cpp
++++ b/cmds/statsd/src/guardrail/StatsdStats.cpp
+@@ -449,9 +449,12 @@ void StatsdStats::notePullExceedMaxDelay(int pullAtomId) {
+ void StatsdStats::noteAtomLogged(int atomId, int32_t timeSec) {
+     lock_guard<std::mutex> lock(mLock);
+ 
+-    if (atomId <= android::util::kMaxPushedAtomId) {
++    if (atomId >= 0 && atomId <= android::util::kMaxPushedAtomId) {
+         mPushedAtomStats[atomId]++;
+     } else {
++        if (atomId < 0) {
++            android_errorWriteLog(0x534e4554, "187957589");
++        }
+         if (mNonPlatformPushedAtomStats.size() < kMaxNonPlatformPushedAtoms) {
+             mNonPlatformPushedAtomStats[atomId]++;
+         }
+-- 
+2.34.1
+

@@ -1,0 +1,36 @@
+From a8c801c16b666259c879764b58085e26abb218da Mon Sep 17 00:00:00 2001
+From: Tyler Gunn <tgunn@google.com>
+Date: Mon, 7 Jun 2021 10:37:20 -0700
+Subject: [PATCH 2/2] [Q_asb_2021-08] Add intent-filter priority for
+ CONFIGURE_VOICEMAIL intent.
+
+The android.telephony.action.CONFIGURE_VOICEMAIL intent is only handled
+by the platform, so setting an intent filter priority here will ensure
+that no other app can claim to handle it.
+
+Test: Used test app which attempts to handle the intent to verify no
+intent disambiguation dialog is shown and platform handles.
+Bug: 185126149
+Merged-In: I1c1b800737db5397d3e600e30c12ed2c8fc8efd9
+Change-Id: I1c1b800737db5397d3e600e30c12ed2c8fc8efd9
+(cherry picked from commit 5cd723c11bfe29dd44e7fcdc730c945d7348f3b6)
+---
+ AndroidManifest.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index 57c484d0d..420a70525 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -613,7 +613,7 @@
+                 <action android:name="com.android.phone.CallFeaturesSetting.ADD_VOICEMAIL" />
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+-            <intent-filter>
++            <intent-filter android:priority="1000">
+                 <action android:name="android.telephony.action.CONFIGURE_VOICEMAIL" />
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+-- 
+2.34.1
+

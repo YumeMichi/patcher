@@ -1,7 +1,7 @@
 From cd0ef308097ef613b331c452afbbf012f95a92c7 Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Fri, 20 Mar 2020 13:25:06 -0700
-Subject: [PATCH 2/4] [Q_asb_2021-04] Guard ICC ID card string behind new
+Subject: [PATCH 2/5] [Q_asb_2021-04] Guard ICC ID card string behind new
  identifier access requirements
 
 In Android 10 access to device identifiers was limited to apps with

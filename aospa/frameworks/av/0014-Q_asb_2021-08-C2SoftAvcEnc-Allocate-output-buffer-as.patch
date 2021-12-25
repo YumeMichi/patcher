@@ -1,0 +1,56 @@
+From 4dfb97e802703a9fcc601f376e7664aa14443dc0 Mon Sep 17 00:00:00 2001
+From: Harish Mahendrakar <harish.mahendrakar@ittiam.com>
+Date: Thu, 21 Nov 2019 10:33:05 -0800
+Subject: [PATCH 14/14] [Q_asb_2021-08] C2SoftAvcEnc: Allocate output buffer as
+ per clip's dimensions
+
+Instead of allocating a fixed size output buffer, allocate it as per
+width and height of the input being encoded. To ensure for very low
+resolutions, this size doesn't become too small, use a minimum size of
+512K Bytes.
+
+Bug: 144928581
+Bug: 176533109
+Test: h264 related tests in android.media.cts.VideoEncoderTest
+Change-Id: I01c1aa03456043824354005f1708f07b3268d97e
+(cherry picked from commit 24b9f4278772605b5ce6f6dfa31725cd8a6c2b38)
+---
+ media/codec2/components/avc/C2SoftAvcEnc.cpp | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/media/codec2/components/avc/C2SoftAvcEnc.cpp b/media/codec2/components/avc/C2SoftAvcEnc.cpp
+index b41c271aea..e3d419c8db 100644
+--- a/media/codec2/components/avc/C2SoftAvcEnc.cpp
++++ b/media/codec2/components/avc/C2SoftAvcEnc.cpp
+@@ -40,7 +40,7 @@ namespace android {
+ namespace {
+ 
+ constexpr char COMPONENT_NAME[] = "c2.android.avc.encoder";
+-
++constexpr uint32_t kMinOutBufferSize = 524288;
+ void ParseGop(
+         const C2StreamGopTuning::output &gop,
+         uint32_t *syncInterval, uint32_t *iInterval, uint32_t *maxBframes) {
+@@ -440,8 +440,7 @@ C2SoftAvcEnc::C2SoftAvcEnc(
+       mSignalledError(false),
+       mCodecCtx(nullptr),
+       mOutBlock(nullptr),
+-      // TODO: output buffer size
+-      mOutBufferSize(524288) {
++      mOutBufferSize(kMinOutBufferSize) {
+ 
+     // If dump is enabled, then open create an empty file
+     GENERATE_FILE_NAMES();
+@@ -951,6 +950,9 @@ c2_status_t C2SoftAvcEnc::initEncoder() {
+ 
+     mStride = width;
+ 
++    // Assume worst case output buffer size to be equal to number of bytes in input
++    mOutBufferSize = std::max(width * height * 3 / 2, kMinOutBufferSize);
++
+     // TODO
+     mIvVideoColorFormat = IV_YUV_420P;
+ 
+-- 
+2.34.1
+

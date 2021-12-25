@@ -1,7 +1,7 @@
 From 737f16cca5b0ef862952162065c2ff770ecfed93 Mon Sep 17 00:00:00 2001
 From: Louis Chang <louischang@google.com>
 Date: Wed, 14 Apr 2021 14:56:11 +0800
-Subject: [PATCH 41/44] [Q_asb_2021-07] Detects all activities for whether
+Subject: [PATCH 41/45] [Q_asb_2021-07] Detects all activities for whether
  showing work challenge
 
 Work challenge did not show when a work activity is not on top, but

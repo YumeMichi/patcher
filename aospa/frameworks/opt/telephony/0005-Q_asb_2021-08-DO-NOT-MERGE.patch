@@ -1,0 +1,56 @@
+From b5d561a87bcdfd2e4376656ce20d93ff7e518477 Mon Sep 17 00:00:00 2001
+From: Shuo Qian <shuoq@google.com>
+Date: Tue, 18 May 2021 16:24:07 -0700
+Subject: [PATCH 5/5] [Q_asb_2021-08] DO NOT MERGE
+
+Check READ_PRIVILEGED_PHONE_STATE instead of READ_PHONE_STATE for getAvailableSubscriptionInfoList
+
+Test: atest SubscriptionManagerTest#testSubscriptionGroupingWithPermission; Safety net logging
+Bug: 185235454
+
+Change-Id: Ideef8793ac3c42ab30ac3004071d6be19e15b5fe
+(cherry picked from commit dd0a8f8c5332e9ebcc983951e01ec3c7983188c7)
+---
+ .../telephony/SubscriptionController.java     | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/SubscriptionController.java b/src/java/com/android/internal/telephony/SubscriptionController.java
+index 4010b36c4e..fdd58f6f21 100644
+--- a/src/java/com/android/internal/telephony/SubscriptionController.java
++++ b/src/java/com/android/internal/telephony/SubscriptionController.java
+@@ -52,6 +52,7 @@ import android.telephony.UiccAccessRule;
+ import android.telephony.UiccSlotInfo;
+ import android.telephony.euicc.EuiccManager;
+ import android.text.TextUtils;
++import android.util.EventLog;
+ import android.util.LocalLog;
+ import android.util.Log;
+ 
+@@ -877,12 +878,18 @@ public class SubscriptionController extends ISub.Stub {
+ 
+     @Override
+     public List<SubscriptionInfo> getAvailableSubscriptionInfoList(String callingPackage) {
+-        // This API isn't public, so no need to provide a valid subscription ID - we're not worried
+-        // about carrier-privileged callers not having access.
+-        if (!TelephonyPermissions.checkCallingOrSelfReadPhoneState(
+-                mContext, SubscriptionManager.INVALID_SUBSCRIPTION_ID, callingPackage,
+-                "getAvailableSubscriptionInfoList")) {
+-            throw new SecurityException("Need READ_PHONE_STATE to call "
++        try {
++            enforceReadPrivilegedPhoneState("getAvailableSubscriptionInfoList");
++        } catch (SecurityException e) {
++            try {
++                mContext.enforceCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE, null);
++                // If caller doesn't have READ_PRIVILEGED_PHONE_STATE permission but only
++                // has READ_PHONE_STATE permission, log this event.
++                EventLog.writeEvent(0x534e4554, "185235454", Binder.getCallingUid());
++            } catch (SecurityException ex) {
++                // Ignore
++            }
++            throw new SecurityException("Need READ_PRIVILEGED_PHONE_STATE to call "
+                     + " getAvailableSubscriptionInfoList");
+         }
+ 
+-- 
+2.34.1
+
