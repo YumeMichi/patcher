@@ -1,7 +1,7 @@
 From 64f99c9cb70813ee7623df0789d0b317a2ced6f5 Mon Sep 17 00:00:00 2001
 From: "li-wei.cheng" <li-wei.cheng@mediatek.com>
 Date: Mon, 20 Jan 2020 15:27:21 +0800
-Subject: [PATCH 3/6] [Q_asb_2020-11] Return after removing sample LTK device
+Subject: [PATCH 3/8] [Q_asb_2020-11] Return after removing sample LTK device
 
 Return directly after calling bta_dm_remove_device to
 prevent from accessing the invalid security record (p_dev_rec).

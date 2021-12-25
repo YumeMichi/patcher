@@ -1,0 +1,41 @@
+From 8c3340be28d0fd211acc7ea133140cbd84cc2e45 Mon Sep 17 00:00:00 2001
+From: Ted Wang <tedwang@google.com>
+Date: Tue, 6 Oct 2020 20:20:16 +0800
+Subject: [PATCH 7/8] [Q_asb_2021-01] Fix potential OOB write in libbluetooth
+
+Check event id if of register notification command from remote to avoid
+OOB write.
+
+Tag: #security
+Bug: 168802990
+Test: atest net_test_btif
+
+Change-Id: I90834b920d61bfb2df9414a25d73ba40033e4748
+Merged-In: I90834b920d61bfb2df9414a25d73ba40033e4748
+(cherry picked from commit 26d2f1d06ad2641c0e70193176843e610fce07c0)
+Signed-off-by: Kevin F. Haggerty <haggertk@lineageos.org>
+---
+ stack/avrc/avrc_pars_tg.cc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/stack/avrc/avrc_pars_tg.cc b/stack/avrc/avrc_pars_tg.cc
+index 3341771ee..e1930735d 100644
+--- a/stack/avrc/avrc_pars_tg.cc
++++ b/stack/avrc/avrc_pars_tg.cc
+@@ -310,6 +310,13 @@ static tAVRC_STS avrc_pars_vendor_cmd(tAVRC_MSG_VENDOR* p_msg,
+         AVRC_TRACE_DEBUG("avrc_pars_vendor_cmd() event id: %d", p_result->reg_notif.event_id);
+       } else {
+         BE_STREAM_TO_UINT8(p_result->reg_notif.event_id, p);
++        if (!AVRC_IS_VALID_EVENT_ID(p_result->reg_notif.event_id)) {
++          android_errorWriteLog(0x534e4554, "168802990");
++          AVRC_TRACE_ERROR("%s: Invalid event id: %d", __func__,
++                           p_result->reg_notif.event_id);
++          return AVRC_STS_BAD_PARAM;
++        }
++
+         BE_STREAM_TO_UINT32(p_result->reg_notif.param, p);
+       }
+       break;
+-- 
+2.34.1
+

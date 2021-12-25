@@ -1,0 +1,117 @@
+From 8c9bb634bc4404c1016c91560cfc8c848b5ddc19 Mon Sep 17 00:00:00 2001
+From: Arthur Ishiguro <arthuri@google.com>
+Date: Tue, 22 Sep 2020 13:05:15 -0700
+Subject: [PATCH 2/2] [Q_asb_2021-01] Prevent mEventCache UAF in
+ SensorEventConnection
+
+Since there is no check to see if SensorEventConnection has been
+destroyed, the mEventCache pointer can still be used even after it
+was freed.
+
+Bug: 168211968
+Test: Run test code that attempts to enable a sensor after destroying
+the SensorEventConnection, and verify no system_server crash occurs.
+
+Change-Id: Ia9275b7cc574df371cdb2e1b80c6699df193b580
+Merged-In: Ia9275b7cc574df371cdb2e1b80c6699df193b580
+(cherry picked from commit bbf3b377482aeac64c23556bcb2a129d944629ed)
+---
+ .../sensorservice/SensorEventConnection.cpp   | 28 ++++++++++++-------
+ .../sensorservice/SensorEventConnection.h     |  6 ++--
+ 2 files changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/services/sensorservice/SensorEventConnection.cpp b/services/sensorservice/SensorEventConnection.cpp
+index 0e409409f2..1811716af9 100644
+--- a/services/sensorservice/SensorEventConnection.cpp
++++ b/services/sensorservice/SensorEventConnection.cpp
+@@ -14,6 +14,7 @@
+  * limitations under the License.
+  */
+ 
++#include <log/log.h>
+ #include <sys/socket.h>
+ #include <utils/threads.h>
+ 
+@@ -45,20 +46,13 @@ SensorService::SensorEventConnection::SensorEventConnection(
+ SensorService::SensorEventConnection::~SensorEventConnection() {
+     ALOGD_IF(DEBUG_CONNECTIONS, "~SensorEventConnection(%p)", this);
+     destroy();
+-}
+-
+-void SensorService::SensorEventConnection::destroy() {
+-    Mutex::Autolock _l(mDestroyLock);
+-
+-    // destroy once only
+-    if (mDestroyed) {
+-        return;
+-    }
+-
+     mService->cleanupConnection(this);
+     if (mEventCache != nullptr) {
+         delete[] mEventCache;
+     }
++}
++
++void SensorService::SensorEventConnection::destroy() {
+     mDestroyed = true;
+ }
+ 
+@@ -603,6 +597,11 @@ status_t SensorService::SensorEventConnection::enableDisable(
+         int handle, bool enabled, nsecs_t samplingPeriodNs, nsecs_t maxBatchReportLatencyNs,
+         int reservedFlags)
+ {
++    if (mDestroyed) {
++        android_errorWriteLog(0x534e4554, "168211968");
++        return DEAD_OBJECT;
++    }
++
+     status_t err;
+     if (enabled) {
+         err = mService->enable(this, handle, samplingPeriodNs, maxBatchReportLatencyNs,
+@@ -617,10 +616,19 @@ status_t SensorService::SensorEventConnection::enableDisable(
+ status_t SensorService::SensorEventConnection::setEventRate(
+         int handle, nsecs_t samplingPeriodNs)
+ {
++    if (mDestroyed) {
++        android_errorWriteLog(0x534e4554, "168211968");
++        return DEAD_OBJECT;
++    }
++
+     return mService->setEventRate(this, handle, samplingPeriodNs, mOpPackageName);
+ }
+ 
+ status_t  SensorService::SensorEventConnection::flush() {
++    if (mDestroyed) {
++        return DEAD_OBJECT;
++    }
++
+     return  mService->flushSensor(this, mOpPackageName);
+ }
+ 
+diff --git a/services/sensorservice/SensorEventConnection.h b/services/sensorservice/SensorEventConnection.h
+index fd881cbc0b..d3528551bb 100644
+--- a/services/sensorservice/SensorEventConnection.h
++++ b/services/sensorservice/SensorEventConnection.h
+@@ -17,6 +17,7 @@
+ #ifndef ANDROID_SENSOR_EVENT_CONNECTION_H
+ #define ANDROID_SENSOR_EVENT_CONNECTION_H
+ 
++#include <atomic>
+ #include <stdint.h>
+ #include <sys/types.h>
+ #include <unordered_map>
+@@ -182,8 +183,9 @@ private:
+     int mTotalAcksNeeded, mTotalAcksReceived;
+ #endif
+ 
+-    mutable Mutex mDestroyLock;
+-    bool mDestroyed;
++    // Used to track if this object was inappropriately used after destroy().
++    std::atomic_bool mDestroyed;
++
+     bool mHasSensorAccess;
+ 
+     // Store a mapping of sensor handles to required AppOp for a sensor. This map only contains a
+-- 
+2.34.1
+

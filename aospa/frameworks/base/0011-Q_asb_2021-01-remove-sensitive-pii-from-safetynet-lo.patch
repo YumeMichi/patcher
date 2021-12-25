@@ -1,0 +1,34 @@
+From 9b33f6005d5dada679ed420b4c79c02b0bc05983 Mon Sep 17 00:00:00 2001
+From: Pinyao Ting <pinyaoting@google.com>
+Date: Thu, 8 Oct 2020 10:14:05 -0700
+Subject: [PATCH 11/18] [Q_asb_2021-01] remove sensitive pii from safetynet
+ logging
+
+Bug: 159145361
+Test: manual
+Change-Id: I8f1be55971672c7e8f5aa8848f65b1b9d9f40fb5
+Merged-In: I8f1be55971672c7e8f5aa8848f65b1b9d9f40fb5
+(cherry picked from commit 3b6905bf6a39de7789f93a7ce6ca5d65a3fe589e)
+(cherry picked from commit 391c14341808227cbc848e80d29a2636ab877737)
+---
+ .../src/com/android/systemui/SlicePermissionActivity.java     | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java b/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
+index 2365f128532e..47adffc216a5 100644
+--- a/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
++++ b/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
+@@ -111,9 +111,7 @@ public class SlicePermissionActivity extends Activity implements OnClickListener
+         final String providerPkg = getIntent().getStringExtra("provider_pkg");
+         if (providerPkg == null || mProviderPkg.equals(providerPkg)) return;
+         final String callingPkg = getCallingPkg();
+-        EventLog.writeEvent(0x534e4554, "159145361", getUid(callingPkg), String.format(
+-                "pkg %s (disguised as %s) attempted to request permission to show %s slices in %s",
+-                callingPkg, providerPkg, mProviderPkg, mCallingPkg));
++        EventLog.writeEvent(0x534e4554, "159145361", getUid(callingPkg));
+     }
+ 
+     @Nullable
+-- 
+2.34.1
+

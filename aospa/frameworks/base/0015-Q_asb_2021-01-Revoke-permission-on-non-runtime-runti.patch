@@ -1,0 +1,42 @@
+From 4bd7848f3cecc6c126fafdcc0072bc3557e29bff Mon Sep 17 00:00:00 2001
+From: "Philip P. Moltmann" <moltmann@google.com>
+Date: Tue, 3 Nov 2020 15:12:44 -0800
+Subject: [PATCH 15/18] [Q_asb_2021-01] Revoke permission on non-runtime ->
+ runtime upgrade
+
+Not only on normal -> runtime.
+
+Test: atest android.appsecurity.cts.PermissionsHostTest#testNoPermissionEscalationAfterReboot
+Bug: 154505240, 168319670
+Change-Id: If3b420067b4d7111dcf67ae6f98e42176158b679
+Merged-In: If3b420067b4d7111dcf67ae6f98e42176158b679
+(cherry picked from commit dd41b25a831144b1f65dd54d9e64b523b76c7594)
+---
+ .../java/com/android/server/pm/permission/BasePermission.java | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/permission/BasePermission.java b/services/core/java/com/android/server/pm/permission/BasePermission.java
+index 63753baa2539..1f029000f8a5 100644
+--- a/services/core/java/com/android/server/pm/permission/BasePermission.java
++++ b/services/core/java/com/android/server/pm/permission/BasePermission.java
+@@ -365,7 +365,7 @@ public final class BasePermission {
+         if (bp == null) {
+             bp = new BasePermission(p.info.name, p.info.packageName, TYPE_NORMAL);
+         }
+-        boolean wasNormal = bp.isNormal();
++        boolean wasNonRuntime = !bp.isRuntime();
+         StringBuilder r = null;
+         if (bp.perm == null) {
+             if (bp.sourcePackageName == null
+@@ -409,7 +409,7 @@ public final class BasePermission {
+         if (bp.perm == p) {
+             bp.protectionLevel = p.info.protectionLevel;
+         }
+-        if (bp.isRuntime() && (ownerChanged || wasNormal)) {
++        if (bp.isRuntime() && (ownerChanged || wasNonRuntime)) {
+             // If this is a runtime permission and the owner has changed, or this was a normal
+             // permission, then permission state should be cleaned up
+             bp.mPermissionDefinitionChanged = true;
+-- 
+2.34.1
+

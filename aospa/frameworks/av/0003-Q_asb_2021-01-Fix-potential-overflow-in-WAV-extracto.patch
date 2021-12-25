@@ -1,0 +1,56 @@
+From fbeb9c5ad65465ba433cf447e9992778646189b3 Mon Sep 17 00:00:00 2001
+From: Marco Nelissen <marcone@google.com>
+Date: Mon, 2 Nov 2020 16:58:51 -0800
+Subject: [PATCH 3/3] [Q_asb_2021-01] Fix potential overflow in WAV extractor
+
+Bug: 170583712
+Test: fuzzer poc, atest DecoderTest#testDecodeWav
+Change-Id: I73edd5fc0da80dc2cdd26c6fcd09496b2c828ba9
+Merged-In: I73edd5fc0da80dc2cdd26c6fcd09496b2c828ba9
+(cherry picked from commit 66c0c4274d932716b552cdd1d922040bbab41c5f)
+---
+ media/extractors/wav/WAVExtractor.cpp | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/media/extractors/wav/WAVExtractor.cpp b/media/extractors/wav/WAVExtractor.cpp
+index 4fa7f271cf..976b7d99e3 100644
+--- a/media/extractors/wav/WAVExtractor.cpp
++++ b/media/extractors/wav/WAVExtractor.cpp
+@@ -93,9 +93,9 @@ private:
+     AMediaFormat *mMeta;
+     uint16_t mWaveFormat;
+     const bool mOutputFloat;
+-    int32_t mSampleRate;
+-    int32_t mNumChannels;
+-    int32_t mBitsPerSample;
++    uint32_t mSampleRate;
++    uint32_t mNumChannels;
++    uint32_t mBitsPerSample;
+     off64_t mOffset;
+     size_t mSize;
+     bool mStarted;
+@@ -377,9 +377,9 @@ WAVSource::WAVSource(
+       mOffset(offset),
+       mSize(size),
+       mStarted(false) {
+-    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_SAMPLE_RATE, &mSampleRate));
+-    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_CHANNEL_COUNT, &mNumChannels));
+-    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_BITS_PER_SAMPLE, &mBitsPerSample));
++    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_SAMPLE_RATE, (int32_t*) &mSampleRate));
++    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_CHANNEL_COUNT, (int32_t*) &mNumChannels));
++    CHECK(AMediaFormat_getInt32(mMeta, AMEDIAFORMAT_KEY_BITS_PER_SAMPLE, (int32_t*) &mBitsPerSample));
+ }
+ 
+ WAVSource::~WAVSource() {
+@@ -470,7 +470,7 @@ media_status_t WAVSource::read(
+     }
+ 
+     const size_t maxBytesAvailable =
+-        (mCurrentPos - mOffset >= (off64_t)mSize)
++        (mCurrentPos < mOffset || mCurrentPos - mOffset >= (off64_t)mSize)
+             ? 0 : mSize - (mCurrentPos - mOffset);
+ 
+     if (maxBytesToRead > maxBytesAvailable) {
+-- 
+2.34.1
+

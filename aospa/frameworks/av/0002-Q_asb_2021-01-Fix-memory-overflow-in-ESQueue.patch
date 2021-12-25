@@ -1,0 +1,35 @@
+From 28a375cc97475047b4134503c931d071405c4fc3 Mon Sep 17 00:00:00 2001
+From: Marco Nelissen <marcone@google.com>
+Date: Tue, 6 Oct 2020 15:06:48 -0700
+Subject: [PATCH 2/3] [Q_asb_2021-01] Fix memory overflow in ESQueue
+
+Bug: 170240631
+Test: poc
+Change-Id: I92433cd10cba05168f42fe8552bc6a02e1f203e7
+(cherry picked from commit 91fed774acc81072616a39b353ca930563de90e3)
+---
+ media/libstagefright/mpeg2ts/ESQueue.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/media/libstagefright/mpeg2ts/ESQueue.cpp b/media/libstagefright/mpeg2ts/ESQueue.cpp
+index 5af7b23fb9..e89d3e3284 100644
+--- a/media/libstagefright/mpeg2ts/ESQueue.cpp
++++ b/media/libstagefright/mpeg2ts/ESQueue.cpp
+@@ -1423,7 +1423,13 @@ sp<ABuffer> ElementaryStreamQueue::dequeueAccessUnitH264() {
+                 if (mSampleDecryptor != NULL && (nalType == 1 || nalType == 5)) {
+                     uint8_t *nalData = mBuffer->data() + pos.nalOffset;
+                     size_t newSize = mSampleDecryptor->processNal(nalData, pos.nalSize);
+-                    // Note: the data can shrink due to unescaping
++                    // Note: the data can shrink due to unescaping, but it can never grow
++                    if (newSize > pos.nalSize) {
++                        // don't log unless verbose, since this can get called a lot if
++                        // the caller is trying to resynchronize
++                        ALOGV("expected sample size < %u, got %zu", pos.nalSize, newSize);
++                        return NULL;
++                    }
+                     memcpy(accessUnit->data() + dstOffset + 4,
+                             nalData,
+                             newSize);
+-- 
+2.34.1
+

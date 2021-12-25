@@ -1,0 +1,42 @@
+From 123b740293c3f39c8b84b1c65d23cbb3c401a989 Mon Sep 17 00:00:00 2001
+From: Hai Zhang <zhanghai@google.com>
+Date: Mon, 15 Jun 2020 18:18:33 -0700
+Subject: [PATCH 10/18] [Q_asb_2021-01] DO NOT MERGE Revoke install permissions
+ when the permission defining app is uninstalled.
+
+Bug: 155648771
+Test: atest RemovePermissionTest
+Change-Id: I4a5ecd9bede6f11d5023b3e8345b61d5b04e566f
+(cherry picked from commit 719c9c520603e1d84d31864810d2237ae4d429ca)
+---
+ .../pm/permission/PermissionManagerService.java    | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+index b844362e69ed..30b5d67ff198 100644
+--- a/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
++++ b/services/core/java/com/android/server/pm/permission/PermissionManagerService.java
+@@ -2704,6 +2704,20 @@ public class PermissionManagerService {
+                                     }
+                                 });
+                             }
++                        } else {
++                            mPackageManagerInt.forEachPackage(p -> {
++                                PackageSetting ps = (PackageSetting) p.mExtras;
++                                if (ps == null) {
++                                    return;
++                                }
++                                PermissionsState permissionsState = ps.getPermissionsState();
++                                if (permissionsState.getInstallPermissionState(bp.getName())
++                                        != null) {
++                                    permissionsState.revokeInstallPermission(bp);
++                                    permissionsState.updatePermissionFlags(bp, UserHandle.USER_ALL,
++                                            MASK_PERMISSION_FLAGS_ALL, 0);
++                                }
++                            });
+                         }
+                         flags |= UPDATE_PERMISSIONS_ALL;
+                         it.remove();
+-- 
+2.34.1
+

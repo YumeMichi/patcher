@@ -1,0 +1,71 @@
+From 7147bbec9661400dc35cf162f06b08668000968e Mon Sep 17 00:00:00 2001
+From: Marcus Meissner <marcus@jet.franken.de>
+Date: Tue, 25 Jul 2017 23:44:44 +0200
+Subject: [PATCH 2/2] [Q_asb_2021-01] fixes some (not all) buffer overreads
+ during decoding pentax makernote entries.
+
+This should fix:
+https://sourceforge.net/p/libexif/bugs/125/ CVE-2016-6328
+
+Cherrypicked from
+https://github.com/libexif/libexif/commit/41bd04234b104312f54d25822f68738b
+
+Bug: 162602132
+Test: Android camera tests continue to pass
+Change-Id: Ib7d9d3afe67aa37bfa6d23ff88f6334e1f8f4396
+(cherry picked from commit 836cfdb99e8aacf0c49a714141d80f66c2ebada0)
+---
+ libexif/pentax/mnote-pentax-entry.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/libexif/pentax/mnote-pentax-entry.c b/libexif/pentax/mnote-pentax-entry.c
+index 7e97c2c..dcb1560 100644
+--- a/libexif/pentax/mnote-pentax-entry.c
++++ b/libexif/pentax/mnote-pentax-entry.c
+@@ -425,24 +425,34 @@ mnote_pentax_entry_get_value (MnotePentaxEntry *entry,
+ 		case EXIF_FORMAT_SHORT:
+ 		  {
+ 			const unsigned char *data = entry->data;
+-		  	size_t k, len = strlen(val);
++		  	size_t k, len = strlen(val), sizeleft;
++
++			sizeleft = entry->size;
+ 		  	for(k=0; k<entry->components; k++) {
++				if (sizeleft < 2)
++					break;
+ 				vs = exif_get_short (data, entry->order);
+ 				snprintf (val+len, maxlen-len, "%i ", vs);
+ 				len = strlen(val);
+ 				data += 2;
++				sizeleft -= 2;
+ 			}
+ 		  }
+ 		  break;
+ 		case EXIF_FORMAT_LONG:
+ 		  {
+ 			const unsigned char *data = entry->data;
+-		  	size_t k, len = strlen(val);
++		  	size_t k, len = strlen(val), sizeleft;
++
++			sizeleft = entry->size;
+ 		  	for(k=0; k<entry->components; k++) {
++				if (sizeleft < 4)
++					break;
+ 				vl = exif_get_long (data, entry->order);
+ 				snprintf (val+len, maxlen-len, "%li", (long int) vl);
+ 				len = strlen(val);
+ 				data += 4;
++				sizeleft -= 4;
+ 			}
+ 		  }
+ 		  break;
+@@ -455,5 +465,5 @@ mnote_pentax_entry_get_value (MnotePentaxEntry *entry,
+ 		break;
+ 	}
+ 
+-	return (val);
++	return val;
+ }
+-- 
+2.34.1
+

@@ -1,0 +1,44 @@
+From 768213965b0cccda625207a103856eac26d0d820 Mon Sep 17 00:00:00 2001
+From: Eugene Susla <eugenesusla@google.com>
+Date: Mon, 12 Oct 2020 16:23:15 -0700
+Subject: [PATCH 12/18] [Q_asb_2021-01] RESTRICT AUTOMERGE Fix CDM package
+ check
+
+CDM was using a pckage check that returns a value intead of throwing,
+resulting in failing to throw on querying other package's associations
+
+Test: ensure attached bug no longer reproduces
+Bug: 167244818
+Change-Id: I21319b6f5495dcae681541c76b847aad0c00b8ab
+(cherry picked from commit 9ec3bf497e9683974db28f25477b4cc6e9f80d92)
+---
+ .../server/companion/CompanionDeviceManagerService.java     | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java b/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java
+index 067becbf0c52..d7d457395798 100644
+--- a/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java
++++ b/services/companion/java/com/android/server/companion/CompanionDeviceManagerService.java
+@@ -25,6 +25,7 @@ import static com.android.internal.util.function.pooled.PooledLambda.obtainRunna
+ 
+ import android.annotation.CheckResult;
+ import android.annotation.Nullable;
++import android.app.AppOpsManager;
+ import android.app.PendingIntent;
+ import android.companion.AssociationRequest;
+ import android.companion.CompanionDeviceManager;
+@@ -297,7 +298,10 @@ public class CompanionDeviceManagerService extends SystemService implements Bind
+ 
+             checkArgument(getCallingUserId() == userId,
+                     "Must be called by either same user or system");
+-            mAppOpsManager.checkPackage(Binder.getCallingUid(), pkg);
++            int callingUid = Binder.getCallingUid();
++            if (mAppOpsManager.checkPackage(callingUid, pkg) != AppOpsManager.MODE_ALLOWED) {
++                throw new SecurityException(pkg + " doesn't belong to uid " + callingUid);
++            }
+         }
+ 
+         @Override
+-- 
+2.34.1
+

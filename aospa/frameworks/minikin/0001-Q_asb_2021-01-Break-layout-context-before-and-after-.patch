@@ -1,0 +1,81 @@
+From 5801f08dafac5e2ad6b2fadbd2702b4abfc24c3e Mon Sep 17 00:00:00 2001
+From: Seigo Nonaka <nona@google.com>
+Date: Tue, 20 Oct 2020 21:11:15 -0700
+Subject: [PATCH] [Q_asb_2021-01] Break layout context before and after bidi
+ control character
+
+Bug: 170968514
+Test: minikin_test
+Change-Id: Ibcff6f3b7fcb7fefa2acb7f52446cf4b4547a4a2
+Merged-In: Ibcff6f3b7fcb7fefa2acb7f52446cf4b4547a4a2
+(cherry picked from commit b0473792a5a0d9d287f6995f27e867c074835a28)
+(cherry picked from commit 8af7decfe6f3a4d81c71d10e543c20e87df6537e)
+---
+ libs/minikin/LayoutUtils.cpp          |  5 ++++
+ tests/unittest/LayoutSplitterTest.cpp | 35 +++++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+
+diff --git a/libs/minikin/LayoutUtils.cpp b/libs/minikin/LayoutUtils.cpp
+index 3c258cf..acf07e2 100644
+--- a/libs/minikin/LayoutUtils.cpp
++++ b/libs/minikin/LayoutUtils.cpp
+@@ -36,6 +36,11 @@ static bool isWordBreakAfter(uint16_t c) {
+         // spaces
+         return true;
+     }
++    // Break layout context before and after BiDi control character.
++    if ((0x2066 <= c && c <= 0x2069) || (0x202A <= c && c <= 0x202E) || c == 0x200E ||
++        c == 0x200F) {
++        return true;
++    }
+     // Note: kana is not included, as sophisticated fonts may kern kana
+     return false;
+ }
+diff --git a/tests/unittest/LayoutSplitterTest.cpp b/tests/unittest/LayoutSplitterTest.cpp
+index 4b75d9c..9b88de0 100644
+--- a/tests/unittest/LayoutSplitterTest.cpp
++++ b/tests/unittest/LayoutSplitterTest.cpp
+@@ -323,5 +323,40 @@ TEST(LayoutSplitterTest, RTL_CJK) {
+     }
+ }
+ 
++TEST(LayoutSplitterTest, BidiCtrl) {
++    struct TestCase {
++        std::string testStr;
++        std::vector<std::string> expects;
++    } testCases[] = {
++            {// Repeated Bidi sequence
++             "(a\u2066\u2069\u202A\u202E\u200E\u200Fb)",
++             {
++                     "[(a)]\u2066\u2069\u202A\u202E\u200E\u200Fb",
++                     "a[(\u2066)]\u2069\u202A\u202E\u200E\u200Fb",
++                     "a\u2066[(\u2069)]\u202A\u202E\u200E\u200Fb",
++                     "a\u2066\u2069[(\u202A)]\u202E\u200E\u200Fb",
++                     "a\u2066\u2069\u202A[(\u202E)]\u200E\u200Fb",
++                     "a\u2066\u2069\u202A\u202E[(\u200E)]\u200Fb",
++                     "a\u2066\u2069\u202A\u202E\u200E[(\u200F)]b",
++                     "a\u2066\u2069\u202A\u202E\u200E\u200F[(b)]",
++             }},
++    };
++
++    for (const auto& testCase : testCases) {
++        auto [text, range] = parseTestString(testCase.testStr);
++        uint32_t expectationIndex = 0;
++        for (auto [acContext, acPiece] : LayoutSplitter(text, range, false /* isRtl */)) {
++            ASSERT_NE(expectationIndex, testCase.expects.size());
++            const std::string expectString = testCase.expects[expectationIndex++];
++            auto [exContext, exPiece] = parseExpectString(expectString);
++            EXPECT_EQ(acContext, exContext)
++                    << expectString << " vs " << buildDebugString(text, acContext, acPiece);
++            EXPECT_EQ(acPiece, exPiece)
++                    << expectString << " vs " << buildDebugString(text, acContext, acPiece);
++        }
++        EXPECT_EQ(expectationIndex, testCase.expects.size()) << "Expectations Remains";
++    }
++}
++
+ }  // namespace
+ }  // namespace minikin
+-- 
+2.34.1
+

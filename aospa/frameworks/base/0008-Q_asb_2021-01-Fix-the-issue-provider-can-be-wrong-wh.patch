@@ -1,0 +1,116 @@
+From 47fff3ea452c999ea54e29f951ef2731a182a343 Mon Sep 17 00:00:00 2001
+From: Pinyao Ting <pinyaoting@google.com>
+Date: Thu, 16 Jul 2020 16:49:06 -0700
+Subject: [PATCH 08/18] [Q_asb_2021-01] Fix the issue provider can be wrong
+ when requesting slice permission
+
+SlicePermissionActivity reads provider_pkg from intent, which can be
+modified at will. As a result user might see incorrect package name in
+the dialog granting slice permission.
+
+Bug: 159145361
+Test: manual
+Merged-In: I8b66c02786df4096dad74b7e76255d5ddd1d609d
+Change-Id: I8b66c02786df4096dad74b7e76255d5ddd1d609d
+(cherry picked from commit 0ad32a2d70ae410a59d730802b47af7c27b0b4a3)
+(cherry picked from commit 149bb7e0380399dd331a1b45943037633b8c5fd4)
+---
+ .../java/android/app/slice/SliceProvider.java |  5 ---
+ .../systemui/SlicePermissionActivity.java     | 36 ++++++++++++++++++-
+ 2 files changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/core/java/android/app/slice/SliceProvider.java b/core/java/android/app/slice/SliceProvider.java
+index 5e530eedd818..a07ab1d845ca 100644
+--- a/core/java/android/app/slice/SliceProvider.java
++++ b/core/java/android/app/slice/SliceProvider.java
+@@ -152,10 +152,6 @@ public abstract class SliceProvider extends ContentProvider {
+      * @hide
+      */
+     public static final String EXTRA_PKG = "pkg";
+-    /**
+-     * @hide
+-     */
+-    public static final String EXTRA_PROVIDER_PKG = "provider_pkg";
+     /**
+      * @hide
+      */
+@@ -519,7 +515,6 @@ public abstract class SliceProvider extends ContentProvider {
+                 "com.android.systemui.SlicePermissionActivity"));
+         intent.putExtra(EXTRA_BIND_URI, sliceUri);
+         intent.putExtra(EXTRA_PKG, callingPackage);
+-        intent.putExtra(EXTRA_PROVIDER_PKG, context.getPackageName());
+         // Unique pending intent.
+         intent.setData(sliceUri.buildUpon().appendQueryParameter("package", callingPackage)
+                 .build());
+diff --git a/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java b/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
+index 449ed8c3bcdb..2365f128532e 100644
+--- a/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
++++ b/packages/SystemUI/src/com/android/systemui/SlicePermissionActivity.java
+@@ -16,6 +16,7 @@ package com.android.systemui;
+ 
+ import static android.view.WindowManager.LayoutParams.SYSTEM_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS;
+ 
++import android.annotation.Nullable;
+ import android.app.Activity;
+ import android.app.AlertDialog;
+ import android.app.slice.SliceManager;
+@@ -29,6 +30,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
+ import android.net.Uri;
+ import android.os.Bundle;
+ import android.text.BidiFormatter;
++import android.util.EventLog;
+ import android.util.Log;
+ import android.widget.CheckBox;
+ import android.widget.TextView;
+@@ -50,10 +52,17 @@ public class SlicePermissionActivity extends Activity implements OnClickListener
+ 
+         mUri = getIntent().getParcelableExtra(SliceProvider.EXTRA_BIND_URI);
+         mCallingPkg = getIntent().getStringExtra(SliceProvider.EXTRA_PKG);
+-        mProviderPkg = getIntent().getStringExtra(SliceProvider.EXTRA_PROVIDER_PKG);
++        if (mUri == null) {
++            Log.e(TAG, SliceProvider.EXTRA_BIND_URI + " wasn't provided");
++            finish();
++            return;
++        }
+ 
+         try {
+             PackageManager pm = getPackageManager();
++            mProviderPkg = pm.resolveContentProvider(mUri.getAuthority(),
++                    PackageManager.GET_META_DATA).applicationInfo.packageName;
++            verifyCallingPkg();
+             CharSequence app1 = BidiFormatter.getInstance().unicodeWrap(pm.getApplicationInfo(
+                     mCallingPkg, 0).loadSafeLabel(pm, PackageItemInfo.DEFAULT_MAX_LABEL_SIZE_PX,
+                     PackageItemInfo.SAFE_LABEL_FLAG_TRIM
+@@ -97,4 +106,29 @@ public class SlicePermissionActivity extends Activity implements OnClickListener
+     public void onDismiss(DialogInterface dialog) {
+         finish();
+     }
++
++    private void verifyCallingPkg() {
++        final String providerPkg = getIntent().getStringExtra("provider_pkg");
++        if (providerPkg == null || mProviderPkg.equals(providerPkg)) return;
++        final String callingPkg = getCallingPkg();
++        EventLog.writeEvent(0x534e4554, "159145361", getUid(callingPkg), String.format(
++                "pkg %s (disguised as %s) attempted to request permission to show %s slices in %s",
++                callingPkg, providerPkg, mProviderPkg, mCallingPkg));
++    }
++
++    @Nullable
++    private String getCallingPkg() {
++        final Uri referrer = getReferrer();
++        if (referrer == null) return null;
++        return referrer.getHost();
++    }
++
++    private int getUid(@Nullable final String pkg) {
++        if (pkg == null) return -1;
++        try {
++            return getPackageManager().getApplicationInfo(pkg, 0).uid;
++        } catch (NameNotFoundException e) {
++        }
++        return -1;
++    }
+ }
+-- 
+2.34.1
+

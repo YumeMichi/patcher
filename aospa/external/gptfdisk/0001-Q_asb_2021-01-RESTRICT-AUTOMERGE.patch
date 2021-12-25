@@ -1,0 +1,40 @@
+From 87694aa49807b84e60dd01e3e67a01bd57752c21 Mon Sep 17 00:00:00 2001
+From: Jasraj Bedi <jasrajb@google.com>
+Date: Sat, 6 Jun 2020 01:42:05 +0000
+Subject: [PATCH] [Q_asb_2021-01] RESTRICT AUTOMERGE ANDROID: Fix negative
+ stack write in sgdisk
+
+A maliciously formatted USB or SD Card device when inserted into an Android device could crash sgdisk. This crash occurs because sgdisk does does not validate the number of cyclic partitions, which leads to an integer underflow ultimately causing a negative indexed stack write.
+
+Fix this by making sure the number of partitions don't go negative.
+
+After the fix, sgdisk detects the broken GPT and partitions it correctly
+
+Author: jasrajb@google.com
+Bug: 158063095
+Test: before fix, sgdisk crashed when USB with malicious GPT was inserted
+Test: after fix, sgdisk didn't crash
+Test: went through the "formatting" wizard with a malicious GPT and sgdisk successfully reformatted it to vfat
+Change-Id: Ie0257a68f6a0140b98fb7d104dc2ffd1f5c2afde
+(cherry picked from commit ad517164894a4fbb905a50fa598992904e71730b)
+---
+ basicmbr.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/basicmbr.cc b/basicmbr.cc
+index 23f35b4..81e42ca 100644
+--- a/basicmbr.cc
++++ b/basicmbr.cc
+@@ -260,7 +260,8 @@ int BasicMBRData::ReadLogicalParts(uint64_t extendedStart, int partNum) {
+          if (EbrLocations[i] == offset) { // already read this one; infinite logical partition loop!
+             cerr << "Logical partition infinite loop detected! This is being corrected.\n";
+             allOK = -1;
+-            partNum -= 1;
++            if(partNum > 0) //don't go negative
++                partNum -= 1;
+          } // if
+       } // for
+       EbrLocations[partNum] = offset;
+-- 
+2.34.1
+

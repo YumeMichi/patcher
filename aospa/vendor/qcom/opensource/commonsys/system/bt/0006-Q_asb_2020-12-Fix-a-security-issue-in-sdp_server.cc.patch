@@ -1,7 +1,7 @@
 From 539020fd2b74a3bdb5dc27bd16e54fbda01ff32b Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Tue, 6 Oct 2020 14:48:27 -0700
-Subject: [PATCH 6/6] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
+Subject: [PATCH 6/8] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
 
 Bug: 169342531
 Test: POC
