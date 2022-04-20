@@ -1,7 +1,7 @@
 From d7a2bb16e1641265bac4fc87b07a67335a161dfa Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Tue, 21 Jan 2020 19:43:31 -0800
-Subject: [PATCH 1/8] [Q_asb_2021-04] Guard ICC ID behind new identifier access
+Subject: [PATCH 1/9] [Q_asb_2021-04] Guard ICC ID behind new identifier access
  requirements
 
 In Android 10 access to device identifiers was limited to apps with
@@ -479,5 +479,5 @@ index 3655705ded..596e01d5ed 100644
          // restrictions should be enabled; this results in a NPE when DeviceConfig uses
          // Activity.currentActivity.getContentResolver as the resolver for Settings.Config.getString
 -- 
-2.34.1
+2.35.1
 

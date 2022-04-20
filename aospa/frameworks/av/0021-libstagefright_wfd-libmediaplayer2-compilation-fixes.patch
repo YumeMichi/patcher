@@ -1,7 +1,7 @@
 From 133722720b418d1a441f5822cd958fbd76d967e9 Mon Sep 17 00:00:00 2001
 From: Vladimir Oltean <olteanv@gmail.com>
 Date: Wed, 9 Jan 2019 01:43:08 +0200
-Subject: [PATCH 21/28] libstagefright_wfd: libmediaplayer2: compilation fixes
+Subject: [PATCH 21/29] libstagefright_wfd: libmediaplayer2: compilation fixes
 
 * Among others, adapt to the ABuffer API changes in
   "f03606d9 Move MediaBufferXXX from foundation to libmediaextractor"
@@ -388,5 +388,5 @@ index 865ba94e14..9791ed754f 100644
      int64_t timeUs;
      CHECK(accessUnit->meta()->findInt64("timeUs", &timeUs));
 -- 
-2.34.1
+2.35.1
 

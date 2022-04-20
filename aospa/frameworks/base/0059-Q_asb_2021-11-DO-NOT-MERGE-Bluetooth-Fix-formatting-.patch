@@ -1,7 +1,7 @@
 From db6a5546482de7782470f833fce0c00279ef314a Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Wed, 18 Aug 2021 16:35:00 -0700
-Subject: [PATCH 59/67] [Q_asb_2021-11] DO NOT MERGE Bluetooth: Fix formatting
+Subject: [PATCH 59/72] [Q_asb_2021-11] DO NOT MERGE Bluetooth: Fix formatting
  in getAlias()
 
 Bug: 180747689
@@ -34,5 +34,5 @@ index 8fcadce5ce22..c3703d6f35dc 100644
              Log.e(TAG, "", e);
          }
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 38b70951307019767bcb8a3a35f44f917633eb0e Mon Sep 17 00:00:00 2001
 From: wilsonshih <wilsonshih@google.com>
 Date: Wed, 13 May 2020 16:09:35 +0800
-Subject: [PATCH 04/67] [Q_asb_2020-12] Make WallpaperMS bind wallpaper
+Subject: [PATCH 04/72] [Q_asb_2020-12] Make WallpaperMS bind wallpaper
  component PendingIntent immutable.
 
 Require that the PendingIntent be immutable so that a malicious app is
@@ -30,5 +30,5 @@ index 0e2f0ce991c7..37ae3340d319 100644
                      Context.BIND_AUTO_CREATE | Context.BIND_SHOWING_UI
                              | Context.BIND_FOREGROUND_SERVICE_WHILE_AWAKE
 -- 
-2.34.1
+2.35.1
 

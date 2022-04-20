@@ -1,0 +1,181 @@
+From 55f3d690bc7207b0943e390dd04878d37f2553e5 Mon Sep 17 00:00:00 2001
+From: Hugh Chen <hughchen@google.com>
+Date: Thu, 28 Oct 2021 06:21:37 +0000
+Subject: [PATCH 18/18] [Q_asb_2022-01] RESTRICT AUTOMERGE Fix make Bluetooth
+ discoverable without additional permission
+
+- Only enable device can be discoverable when the user launch
+  "Connected Devices settings" through settings and systemui
+
+Bug: 194695497
+Test: make -j42 RunSettingsRoboTests and use test apk to manually test
+to verify the device is not discoversable when open "Connected settings"
+through test apk.
+
+Change-Id: Ia04ab759b737acf30b782f5c5831dd59f25fb257
+(cherry picked from commit d3abbb9821dca627c49b15185109150c79597549)
+(cherry picked from commit d4e0ed22844c1fbb2afdd2ab9ad8b428e18eb909)
+Merged-In: Ia04ab759b737acf30b782f5c5831dd59f25fb257
+---
+ .../ConnectedDeviceDashboardFragment.java     | 14 ++++++++++
+ ...iscoverableFooterPreferenceController.java | 19 +++++++++++--
+ ...verableFooterPreferenceControllerTest.java | 27 +++++++++++++++++--
+ 3 files changed, 56 insertions(+), 4 deletions(-)
+
+diff --git a/src/com/android/settings/connecteddevice/ConnectedDeviceDashboardFragment.java b/src/com/android/settings/connecteddevice/ConnectedDeviceDashboardFragment.java
+index db9eb02f0a..7f73c84257 100644
+--- a/src/com/android/settings/connecteddevice/ConnectedDeviceDashboardFragment.java
++++ b/src/com/android/settings/connecteddevice/ConnectedDeviceDashboardFragment.java
+@@ -53,12 +53,15 @@ import android.content.Context;
+ import android.net.Uri;
+ import android.provider.DeviceConfig;
+ import android.provider.SearchIndexableResource;
++import android.text.TextUtils;
++import android.util.Log;
+ 
+ import androidx.annotation.VisibleForTesting;
+ 
+ import com.android.settings.R;
+ import com.android.settings.core.SettingsUIDeviceConfig;
+ import com.android.settings.dashboard.DashboardFragment;
++import com.android.settings.password.PasswordUtils;
+ import com.android.settings.search.BaseSearchIndexProvider;
+ import com.android.settings.slices.SlicePreferenceController;
+ import com.android.settingslib.core.AbstractPreferenceController;
+@@ -73,6 +76,9 @@ import java.util.List;
+ public class ConnectedDeviceDashboardFragment extends DashboardFragment {
+ 
+     private static final String TAG = "ConnectedDeviceFrag";
++    private static final String SETTINGS_PACKAGE_NAME = "com.android.settings";
++    private static final String SYSTEMUI_PACKAGE_NAME = "com.android.systemui";
++    private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
+ 
+     @VisibleForTesting
+     static final String KEY_CONNECTED_DEVICES = "connected_device_list";
+@@ -123,6 +129,11 @@ public class ConnectedDeviceDashboardFragment extends DashboardFragment {
+         super.onAttach(context);
+         final boolean nearbyEnabled = DeviceConfig.getBoolean(DeviceConfig.NAMESPACE_SETTINGS_UI,
+                 SettingsUIDeviceConfig.BT_NEAR_BY_SUGGESTION_ENABLED, true);
++        String callingAppPackageName = PasswordUtils.getCallingAppPackageName(
++                getActivity().getActivityToken());
++        if (DEBUG) {
++            Log.d(TAG, "onAttach() calling package name is : " + callingAppPackageName);
++        }
+         use(AvailableMediaDeviceGroupController.class).init(this);
+         use(ConnectedDeviceGroupController.class).init(this);
+         use(SavedTwsDeviceGroupController.class).init(this);
+@@ -131,6 +142,9 @@ public class ConnectedDeviceDashboardFragment extends DashboardFragment {
+         use(SlicePreferenceController.class).setSliceUri(nearbyEnabled
+                 ? Uri.parse(getString(R.string.config_nearby_devices_slice_uri))
+                 : null);
++        use(DiscoverableFooterPreferenceController.class).setAlwaysDiscoverable(
++                TextUtils.equals(SETTINGS_PACKAGE_NAME, callingAppPackageName)
++                        || TextUtils.equals(SYSTEMUI_PACKAGE_NAME, callingAppPackageName));
+     }
+ 
+     /**
+diff --git a/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceController.java b/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceController.java
+index ead33070ee..bb0417e580 100644
+--- a/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceController.java
++++ b/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceController.java
+@@ -55,6 +55,7 @@ public class DiscoverableFooterPreferenceController extends BasePreferenceContro
+     private FooterPreference mPreference;
+     private BluetoothAdapter mBluetoothAdapter;
+     private AlwaysDiscoverable mAlwaysDiscoverable;
++    private boolean mIsAlwaysDiscoverable;
+ 
+     public DiscoverableFooterPreferenceController(Context context) {
+         super(context, KEY);
+@@ -119,7 +120,9 @@ public class DiscoverableFooterPreferenceController extends BasePreferenceContro
+         }
+         mContext.registerReceiver(mBluetoothChangedReceiver,
+                 new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+-        mAlwaysDiscoverable.start();
++        if (mIsAlwaysDiscoverable) {
++            mAlwaysDiscoverable.start();
++        }
+         updateFooterPreferenceTitle(mBluetoothAdapter.getState());
+     }
+ 
+@@ -129,7 +132,19 @@ public class DiscoverableFooterPreferenceController extends BasePreferenceContro
+             return;
+         }
+         mContext.unregisterReceiver(mBluetoothChangedReceiver);
+-        mAlwaysDiscoverable.stop();
++        if (mIsAlwaysDiscoverable) {
++            mAlwaysDiscoverable.stop();
++        }
++    }
++
++    /**
++     * Set whether the device can be discovered. By default the value will be {@code false}.
++     *
++     * @param isAlwaysDiscoverable {@code true} if the device can be discovered,
++     *     otherwise {@code false}
++     */
++    public void setAlwaysDiscoverable(boolean isAlwaysDiscoverable) {
++        mIsAlwaysDiscoverable = isAlwaysDiscoverable;
+     }
+ 
+     private void updateFooterPreferenceTitle (int bluetoothState) {
+diff --git a/tests/robotests/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceControllerTest.java b/tests/robotests/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceControllerTest.java
+index 3cc125b4d2..a64b293563 100644
+--- a/tests/robotests/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceControllerTest.java
++++ b/tests/robotests/src/com/android/settings/connecteddevice/DiscoverableFooterPreferenceControllerTest.java
+@@ -18,6 +18,7 @@ package com.android.settings.connecteddevice;
+ import static com.google.common.truth.Truth.assertThat;
+ 
+ import static org.mockito.Mockito.doReturn;
++import static org.mockito.Mockito.never;
+ import static org.mockito.Mockito.spy;
+ import static org.mockito.Mockito.verify;
+ import static org.mockito.Mockito.when;
+@@ -116,14 +117,17 @@ public class DiscoverableFooterPreferenceControllerTest {
+     }
+ 
+     @Test
+-    public void onResume() {
++    public void onResume_setAlwaysDiscoverableAsTrue_shouldRegisterBluetoothChanged() {
++        mDiscoverableFooterPreferenceController.setAlwaysDiscoverable(true);
+         mDiscoverableFooterPreferenceController.onResume();
++
+         assertThat(getRegisteredBroadcastReceivers()).contains(mBluetoothChangedReceiver);
+         verify(mAlwaysDiscoverable).start();
+     }
+ 
+     @Test
+-    public void onPause() {
++    public void onPause_setAlwaysDiscoverableAsTrue_shouldUnregisterBluetoothChanged() {
++        mDiscoverableFooterPreferenceController.setAlwaysDiscoverable(true);
+         mDiscoverableFooterPreferenceController.onResume();
+         mDiscoverableFooterPreferenceController.onPause();
+ 
+@@ -131,6 +135,25 @@ public class DiscoverableFooterPreferenceControllerTest {
+         verify(mAlwaysDiscoverable).stop();
+     }
+ 
++    @Test
++    public void onResume_setAlwaysDiscoverableAsFalse_shouldNotRegisterBluetoothChanged() {
++        mDiscoverableFooterPreferenceController.setAlwaysDiscoverable(false);
++        mDiscoverableFooterPreferenceController.onResume();
++
++        assertThat(getRegisteredBroadcastReceivers()).contains(mBluetoothChangedReceiver);
++        verify(mAlwaysDiscoverable, never()).start();
++    }
++
++    @Test
++    public void onPause_setAlwaysDiscoverableAsFalse_shouldNotUnregisterBluetoothChanged() {
++        mDiscoverableFooterPreferenceController.setAlwaysDiscoverable(false);
++        mDiscoverableFooterPreferenceController.onResume();
++        mDiscoverableFooterPreferenceController.onPause();
++
++        assertThat(getRegisteredBroadcastReceivers()).doesNotContain(mBluetoothChangedReceiver);
++        verify(mAlwaysDiscoverable, never()).stop();
++    }
++
+     @Test
+     public void onBluetoothStateChanged_bluetoothOn_updateTitle() {
+         BluetoothAdapter.getDefaultAdapter().setName(DEVICE_NAME);
+-- 
+2.35.1
+

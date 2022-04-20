@@ -37,6 +37,7 @@ REPOSITORIES=(
     'packages/apps/Car/Settings'
     'packages/apps/CellBroadcastReceiver'
     'packages/apps/Contacts'
+    'packages/apps/Dialer'
     'packages/apps/FMRadio'
     'packages/apps/KeyChain'
     'packages/apps/Nfc'

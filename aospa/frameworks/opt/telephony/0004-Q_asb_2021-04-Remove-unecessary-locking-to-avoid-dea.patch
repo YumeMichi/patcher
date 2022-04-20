@@ -1,7 +1,7 @@
 From b38b20ef3193a18d6eeffe71640386de04c34f90 Mon Sep 17 00:00:00 2001
 From: Malcolm Chen <refuhoo@google.com>
 Date: Tue, 21 Jul 2020 14:27:39 -0700
-Subject: [PATCH 4/8] [Q_asb_2021-04] Remove unecessary locking to avoid dead
+Subject: [PATCH 4/9] [Q_asb_2021-04] Remove unecessary locking to avoid dead
  lock.
 
 Bug: 160252067
@@ -178,5 +178,5 @@ index 929af60963..4010b36c4e 100644
                  subList.sort(SUBSCRIPTION_INFO_COMPARATOR);
              } else {
 -- 
-2.34.1
+2.35.1
 

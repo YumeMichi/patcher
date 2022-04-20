@@ -1,7 +1,7 @@
 From 61b8c1c2ca79755f58e69c29f48853bff0a8dab5 Mon Sep 17 00:00:00 2001
 From: David Su <dysu@google.com>
 Date: Thu, 18 Jun 2020 19:00:18 -0700
-Subject: [PATCH 01/17] [Q_asb_2020-12] Stop expecting WifiConfig extra from
+Subject: [PATCH 01/18] [Q_asb_2020-12] Stop expecting WifiConfig extra from
  CONFIGURED_NETWORKS_CHANGED_ACTION broadcast
 
 WifiConfig is no longer sent in this broadcast
@@ -56,5 +56,5 @@ index 0f6e5621be..8f51a0e773 100644
  
      private final NetworkRequest mNetworkRequest = new NetworkRequest.Builder()
 -- 
-2.34.1
+2.35.1
 

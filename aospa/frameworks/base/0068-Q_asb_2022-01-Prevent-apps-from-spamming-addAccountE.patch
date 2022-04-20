@@ -1,0 +1,67 @@
+From 896b81daff349f248c61b2446a05dbb33d5acd9a Mon Sep 17 00:00:00 2001
+From: Aseem Kumar <aseemk@google.com>
+Date: Mon, 17 May 2021 09:25:03 +0000
+Subject: [PATCH 68/72] [Q_asb_2022-01] Prevent apps from spamming
+ addAccountExplicitly.
+
+See comment here for the discussion on solution
+https://b.corp.google.com/issues/169762606#comment14
+
+Change-Id: If212df3a3b7be1de0fb26b8e88b2fcbb8077c253
+
+Bug: 169762606
+(cherry picked from commit 11053c17b397db67b20e96ce769508766cef7db9)
+
+Change-Id: I6494366a5695daedc3f4f0046da9e130a5363f5f
+Merged-In: If212df3a3b7be1de0fb26b8e88b2fcbb8077c253
+(cherry picked from commit 5beff34b5738ee050d04ff5786e8c883bb5585f8)
+Merged-In: I6494366a5695daedc3f4f0046da9e130a5363f5f
+---
+ core/java/android/accounts/Account.java                    | 7 +++++++
+ .../com/android/server/accounts/AccountManagerService.java | 5 +++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/core/java/android/accounts/Account.java b/core/java/android/accounts/Account.java
+index c822d20445ec..15b70b405823 100644
+--- a/core/java/android/accounts/Account.java
++++ b/core/java/android/accounts/Account.java
+@@ -30,6 +30,7 @@ import android.util.Log;
+ 
+ import com.android.internal.annotations.GuardedBy;
+ 
++import java.util.Objects;
+ import java.util.Set;
+ 
+ /**
+@@ -85,6 +86,12 @@ public class Account implements Parcelable {
+         if (TextUtils.isEmpty(type)) {
+             throw new IllegalArgumentException("the type must not be empty: " + type);
+         }
++        if (name.length() > 200) {
++            throw new IllegalArgumentException("account name is longer than 200 characters");
++        }
++        if (type.length() > 200) {
++            throw new IllegalArgumentException("account type is longer than 200 characters");
++        }
+         this.name = name;
+         this.type = type;
+         this.accessId = accessId;
+diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java
+index 476f1cd20b1e..295aeb187f9b 100644
+--- a/services/core/java/com/android/server/accounts/AccountManagerService.java
++++ b/services/core/java/com/android/server/accounts/AccountManagerService.java
+@@ -1816,6 +1816,11 @@ public class AccountManagerService
+                                 + ", skipping since the account already exists");
+                         return false;
+                     }
++                    if (accounts.accountsDb.findAllDeAccounts().size() > 100) {
++                        Log.w(TAG, "insertAccountIntoDatabase: " + account
++                                + ", skipping since more than 50 accounts on device exist");
++                        return false;
++                    }
+                     long accountId = accounts.accountsDb.insertCeAccount(account, password);
+                     if (accountId < 0) {
+                         Log.w(TAG, "insertAccountIntoDatabase: " + account.toSafeString()
+-- 
+2.35.1
+

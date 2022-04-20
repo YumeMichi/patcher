@@ -1,0 +1,40 @@
+From dc55377197f74d677932149f6531bf7f4cf51376 Mon Sep 17 00:00:00 2001
+From: Aseem Kumar <aseemk@google.com>
+Date: Mon, 17 May 2021 09:25:03 +0000
+Subject: [PATCH 69/72] [Q_asb_2022-01] Prevent apps from spamming
+ addAccountExplicitly.
+
+See comment here for the discussion on solution
+https://b.corp.google.com/issues/169762606#comment14
+
+Change-Id: If212df3a3b7be1de0fb26b8e88b2fcbb8077c253
+
+Bug: 169762606
+(cherry picked from commit 11053c17b397db67b20e96ce769508766cef7db9)
+
+Change-Id: I424e098dd70ae31bbbc7cb2f3eccd1ccc287064b
+Merged-In: If212df3a3b7be1de0fb26b8e88b2fcbb8077c253
+(cherry picked from commit 551d70e1c84a68db10b28e25adb42ae4396e0fdc)
+Merged-In: I424e098dd70ae31bbbc7cb2f3eccd1ccc287064b
+---
+ .../com/android/server/accounts/AccountManagerService.java    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/core/java/com/android/server/accounts/AccountManagerService.java b/services/core/java/com/android/server/accounts/AccountManagerService.java
+index 295aeb187f9b..97c44b568e6e 100644
+--- a/services/core/java/com/android/server/accounts/AccountManagerService.java
++++ b/services/core/java/com/android/server/accounts/AccountManagerService.java
+@@ -1817,8 +1817,8 @@ public class AccountManagerService
+                         return false;
+                     }
+                     if (accounts.accountsDb.findAllDeAccounts().size() > 100) {
+-                        Log.w(TAG, "insertAccountIntoDatabase: " + account
+-                                + ", skipping since more than 50 accounts on device exist");
++                        Log.w(TAG, "insertAccountIntoDatabase: " + account.toSafeString()
++                                + ", skipping since more than 100 accounts on device exist");
+                         return false;
+                     }
+                     long accountId = accounts.accountsDb.insertCeAccount(account, password);
+-- 
+2.35.1
+

@@ -1,0 +1,73 @@
+From 21aca928c6c382d851565263c758d87506b6fec9 Mon Sep 17 00:00:00 2001
+From: Chen Xu <fionaxu@google.com>
+Date: Fri, 5 Nov 2021 23:52:37 -0700
+Subject: [PATCH 9/9] [Q_asb_2022-01] filter deviceIdentifiers for
+ subscriptionInfo if callers without perm
+
+Fix a security issue that app can read iccId of sim card(s) without
+requiring READ_PRIVILEGED_PHONE_STATE permission when calling hidden
+API SubscriptionManager.getAllActiveSubscriptionInfoList. Apply
+deviceIdentifier filter to remove those info if the caller does
+not have proper permissions. The previous fix forgot to reassign
+returned value with filtered result.
+
+Bug: 183612370
+Test: Manual
+Change-Id: I592a100f274bfe8a9f1b17b9a4c54ae2aadd6fdb
+Merged-in: I592a100f274bfe8a9f1b17b9a4c54ae2aadd6fdb
+(cherry picked from commit b3a41396db555adf14ae4b4e91c6026f2e51d41b)
+Merged-In: I592a100f274bfe8a9f1b17b9a4c54ae2aadd6fdb
+---
+ .../telephony/SubscriptionController.java     | 21 ++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/src/java/com/android/internal/telephony/SubscriptionController.java b/src/java/com/android/internal/telephony/SubscriptionController.java
+index 8de8a73fe1..9d79b7ad78 100644
+--- a/src/java/com/android/internal/telephony/SubscriptionController.java
++++ b/src/java/com/android/internal/telephony/SubscriptionController.java
+@@ -718,6 +718,19 @@ public class SubscriptionController extends ISub.Stub {
+      */
+     @Override
+     public List<SubscriptionInfo> getAllSubInfoList(String callingPackage) {
++        return getAllSubInfoList(callingPackage, false);
++    }
++
++    /**
++     * @param callingPackage The package making the IPC.
++     * @param callingFeatureId The feature in the package
++     * @param skipConditionallyRemoveIdentifier if set, skip removing identifier conditionally
++     * @return List of all SubscriptionInfo records in database,
++     * include those that were inserted before, maybe empty but not null.
++     * @hide
++     */
++    public List<SubscriptionInfo> getAllSubInfoList(String callingPackage,
++            boolean skipConditionallyRemoveIdentifier) {
+         if (VDBG) logd("[getAllSubInfoList]+");
+ 
+         // This API isn't public, so no need to provide a valid subscription ID - we're not worried
+@@ -736,9 +749,9 @@ public class SubscriptionController extends ISub.Stub {
+         } finally {
+             Binder.restoreCallingIdentity(identity);
+         }
+-        if (subList != null) {
++        if (subList != null && !skipConditionallyRemoveIdentifier) {
+             if (VDBG) logd("[getAllSubInfoList]- " + subList.size() + " infos return");
+-            subList.stream().map(
++            subList = subList.stream().map(
+                     subscriptionInfo -> conditionallyRemoveIdentifiers(subscriptionInfo,
+                             callingPackage, "getAllSubInfoList"))
+                     .collect(Collectors.toList());
+@@ -3410,7 +3423,9 @@ public class SubscriptionController extends ISub.Stub {
+         List<SubscriptionInfo> subInfoList;
+ 
+         try {
+-            subInfoList = getAllSubInfoList(mContext.getOpPackageName());
++            // need to bypass removing identifier check because that will remove the subList without
++            // group id.
++            subInfoList = getAllSubInfoList(mContext.getOpPackageName(), true);
+             if (groupUuid == null || subInfoList == null || subInfoList.isEmpty()) {
+                 return new ArrayList<>();
+             }
+-- 
+2.35.1
+

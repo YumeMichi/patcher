@@ -1,7 +1,7 @@
 From 6fac2cdbc34eb2fa4a36d38d51779b23e71032b8 Mon Sep 17 00:00:00 2001
 From: Chen Xu <fionaxu@google.com>
 Date: Thu, 24 Jun 2021 11:08:00 -0700
-Subject: [PATCH 8/8] [Q_asb_2021-10] fix the issue that clearCallingIdentity
+Subject: [PATCH 8/9] [Q_asb_2021-10] fix the issue that clearCallingIdentity
  before appops check
 
 we should restore CallingIndentity when do the appops check for
@@ -57,5 +57,5 @@ index da33f1d73e..8de8a73fe1 100644
  
      private List<SubscriptionInfo> makeCacheListCopyWithLock(List<SubscriptionInfo> cacheSubList) {
 -- 
-2.34.1
+2.35.1
 

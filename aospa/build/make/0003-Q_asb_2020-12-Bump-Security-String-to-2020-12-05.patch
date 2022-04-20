@@ -1,7 +1,7 @@
 From 827643b74a75cffc550afca98b1e08a293865658 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Sat, 12 Dec 2020 15:58:04 -0700
-Subject: [PATCH 03/15] [Q_asb_2020-12] Bump Security String to 2020-12-05
+Subject: [PATCH 03/16] [Q_asb_2020-12] Bump Security String to 2020-12-05
 
 Implemented:
 ============
@@ -38,7 +38,7 @@ Change-Id: I4172ccf129126f84050e68a14e239b7e03a22a44
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/version_defaults.mk b/core/version_defaults.mk
-index b0374516c..9f4004a65 100644
+index b0374516c0..9f4004a65e 100644
 --- a/core/version_defaults.mk
 +++ b/core/version_defaults.mk
 @@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
@@ -51,5 +51,5 @@ index b0374516c..9f4004a65 100644
  .KATI_READONLY := PLATFORM_SECURITY_PATCH
  
 -- 
-2.34.1
+2.35.1
 

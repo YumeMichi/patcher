@@ -1,7 +1,7 @@
 From 90870d618b5a20726ddde756533875f1befcde57 Mon Sep 17 00:00:00 2001
 From: cnchen <cnchen@google.com>
 Date: Mon, 6 Jul 2020 19:58:44 +0800
-Subject: [PATCH 63/67] [Q_asb_2021-12] Fix NPE on getTitle()
+Subject: [PATCH 63/72] [Q_asb_2021-12] Fix NPE on getTitle()
 
 Bug: 199922685
 Test: make RunSettingsLibRoboTests -j40
@@ -62,5 +62,5 @@ index 77473f52f4be..72fd8ef3f48f 100644
      public void testCompareTo_GivesActiveBeforeInactive() {
          AccessPoint activeAp = new TestAccessPointBuilder(mContext).setActive(true).build();
 -- 
-2.34.1
+2.35.1
 

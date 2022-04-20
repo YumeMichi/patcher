@@ -1,7 +1,7 @@
 From 50d8193b0c0b383d29d6c9914eb837a74159eae9 Mon Sep 17 00:00:00 2001
 From: Andras Kloczl <andraskloczl@google.com>
 Date: Tue, 9 Mar 2021 20:38:56 +0000
-Subject: [PATCH 07/17] [Q_asb_2021-05] Prevent using invalid result uri during
+Subject: [PATCH 07/18] [Q_asb_2021-05] Prevent using invalid result uri during
  multi user image change
 
 Test: manual
@@ -43,5 +43,5 @@ index 3253f79d9d..f62a2d5970 100644
              case REQUEST_CODE_CROP_PHOTO:
                  onPhotoCropped(pictureUri, true);
 -- 
-2.34.1
+2.35.1
 

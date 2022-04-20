@@ -1,7 +1,7 @@
 From 10eef5007e5ee8b51afdc5c29510524b8ca340ac Mon Sep 17 00:00:00 2001
 From: Tsung-Mao Fang <tmfang@google.com>
 Date: Wed, 14 Apr 2021 15:51:37 +0800
-Subject: [PATCH 10/17] [Q_asb_2021-07] Prevent HTML Injection on the Device
+Subject: [PATCH 10/18] [Q_asb_2021-07] Prevent HTML Injection on the Device
  Admin request screen
 
 The root issue is that CharSequence is an interface.
@@ -57,5 +57,5 @@ index 8b06975bc0..bc417860a2 100644
              mAddMsg.setVisibility(View.VISIBLE);
          } else {
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 83a5ebf57952458f3d2f9d18a8742e9e1679124d Mon Sep 17 00:00:00 2001
 From: shubang <shubang@google.com>
 Date: Fri, 13 Aug 2021 15:42:15 -0700
-Subject: [PATCH 61/67] [Q_asb_2021-11] TIF: fix issue of using caller-aware
+Subject: [PATCH 61/72] [Q_asb_2021-11] TIF: fix issue of using caller-aware
  methods after clearCallingIdentity()
 
 Bug: 189824175
@@ -31,5 +31,5 @@ index 057b53e6232f..20a6cf4f60f6 100644
                  Intent intent = new Intent(TvContract.ACTION_CHANNEL_BROWSABLE_REQUESTED);
                  List<ResolveInfo> list = getContext().getPackageManager()
 -- 
-2.34.1
+2.35.1
 

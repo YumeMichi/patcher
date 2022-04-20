@@ -1,7 +1,7 @@
 From b10a4d2296c1cabbd77ef4aaba4fc4b2e7b69b84 Mon Sep 17 00:00:00 2001
 From: Pranav Vashi <neobuddy89@gmail.com>
 Date: Sun, 31 May 2020 03:59:14 +0530
-Subject: [PATCH 1/2] Telecomm: Break qti-telephony-framework dependency
+Subject: [PATCH 1/3] Telecomm: Break qti-telephony-framework dependency
 
 Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
 Change-Id: Ife00e99e11d473ed286b574ae04f814d36f4741f
@@ -183,5 +183,5 @@ index 5ea5e49b..cd603681 100644
          return result;
      }
 -- 
-2.34.1
+2.35.1
 

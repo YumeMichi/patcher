@@ -1,7 +1,7 @@
 From 64825d6755ffe3e3f335bfeb3a68c43279e31fe6 Mon Sep 17 00:00:00 2001
 From: Miranda Kephart <mkephart@google.com>
 Date: Mon, 16 Nov 2020 11:22:13 -0500
-Subject: [PATCH 33/67] [Q_asb_2021-04] [DO NOT MERGE] Close screenshot process
+Subject: [PATCH 33/72] [Q_asb_2021-04] [DO NOT MERGE] Close screenshot process
  on user switched
 
 Currently, we keep the process up even if the user switches,
@@ -123,5 +123,5 @@ index 6ad0a8a9b61d..eb7add73a4b5 100644
       * Notifies the screenshot service to show an error.
       */
 -- 
-2.34.1
+2.35.1
 

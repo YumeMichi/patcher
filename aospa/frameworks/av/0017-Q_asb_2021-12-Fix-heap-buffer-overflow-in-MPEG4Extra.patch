@@ -1,7 +1,7 @@
 From e7aba1d634fc63611a8bff91eecef70f7abb6578 Mon Sep 17 00:00:00 2001
 From: Santiago Seifert <aquilescanta@google.com>
 Date: Thu, 30 Sep 2021 13:15:21 +0000
-Subject: [PATCH 17/28] [Q_asb_2021-12] Fix heap-buffer-overflow in
+Subject: [PATCH 17/29] [Q_asb_2021-12] Fix heap-buffer-overflow in
  MPEG4Extractor am: d13a4efc7a
 
 Original change: https://googleplex-android-review.googlesource.com/c/platform/frameworks/av/+/15747591
@@ -78,5 +78,5 @@ index f57f226a49..ccf19fb1d7
  
          uint8_t *dstData = (uint8_t *)mBuffer->data();
 -- 
-2.34.1
+2.35.1
 

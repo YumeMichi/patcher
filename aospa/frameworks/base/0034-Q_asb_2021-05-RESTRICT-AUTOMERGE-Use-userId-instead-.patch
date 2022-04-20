@@ -1,7 +1,7 @@
 From f1599d37a33124cc922bee88eac32a720977701d Mon Sep 17 00:00:00 2001
 From: Jonathan Scott <scottjonathan@google.com>
 Date: Wed, 3 Feb 2021 17:24:10 +0000
-Subject: [PATCH 34/67] [Q_asb_2021-05] [RESTRICT AUTOMERGE] Use userId instead
+Subject: [PATCH 34/72] [Q_asb_2021-05] [RESTRICT AUTOMERGE] Use userId instead
  of USER_CURRENT in shouldLockKeyguard.
 
 USER_CURRENT is not an acceptable input to isSecure(). The test has also
@@ -72,5 +72,5 @@ index 47c76fc28d15..9cc24a542efc 100644
          // AND there is a task record
          TaskRecord tr1 = getTaskRecord(TaskRecord.LOCK_TASK_AUTH_WHITELISTED);
 -- 
-2.34.1
+2.35.1
 

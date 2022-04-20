@@ -1,7 +1,7 @@
 From c2d2ad37f8776d20932c7a24836269af6c097381 Mon Sep 17 00:00:00 2001
 From: Eugene Susla <eugenesusla@google.com>
 Date: Tue, 3 Nov 2020 14:22:42 -0800
-Subject: [PATCH 02/17] [Q_asb_2021-02] RESTRICT AUTOMERGE Prevent non-system
+Subject: [PATCH 02/18] [Q_asb_2021-02] RESTRICT AUTOMERGE Prevent non-system
  overlays from showing over notification listener consent dialog
 
 Bug: 170731783
@@ -35,5 +35,5 @@ index 8677c0226d..a7d9f6889c 100644
  
          mComponentName = getIntent().getParcelableExtra(EXTRA_COMPONENT_NAME);
 -- 
-2.34.1
+2.35.1
 

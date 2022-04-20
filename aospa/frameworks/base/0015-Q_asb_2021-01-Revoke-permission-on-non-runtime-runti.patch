@@ -1,7 +1,7 @@
 From 4bd7848f3cecc6c126fafdcc0072bc3557e29bff Mon Sep 17 00:00:00 2001
 From: "Philip P. Moltmann" <moltmann@google.com>
 Date: Tue, 3 Nov 2020 15:12:44 -0800
-Subject: [PATCH 15/67] [Q_asb_2021-01] Revoke permission on non-runtime ->
+Subject: [PATCH 15/72] [Q_asb_2021-01] Revoke permission on non-runtime ->
  runtime upgrade
 
 Not only on normal -> runtime.
@@ -38,5 +38,5 @@ index 63753baa2539..1f029000f8a5 100644
              // permission, then permission state should be cleaned up
              bp.mPermissionDefinitionChanged = true;
 -- 
-2.34.1
+2.35.1
 

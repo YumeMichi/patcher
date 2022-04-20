@@ -1,7 +1,7 @@
 From 9b6f881c86ad8f587ead03905e908fd68f0b1b62 Mon Sep 17 00:00:00 2001
 From: Evan Chen <evanxinchen@google.com>
 Date: Thu, 2 Sep 2021 21:54:44 +0000
-Subject: [PATCH 60/67] [Q_asb_2021-11] Backporting the change of ag/15629060
+Subject: [PATCH 60/72] [Q_asb_2021-11] Backporting the change of ag/15629060
  to qt-dev
 
 Bug: 172251622
@@ -40,5 +40,5 @@ index 7bc9993751d4..bca667db0ab7 100644
              final DeviceDiscoveryService.DevicesAdapter adapter = getService().mDevicesAdapter;
              mDeviceListView.setAdapter(adapter);
 -- 
-2.34.1
+2.35.1
 

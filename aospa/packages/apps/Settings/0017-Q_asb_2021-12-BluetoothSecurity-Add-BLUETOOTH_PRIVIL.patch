@@ -1,7 +1,7 @@
 From 1543e4d47f0f98149e1670656bac137b0e0f7de9 Mon Sep 17 00:00:00 2001
 From: Chen Chen <cncn@google.com>
 Date: Tue, 5 Oct 2021 17:46:02 -0700
-Subject: [PATCH 17/17] [Q_asb_2021-12] BluetoothSecurity: Add
+Subject: [PATCH 17/18] [Q_asb_2021-12] BluetoothSecurity: Add
  BLUETOOTH_PRIVILEGED permission for pairing dialog
 
 Bug: 194300867
@@ -26,5 +26,5 @@ index 584cb396f8..591e557f75 100644
                    android:windowSoftInputMode="stateVisible|adjustResize"
                    android:theme="@style/Theme.AlertDialog"
 -- 
-2.34.1
+2.35.1
 

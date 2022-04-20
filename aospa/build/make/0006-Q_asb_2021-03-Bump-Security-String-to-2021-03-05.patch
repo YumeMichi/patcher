@@ -1,7 +1,7 @@
 From daec8f434fdf2f481690fdd6bd4e7f1b3fdd9db1 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Thu, 4 Mar 2021 04:14:07 -0700
-Subject: [PATCH 06/15] [Q_asb_2021-03] Bump Security String to 2021-03-05
+Subject: [PATCH 06/16] [Q_asb_2021-03] Bump Security String to 2021-03-05
 
 Implemented:
 ============
@@ -31,7 +31,7 @@ Change-Id: I07612f2e57dc4b58699017012195095d6270ca74
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/core/version_defaults.mk b/core/version_defaults.mk
-index 8fdcef023..f35b2134a 100644
+index 8fdcef0231..f35b2134a9 100644
 --- a/core/version_defaults.mk
 +++ b/core/version_defaults.mk
 @@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
@@ -44,5 +44,5 @@ index 8fdcef023..f35b2134a 100644
  .KATI_READONLY := PLATFORM_SECURITY_PATCH
  
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From c6c40a4fbbb20d0e9ade41e8f1aa847da5158d40 Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Thu, 18 Jun 2020 14:44:26 -0700
-Subject: [PATCH 3/8] [Q_asb_2021-04] Move permission checks out of
+Subject: [PATCH 3/9] [Q_asb_2021-04] Move permission checks out of
  synchronized block
 
 SubscriptionController#getSubscriptionInfoListFromCacheHelper is
@@ -319,5 +319,5 @@ index 596e01d5ed..09fcc24859 100644
          // TelephonyPermissions queries DeviceConfig to determine if the identifier access
          // restrictions should be enabled; this results in a NPE when DeviceConfig uses
 -- 
-2.34.1
+2.35.1
 

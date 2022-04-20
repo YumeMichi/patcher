@@ -1,7 +1,7 @@
 From 23e59d5ddfdcffff54b43001260978b66bfe0d88 Mon Sep 17 00:00:00 2001
 From: Santiago Seifert <aquilescanta@google.com>
 Date: Mon, 8 Feb 2021 16:09:38 +0000
-Subject: [PATCH 06/28] [Q_asb_2021-05] Prevent read of uninitialized memory
+Subject: [PATCH 06/29] [Q_asb_2021-05] Prevent read of uninitialized memory
 
 Bug: 173720767
 Test: atest IMediaPlayerTest
@@ -82,5 +82,5 @@ index ea066650ae..ba1c833ddc 100644
              reply->writeInt32(result);
              return OK;
 -- 
-2.34.1
+2.35.1
 
