@@ -1,7 +1,7 @@
 From 1349f0fa5e2a7c28b8956a17e307332325585d58 Mon Sep 17 00:00:00 2001
 From: Joe Yu <joe.yu@unisoc.com>
 Date: Wed, 31 Oct 2018 14:37:42 +0800
-Subject: [PATCH 2/3] [Q_asb_2021-02] Fix storaged memory leak
+Subject: [PATCH 2/5] [Q_asb_2021-02] Fix storaged memory leak
 
 storaged try to load user's proto even if it has been loaded before
 
@@ -35,5 +35,5 @@ index 689766382..1d934a28b 100644
  
  void storaged_t::remove_user_ce(userid_t user_id) {
 -- 
-2.34.1
+2.35.1
 

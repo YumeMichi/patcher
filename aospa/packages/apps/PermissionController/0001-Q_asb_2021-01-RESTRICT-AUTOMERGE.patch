@@ -1,7 +1,7 @@
 From 4eb354870681f1a7ba35907398169653ba805513 Mon Sep 17 00:00:00 2001
 From: Evan Severson <evanseverson@google.com>
 Date: Wed, 29 Apr 2020 11:45:56 -0700
-Subject: [PATCH] [Q_asb_2021-01] RESTRICT AUTOMERGE Don't allow tapjacking
+Subject: [PATCH 1/2] [Q_asb_2021-01] RESTRICT AUTOMERGE Don't allow tapjacking
  permissioncontroller
 
 Use the filterTouchesWhenObscured attribute throughout the permission
@@ -166,5 +166,5 @@ index fb4564028..de7d8a3b9 100644
 +
  </resources>
 -- 
-2.34.1
+2.35.1
 

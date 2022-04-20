@@ -1,7 +1,7 @@
 From 76ac1f87bd32180109379b67d904e725269010dd Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Bram=20Bonn=C3=A9?= <brambonne@google.com>
 Date: Mon, 19 Oct 2020 18:08:55 +0200
-Subject: [PATCH 3/3] [Q_asb_2021-05] Use EUI64 IPv6 link-local address
+Subject: [PATCH 3/4] [Q_asb_2021-05] Use EUI64 IPv6 link-local address
  generation only when randomizing MAC
 
 When connected MAC address randomization is used, generate IPv6
@@ -88,5 +88,5 @@ index 05f421c0e..4c85d8639 100644
                  }
              }
 -- 
-2.34.1
+2.35.1
 

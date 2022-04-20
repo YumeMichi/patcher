@@ -1,0 +1,199 @@
+From ecb06ab341741e0f1a026a3ed49a96223a6ebcbd Mon Sep 17 00:00:00 2001
+From: Patrick Baumann <patb@google.com>
+Date: Fri, 6 Mar 2020 10:34:17 -0800
+Subject: [PATCH 74/77] [Q_asb_2020-09] Do not set referrerUri on SessionInfo
+ for non-owners
+
+This change leaves the referrerUri field null when the caller leading to
+its production is not the owner of the session.
+
+Bug: 142125338
+Test: atest SessionReferrerUriTest
+
+Merged-In: I84679ea0636aa2097e25e23813c48134c9cc1d75
+Change-Id: I84679ea0636aa2097e25e23813c48134c9cc1d75
+(cherry picked from commit 6ad6ca2dbb77b16896f41484a9dd50338c4d98f1)
+---
+ .../android/content/pm/PackageInstaller.java  |  2 +
+ .../server/pm/PackageInstallerService.java    | 20 +++++---
+ .../server/pm/PackageInstallerSession.java    | 46 ++++++++++++++++---
+ .../com/android/server/pm/StagingManager.java |  5 +-
+ 4 files changed, 59 insertions(+), 14 deletions(-)
+
+diff --git a/core/java/android/content/pm/PackageInstaller.java b/core/java/android/content/pm/PackageInstaller.java
+index a15caa09bb60..44842c62a3c8 100644
+--- a/core/java/android/content/pm/PackageInstaller.java
++++ b/core/java/android/content/pm/PackageInstaller.java
+@@ -2082,6 +2082,7 @@ public class PackageInstaller {
+ 
+         /**
+          * Get the value set in {@link SessionParams#setOriginatingUri(Uri)}.
++         * Note: This value will only be non-null for the owner of the session.
+          */
+         public @Nullable Uri getOriginatingUri() {
+             return originatingUri;
+@@ -2096,6 +2097,7 @@ public class PackageInstaller {
+ 
+         /**
+          * Get the value set in {@link SessionParams#setReferrerUri(Uri)}
++         * Note: This value will only be non-null for the owner of the session.
+          */
+         public @Nullable Uri getReferrerUri() {
+             return referrerUri;
+diff --git a/services/core/java/com/android/server/pm/PackageInstallerService.java b/services/core/java/com/android/server/pm/PackageInstallerService.java
+index 48da4621d544..e7b0df397f54 100644
+--- a/services/core/java/com/android/server/pm/PackageInstallerService.java
++++ b/services/core/java/com/android/server/pm/PackageInstallerService.java
+@@ -810,26 +810,30 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+     public SessionInfo getSessionInfo(int sessionId) {
+         synchronized (mSessions) {
+             final PackageInstallerSession session = mSessions.get(sessionId);
+-            return session != null ? session.generateInfo() : null;
++
++            return session != null
++                    ? session.generateInfoForCaller(true /*withIcon*/, Binder.getCallingUid())
++                    : null;
+         }
+     }
+ 
+     @Override
+     public ParceledListSlice<SessionInfo> getStagedSessions() {
+-        return mStagingManager.getSessions();
++        return mStagingManager.getSessions(Binder.getCallingUid());
+     }
+ 
+     @Override
+     public ParceledListSlice<SessionInfo> getAllSessions(int userId) {
++        final int callingUid = Binder.getCallingUid();
+         mPermissionManager.enforceCrossUserPermission(
+-                Binder.getCallingUid(), userId, true, false, "getAllSessions");
++                callingUid, userId, true, false, "getAllSessions");
+ 
+         final List<SessionInfo> result = new ArrayList<>();
+         synchronized (mSessions) {
+             for (int i = 0; i < mSessions.size(); i++) {
+                 final PackageInstallerSession session = mSessions.valueAt(i);
+                 if (session.userId == userId && !session.hasParentSessionId()) {
+-                    result.add(session.generateInfo(false));
++                    result.add(session.generateInfoForCaller(false, callingUid));
+                 }
+             }
+         }
+@@ -847,7 +851,8 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+             for (int i = 0; i < mSessions.size(); i++) {
+                 final PackageInstallerSession session = mSessions.valueAt(i);
+ 
+-                SessionInfo info = session.generateInfo(false);
++                SessionInfo info =
++                        session.generateInfoForCaller(false /*withIcon*/, Process.SYSTEM_UID);
+                 if (Objects.equals(info.getInstallerPackageName(), installerPackageName)
+                         && session.userId == userId && !session.hasParentSessionId()) {
+                     result.add(info);
+@@ -1291,7 +1296,10 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+             session.markUpdated();
+             writeSessionsAsync();
+             if (mOkToSendBroadcasts) {
+-                mPm.sendSessionUpdatedBroadcast(session.generateInfo(false),
++                // we don't scrub the data here as this is sent only to the installer several
++                // privileged system packages
++                mPm.sendSessionUpdatedBroadcast(
++                        session.generateInfoForCaller(false/*icon*/, Process.SYSTEM_UID),
+                         session.userId);
+             }
+         }
+diff --git a/services/core/java/com/android/server/pm/PackageInstallerSession.java b/services/core/java/com/android/server/pm/PackageInstallerSession.java
+index f71a3e22e916..d9b307846a50 100755
+--- a/services/core/java/com/android/server/pm/PackageInstallerSession.java
++++ b/services/core/java/com/android/server/pm/PackageInstallerSession.java
+@@ -465,11 +465,41 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+                 stagedSessionErrorMessage != null ? stagedSessionErrorMessage : "";
+     }
+ 
+-    public SessionInfo generateInfo() {
+-        return generateInfo(true);
++    /**
++     * Returns {@code true} if the {@link SessionInfo} object should be produced with potentially
++     * sensitive data scrubbed from its fields.
++     *
++     * @param callingUid the uid of the caller; the recipient of the {@link SessionInfo} that may
++     *                   need to be scrubbed
++     */
++    private boolean shouldScrubData(int callingUid) {
++        return !(callingUid < Process.FIRST_APPLICATION_UID || getInstallerUid() == callingUid);
++    }
++
++    /**
++     * Generates a {@link SessionInfo} object for the provided uid. This may result in some fields
++     * that may contain sensitive info being filtered.
++     *
++     * @param includeIcon true if the icon should be included in the object
++     * @param callingUid the uid of the caller; the recipient of the {@link SessionInfo} that may
++     *                   need to be scrubbed
++     * @see #shouldScrubData(int)
++     */
++    public SessionInfo generateInfoForCaller(boolean includeIcon, int callingUid) {
++        return generateInfoInternal(includeIcon, shouldScrubData(callingUid));
+     }
+ 
+-    public SessionInfo generateInfo(boolean includeIcon) {
++    /**
++     * Generates a {@link SessionInfo} object to ensure proper hiding of sensitive fields.
++     *
++     * @param includeIcon true if the icon should be included in the object
++     * @see #generateInfoForCaller(boolean, int)
++     */
++    public SessionInfo generateInfoScrubbed(boolean includeIcon) {
++        return generateInfoInternal(includeIcon, true /*scrubData*/);
++    }
++
++    private SessionInfo generateInfoInternal(boolean includeIcon, boolean scrubData) {
+         final SessionInfo info = new SessionInfo();
+         synchronized (mLock) {
+             info.sessionId = sessionId;
+@@ -492,9 +522,13 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+             info.appLabel = params.appLabel;
+ 
+             info.installLocation = params.installLocation;
+-            info.originatingUri = params.originatingUri;
++            if (!scrubData) {
++                info.originatingUri = params.originatingUri;
++            }
+             info.originatingUid = params.originatingUid;
+-            info.referrerUri = params.referrerUri;
++            if (!scrubData) {
++                info.referrerUri = params.referrerUri;
++            }
+             info.grantedRuntimePermissions = params.grantedRuntimePermissions;
+             info.whitelistedRestrictedPermissions = params.whitelistedRestrictedPermissions;
+             info.installFlags = params.installFlags;
+@@ -2227,7 +2261,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+         final boolean isNewInstall = extras == null || !extras.getBoolean(Intent.EXTRA_REPLACING);
+         if (success && isNewInstall && mPm.mInstallerService.okToSendBroadcasts()
+                 && (params.installFlags & PackageManager.INSTALL_DRY_RUN) == 0) {
+-            mPm.sendSessionCommitBroadcast(generateInfo(), userId);
++            mPm.sendSessionCommitBroadcast(generateInfoScrubbed(true /*icon*/), userId);
+         }
+ 
+         mCallback.onSessionFinished(this, success);
+diff --git a/services/core/java/com/android/server/pm/StagingManager.java b/services/core/java/com/android/server/pm/StagingManager.java
+index 895d2c5d00bf..dd7133121b21 100644
+--- a/services/core/java/com/android/server/pm/StagingManager.java
++++ b/services/core/java/com/android/server/pm/StagingManager.java
+@@ -95,11 +95,12 @@ public class StagingManager {
+         }
+     }
+ 
+-    ParceledListSlice<PackageInstaller.SessionInfo> getSessions() {
++    ParceledListSlice<PackageInstaller.SessionInfo> getSessions(int callingUid) {
+         final List<PackageInstaller.SessionInfo> result = new ArrayList<>();
+         synchronized (mStagedSessions) {
+             for (int i = 0; i < mStagedSessions.size(); i++) {
+-                result.add(mStagedSessions.valueAt(i).generateInfo(false));
++                final PackageInstallerSession stagedSession = mStagedSessions.valueAt(i);
++                result.add(stagedSession.generateInfoForCaller(false /*icon*/, callingUid));
+             }
+         }
+         return new ParceledListSlice<>(result);
+-- 
+2.35.1
+

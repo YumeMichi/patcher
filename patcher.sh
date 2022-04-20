@@ -58,6 +58,7 @@ REPOSITORIES=(
     'system/nfc'
     'system/netd'
     'system/security'
+    'system/sepolicy'
     'system/tools/hidl'
     'vendor/pa'
     # 'vendor/qcom/opensource/commonsys/packages/apps/Bluetooth'

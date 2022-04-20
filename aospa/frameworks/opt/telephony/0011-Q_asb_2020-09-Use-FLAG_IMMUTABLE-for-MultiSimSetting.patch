@@ -1,0 +1,34 @@
+From 1e6c4d3c4e5a313e0656c183d8ba0855de4de0db Mon Sep 17 00:00:00 2001
+From: Shuo Qian <shuoq@google.com>
+Date: Thu, 7 May 2020 14:56:33 -0700
+Subject: [PATCH 11/11] [Q_asb_2020-09] Use FLAG_IMMUTABLE for
+ MultiSimSettingController
+
+Require that the PendingIntent be immutable so that a malicious app is
+ not able to hijack and mutate any of the details.
+
+Test: Android builds
+Bug: 155094269
+Change-Id: Ic7ee67a393b72121071a39f80b02538c758792c6
+Merged-In: Ic7ee67a393b72121071a39f80b02538c758792c6
+---
+ .../android/internal/telephony/MultiSimSettingController.java  | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/java/com/android/internal/telephony/MultiSimSettingController.java b/src/java/com/android/internal/telephony/MultiSimSettingController.java
+index 3b7336ac1b..0fe1184667 100644
+--- a/src/java/com/android/internal/telephony/MultiSimSettingController.java
++++ b/src/java/com/android/internal/telephony/MultiSimSettingController.java
+@@ -781,7 +781,8 @@ public class MultiSimSettingController extends Handler {
+             EuiccManager euiccManager = (EuiccManager)
+                     mContext.getSystemService(Context.EUICC_SERVICE);
+             euiccManager.switchToSubscription(SubscriptionManager.INVALID_SUBSCRIPTION_ID,
+-                    PendingIntent.getService(mContext, 0, new Intent(), 0));
++                    PendingIntent.getService(
++                            mContext, 0, new Intent(), PendingIntent.FLAG_IMMUTABLE));
+         }
+     }
+ 
+-- 
+2.35.1
+

@@ -1,7 +1,7 @@
 From 73d796dfed5030ea9403968d3319b5355b25e804 Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Fri, 20 Nov 2020 17:00:39 +0100
-Subject: [PATCH 2/4] [Q_asb_2021-02] Check if advertiserId value matches valid
+Subject: [PATCH 2/5] [Q_asb_2021-02] Check if advertiserId value matches valid
  advertiser
 
 Passing non-existing advertiserId can result in OOB
@@ -112,5 +112,5 @@ index 11a8ba10b..83a69dd8d 100644
      }
  
 -- 
-2.34.1
+2.35.1
 

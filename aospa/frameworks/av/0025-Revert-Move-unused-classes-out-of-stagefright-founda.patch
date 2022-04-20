@@ -1,7 +1,7 @@
 From 2bc38e33e108940d11c86e601c1da9e1ab15585e Mon Sep 17 00:00:00 2001
 From: Nico <nicorg2529@gmail.com>
 Date: Fri, 1 Nov 2019 15:41:51 +0000
-Subject: [PATCH 25/29] Revert "Move unused classes out of stagefright
+Subject: [PATCH 25/31] Revert "Move unused classes out of stagefright
  foundataion"
 
 This reverts commit 5ec3d6ac0c607e89d03ba5a9499e471d8559dc7e.

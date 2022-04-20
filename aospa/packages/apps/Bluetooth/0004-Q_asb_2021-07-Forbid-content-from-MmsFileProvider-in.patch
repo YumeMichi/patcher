@@ -1,7 +1,7 @@
 From 18e88e4f42999b1c83746399bf240442627f6043 Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Fri, 23 Apr 2021 20:59:43 +0200
-Subject: [PATCH 4/4] [Q_asb_2021-07] Forbid content from MmsFileProvider in
+Subject: [PATCH 4/5] [Q_asb_2021-07] Forbid content from MmsFileProvider in
  Bluetooth Share
 
 Bug: 179910660
@@ -49,5 +49,5 @@ index 7533d0d87..8e5ffb00c 100644
       * Checks, whether the child directory is the same as, or a sub-directory of the base
       * directory. Neither base nor child should be null.
 -- 
-2.34.1
+2.35.1
 

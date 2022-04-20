@@ -1,7 +1,7 @@
 From 21aca928c6c382d851565263c758d87506b6fec9 Mon Sep 17 00:00:00 2001
 From: Chen Xu <fionaxu@google.com>
 Date: Fri, 5 Nov 2021 23:52:37 -0700
-Subject: [PATCH 9/9] [Q_asb_2022-01] filter deviceIdentifiers for
+Subject: [PATCH 09/11] [Q_asb_2022-01] filter deviceIdentifiers for
  subscriptionInfo if callers without perm
 
 Fix a security issue that app can read iccId of sim card(s) without

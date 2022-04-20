@@ -1,7 +1,7 @@
 From 38a41eb665f877a9ccd790faac71b16243feeda4 Mon Sep 17 00:00:00 2001
 From: Mark Salyzyn <salyzyn@google.com>
 Date: Fri, 20 Nov 2020 09:30:29 -0800
-Subject: [PATCH 3/3] [Q_asb_2021-02] storaged: protect global proto_loaded
+Subject: [PATCH 3/5] [Q_asb_2021-02] storaged: protect global proto_loaded
 
 proto_loaded is not thread safe, so we must protect it with
 a mutex proto_lock.
@@ -62,5 +62,5 @@ index 1d934a28b..3e0f70d3a 100644
          /*
           * Don't flush proto if we haven't attempted to load it from file.
 -- 
-2.34.1
+2.35.1
 

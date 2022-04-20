@@ -1,7 +1,7 @@
 From ccd5ee18673bf3863708640a729fbf4097ed31c2 Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Mon, 8 Nov 2021 16:45:42 -0800
-Subject: [PATCH 20/21] [Q_asb_2022-02] security: Use-After-Free in
+Subject: [PATCH 20/22] [Q_asb_2022-02] security: Use-After-Free in
  btm_sec_[dis]connected
 
 Bug: 201083442

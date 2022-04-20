@@ -1,7 +1,7 @@
 From 3c11be5df0532323342e55a04c9568e293e6fac4 Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Mon, 16 Nov 2020 15:54:00 +0100
-Subject: [PATCH 3/4] [Q_asb_2021-02] Check permission before sending batch
+Subject: [PATCH 3/5] [Q_asb_2021-02] Check permission before sending batch
  scan result
 
 Use same checks as for regular scan results
@@ -67,5 +67,5 @@ index 5f2b42e7a..032780da1 100644
              sendBatchScanResults(app, client, new ArrayList<ScanResult>(allResults));
              // TODO: Question to reviewer: Shouldn't there be a return here?
 -- 
-2.34.1
+2.35.1
 

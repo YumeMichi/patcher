@@ -1,7 +1,7 @@
 From b5d561a87bcdfd2e4376656ce20d93ff7e518477 Mon Sep 17 00:00:00 2001
 From: Shuo Qian <shuoq@google.com>
 Date: Tue, 18 May 2021 16:24:07 -0700
-Subject: [PATCH 5/9] [Q_asb_2021-08] DO NOT MERGE
+Subject: [PATCH 05/11] [Q_asb_2021-08] DO NOT MERGE
 
 Check READ_PRIVILEGED_PHONE_STATE instead of READ_PHONE_STATE for getAvailableSubscriptionInfoList
 

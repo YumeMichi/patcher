@@ -1,7 +1,7 @@
 From ea5ac2128a5a896619d42699be061e25ab49f586 Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Fri, 11 Dec 2020 11:56:15 -0800
-Subject: [PATCH 11/21] [Q_asb_2021-04] avrc_copy_packet: Zero initialize
+Subject: [PATCH 11/22] [Q_asb_2021-04] avrc_copy_packet: Zero initialize
  packet
 
 Bug: 174149901

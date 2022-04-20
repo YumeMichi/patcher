@@ -1,7 +1,7 @@
 From 82cc5fae17a551e589c599e7817578a6e89203b4 Mon Sep 17 00:00:00 2001
 From: SongFerngWang <songferngwang@google.com>
 Date: Wed, 5 May 2021 21:30:39 +0800
-Subject: [PATCH 7/9] [Q_asb_2021-09] [security] SubscriptionGroup is exposed
+Subject: [PATCH 07/11] [Q_asb_2021-09] [security] SubscriptionGroup is exposed
  to unprivileged callers
 
 SubscriptionInfo.mGroupUUID is not cleared in

@@ -1,7 +1,7 @@
 From c75851b16a5baf92e213127f2f700ae51cf40be4 Mon Sep 17 00:00:00 2001
 From: Nico <nicorg2529@gmail.com>
 Date: Fri, 1 Nov 2019 15:42:02 +0000
-Subject: [PATCH 26/29] Remove libmediaextractor dependency from
+Subject: [PATCH 26/31] Remove libmediaextractor dependency from
  libstagefright_wfd
 
 Change-Id: I3d417d2f2ce468eb9d45f55f7818bb9a46348667

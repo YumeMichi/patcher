@@ -1,7 +1,7 @@
 From 4d4c1def018ec9e5f619e35921adf60b9a30b11d Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Fri, 4 Dec 2020 12:54:27 -0800
-Subject: [PATCH 12/21] [Q_asb_2021-04] AVRCP: Use calloc to zero reserved
+Subject: [PATCH 12/22] [Q_asb_2021-04] AVRCP: Use calloc to zero reserved
  fields
 
 Bug: 174150451

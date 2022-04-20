@@ -1,7 +1,7 @@
 From 95435d09b3f022ecd9db0dfc2b7490c4e3be6d85 Mon Sep 17 00:00:00 2001
 From: Dmitry Dementyev <dementyev@google.com>
 Date: Wed, 9 Dec 2020 07:24:43 -0800
-Subject: [PATCH 24/73] [Q_asb_2021-03] Protect account chooser activities
+Subject: [PATCH 24/77] [Q_asb_2021-03] Protect account chooser activities
  against overlay.
 
 Bug: 172841550

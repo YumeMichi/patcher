@@ -1,7 +1,7 @@
 From 50d8193b0c0b383d29d6c9914eb837a74159eae9 Mon Sep 17 00:00:00 2001
 From: Andras Kloczl <andraskloczl@google.com>
 Date: Tue, 9 Mar 2021 20:38:56 +0000
-Subject: [PATCH 07/19] [Q_asb_2021-05] Prevent using invalid result uri during
+Subject: [PATCH 07/20] [Q_asb_2021-05] Prevent using invalid result uri during
  multi user image change
 
 Test: manual

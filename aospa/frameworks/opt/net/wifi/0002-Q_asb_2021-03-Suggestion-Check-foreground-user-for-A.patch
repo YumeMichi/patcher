@@ -1,7 +1,7 @@
 From 8d6b84e6127510429fa56a8fc237dbcf553adfdd Mon Sep 17 00:00:00 2001
 From: Nate Jiang <qiangjiang@google.com>
 Date: Thu, 3 Dec 2020 14:31:30 -0800
-Subject: [PATCH 2/3] [Q_asb_2021-03] [Suggestion] Check foreground user for
+Subject: [PATCH 2/4] [Q_asb_2021-03] [Suggestion] Check foreground user for
  API call
 
 Also, squashes the follow up commit to create a single CL for
@@ -496,5 +496,5 @@ index 131425af8..15b34afd8 100644
              assertEquals(-1,
                      passpointManager.findEapMethodFromNAIRealmMatchedWithCarrier(scanDetails));
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From c6c40a4fbbb20d0e9ade41e8f1aa847da5158d40 Mon Sep 17 00:00:00 2001
 From: Michael Groover <mpgroover@google.com>
 Date: Thu, 18 Jun 2020 14:44:26 -0700
-Subject: [PATCH 3/9] [Q_asb_2021-04] Move permission checks out of
+Subject: [PATCH 03/11] [Q_asb_2021-04] Move permission checks out of
  synchronized block
 
 SubscriptionController#getSubscriptionInfoListFromCacheHelper is

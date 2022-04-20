@@ -1,7 +1,7 @@
 From b10e6393e95bafe00c31db3e6d2e165691c7d451 Mon Sep 17 00:00:00 2001
 From: Gary Mai <garymai@google.com>
 Date: Wed, 15 Sep 2021 16:20:01 -0700
-Subject: [PATCH 5/5] [Q_asb_2021-12] Address photo editing security bug
+Subject: [PATCH 5/6] [Q_asb_2021-12] Address photo editing security bug
 
 Filter to only system apps that can handle cropping.
 Otherwise, save the photo as is.
@@ -94,5 +94,5 @@ index 053ee2216..1567116d4 100644
  
      /**
 -- 
-2.34.1
+2.35.1
 

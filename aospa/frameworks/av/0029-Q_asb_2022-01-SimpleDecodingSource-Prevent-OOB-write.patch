@@ -1,7 +1,7 @@
 From 77ba771b4c398b6333715baa2bf755ae7712a4e9 Mon Sep 17 00:00:00 2001
 From: Gopalakrishnan Nallasamy <gokrishnan@google.com>
 Date: Wed, 29 Sep 2021 08:24:26 -0700
-Subject: [PATCH 29/29] [Q_asb_2022-01] SimpleDecodingSource:Prevent OOB write
+Subject: [PATCH 29/31] [Q_asb_2022-01] SimpleDecodingSource:Prevent OOB write
  in heap mem
 
 doRead() doesn't handle situations when received byte do not fit into

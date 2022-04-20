@@ -1,0 +1,46 @@
+From 11b524da466024006aa2e081616996b2fadf9662 Mon Sep 17 00:00:00 2001
+From: Myles Watson <mylesgw@google.com>
+Date: Thu, 18 Jun 2020 14:35:53 -0700
+Subject: [PATCH 22/22] [Q_asb_2020-09] Remove pairing on incoming bond request
+
+Bug: 150156492
+Tag: #security
+Test: Bond two devices, forget from one device and reconnect
+Change-Id: I048b7b142e3fe2096cf1a9aa2931c175fa52cd45
+Merged-In: I048b7b142e3fe2096cf1a9aa2931c175fa52cd45
+(cherry picked from commit 13f409ad3a2423b06af7a7f1a9b06fb06c8820a7)
+(cherry picked from commit 21e580de3b49668ab21a6e25cc8e5c81f203ee5e)
+---
+ stack/btm/btm_sec.cc | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/stack/btm/btm_sec.cc b/stack/btm/btm_sec.cc
+index 46f416e074..2e4c0c1960 100644
+--- a/stack/btm/btm_sec.cc
++++ b/stack/btm/btm_sec.cc
+@@ -53,6 +53,8 @@
+ bool(APPL_AUTH_WRITE_EXCEPTION)(const RawAddress& bd_addr);
+ #endif
+ 
++extern void bta_dm_process_remove_device(const RawAddress& bd_addr);
++
+ /*******************************************************************************
+  *             L O C A L    F U N C T I O N     P R O T O T Y P E S            *
+  ******************************************************************************/
+@@ -3366,6 +3368,13 @@ void btm_io_capabilities_req(const RawAddress& p) {
+   BTM_TRACE_EVENT("%s: State: %s", __func__,
+                   btm_pair_state_descr(btm_cb.pairing_state));
+ 
++  if (btm_sec_is_a_bonded_dev(p)) {
++    BTM_TRACE_WARNING(
++        "%s: Incoming bond request, but %s is already bonded (removing)",
++        __func__, p.ToString().c_str());
++    bta_dm_process_remove_device(p);
++  }
++
+   p_dev_rec = btm_find_or_alloc_dev(evt_data.bd_addr);
+ 
+   BTM_TRACE_DEBUG("%s:Security mode: %d, Num Read Remote Feat pages: %d",
+-- 
+2.35.1
+

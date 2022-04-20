@@ -1,7 +1,7 @@
 From b8b9e3e3a0a7ee8a85d6e2a4b054e6480ec0be52 Mon Sep 17 00:00:00 2001
 From: Devin Moore <devinmoore@google.com>
 Date: Thu, 22 Apr 2021 15:41:07 -0700
-Subject: [PATCH 13/29] [Q_asb_2021-07] DO NOT MERGE Add fmq function
+Subject: [PATCH 13/31] [Q_asb_2021-07] DO NOT MERGE Add fmq function
  instantiations to preserve ABI
 
 Bug: 184963385

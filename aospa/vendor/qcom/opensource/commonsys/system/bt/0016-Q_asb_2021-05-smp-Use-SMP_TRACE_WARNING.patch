@@ -1,7 +1,7 @@
 From 3e45e6fad27936a6ace477b3074009ce1608eee9 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Wed, 3 Mar 2021 13:49:21 -0800
-Subject: [PATCH 16/21] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
+Subject: [PATCH 16/22] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
 
 Bug: 174886838
 Test: pair an LE device
