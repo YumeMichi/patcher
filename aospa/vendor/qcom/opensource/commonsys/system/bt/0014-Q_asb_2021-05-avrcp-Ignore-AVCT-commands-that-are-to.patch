@@ -1,7 +1,7 @@
 From 0f42438bb7d1909294212aef3b768349fcf681ea Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 4 Feb 2021 17:30:55 -0800
-Subject: [PATCH 14/19] [Q_asb_2021-05] avrcp: Ignore AVCT commands that are
+Subject: [PATCH 14/21] [Q_asb_2021-05] avrcp: Ignore AVCT commands that are
  too long
 
 Bug: 177611958
@@ -14,7 +14,7 @@ Change-Id: If914b5928cdf16696eb54bfe91c2869cbbf8e36c
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/stack/avrc/avrc_api.cc b/stack/avrc/avrc_api.cc
-index 15bab1336..a7f8d6426 100644
+index 15bab13360..a7f8d6426a 100644
 --- a/stack/avrc/avrc_api.cc
 +++ b/stack/avrc/avrc_api.cc
 @@ -661,9 +661,10 @@ static void avrc_msg_cback(uint8_t handle, uint8_t label, uint8_t cr,
@@ -32,5 +32,5 @@ index 15bab1336..a7f8d6426 100644
      return;
    }
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 3e45e6fad27936a6ace477b3074009ce1608eee9 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Wed, 3 Mar 2021 13:49:21 -0800
-Subject: [PATCH 16/19] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
+Subject: [PATCH 16/21] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
 
 Bug: 174886838
 Test: pair an LE device
@@ -13,7 +13,7 @@ Change-Id: I3c7e0b1dd877dfa29fa0812c6a5e65fcb1d70ea7
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
-index 263d7e07e..0e15cc647 100755
+index 263d7e07ee..0e15cc647d 100755
 --- a/stack/smp/smp_act.cc
 +++ b/stack/smp/smp_act.cc
 @@ -697,7 +697,7 @@ void smp_process_pairing_public_key(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
@@ -26,5 +26,5 @@ index 263d7e07e..0e15cc647 100755
      smp.status = SMP_PAIR_AUTH_FAIL;
      smp_sm_event(p_cb, SMP_AUTH_CMPL_EVT, &smp);
 -- 
-2.34.1
+2.35.1
 

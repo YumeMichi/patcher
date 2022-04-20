@@ -1,7 +1,7 @@
 From 2955d961d08ec7051f301340d2cad3068a59429f Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Mon, 7 Dec 2020 13:11:10 -0800
-Subject: [PATCH 10/19] [Q_asb_2021-04] Legacy pairing: Reject device with same
+Subject: [PATCH 10/21] [Q_asb_2021-04] Legacy pairing: Reject device with same
  BD_ADDR
 
 Change-Id: If3daec91c3d108a4e7e988608e0600c79ea5f053
@@ -14,7 +14,7 @@ Bug: 174626251
  1 file changed, 7 insertions(+)
 
 diff --git a/stack/btm/btm_sec.cc b/stack/btm/btm_sec.cc
-index 28594e937..c733ed55f 100644
+index 28594e937d..c733ed55f4 100644
 --- a/stack/btm/btm_sec.cc
 +++ b/stack/btm/btm_sec.cc
 @@ -5178,6 +5178,13 @@ void btm_sec_pin_code_request(const RawAddress& p_bda) {
@@ -32,5 +32,5 @@ index 28594e937..c733ed55f 100644
      if ((p_bda == btm_cb.pairing_bda) &&
          (btm_cb.pairing_state == BTM_PAIR_STATE_WAIT_AUTH_COMPLETE)) {
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From b119be5964dc1a337c13a232b19716fae256401b Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Wed, 29 Sep 2021 17:49:25 -0700
-Subject: [PATCH 23/23] [Q_asb_2021-12] osi: Prevent memory allocations with
+Subject: [PATCH 23/25] [Q_asb_2021-12] osi: Prevent memory allocations with
  MSB set
 
 Limit allocations on 32bit to 2 GB
@@ -38,5 +38,5 @@ index 1c0449e148..e2c356dd34 100644
    void* ptr = calloc(1, real_size);
    CHECK(ptr);
 -- 
-2.34.1
+2.35.1
 

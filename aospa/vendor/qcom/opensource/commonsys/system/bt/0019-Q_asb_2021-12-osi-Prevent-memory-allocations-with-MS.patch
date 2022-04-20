@@ -1,7 +1,7 @@
 From 31a014763d1ea1fdac77941887e603128175b5c3 Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Wed, 29 Sep 2021 17:49:25 -0700
-Subject: [PATCH 19/19] [Q_asb_2021-12] osi: Prevent memory allocations with
+Subject: [PATCH 19/21] [Q_asb_2021-12] osi: Prevent memory allocations with
  MSB set
 
 Limit allocations on 32bit to 2 GB
@@ -18,7 +18,7 @@ Change-Id: I1c347084d7617b1e364a3241f1b37b398a2a6c6a
  1 file changed, 2 insertions(+)
 
 diff --git a/osi/src/allocator.cc b/osi/src/allocator.cc
-index 4e4f9a759..bdef4d843 100644
+index 4e4f9a759c..bdef4d843d 100644
 --- a/osi/src/allocator.cc
 +++ b/osi/src/allocator.cc
 @@ -56,6 +56,7 @@ char* osi_strndup(const char* str, size_t len) {
@@ -38,5 +38,5 @@ index 4e4f9a759..bdef4d843 100644
    void* ptr = calloc(1, real_size);
    CHECK(ptr);
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 539020fd2b74a3bdb5dc27bd16e54fbda01ff32b Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Tue, 6 Oct 2020 14:48:27 -0700
-Subject: [PATCH 06/19] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
+Subject: [PATCH 06/21] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
 
 Bug: 169342531
 Test: POC
@@ -12,7 +12,7 @@ Change-Id: I0e8cdb9a00184f62d11fb06bc30f07b2a35bc49e
  1 file changed, 4 insertions(+)
 
 diff --git a/stack/sdp/sdp_server.cc b/stack/sdp/sdp_server.cc
-index daf0de83a..f312ea0d3 100644
+index daf0de83a4..f312ea0d32 100644
 --- a/stack/sdp/sdp_server.cc
 +++ b/stack/sdp/sdp_server.cc
 @@ -477,9 +477,11 @@ void sdp_server_handle_client_req(tCONN_CB* p_ccb, BT_HDR* p_msg) {
@@ -39,5 +39,5 @@ index daf0de83a..f312ea0d3 100644
  
    BE_STREAM_TO_UINT16(param_len, p_req);
 -- 
-2.34.1
+2.35.1
 

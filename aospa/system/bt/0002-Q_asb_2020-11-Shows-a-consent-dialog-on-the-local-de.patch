@@ -1,7 +1,7 @@
 From c50cb0fd6675c6c5bee5100c615a61fc69c0248e Mon Sep 17 00:00:00 2001
 From: Rahul Sabnis <rahulsabnis@google.com>
 Date: Fri, 26 Jun 2020 10:27:07 -0700
-Subject: [PATCH 02/23] [Q_asb_2020-11] Shows a consent dialog on the local
+Subject: [PATCH 02/25] [Q_asb_2020-11] Shows a consent dialog on the local
  device when pairing a bluetooth low energy device if the local device has a
  display.
 
@@ -261,5 +261,5 @@ index baa41cf020..b701f27bb3 100644
      if (smp_cb.br_state != SMP_BR_STATE_WAIT_APP_RSP ||
          smp_cb.cb_evt != SMP_SEC_REQUEST_EVT || smp_cb.pairing_bda != bd_addr) {
 -- 
-2.34.1
+2.35.1
 

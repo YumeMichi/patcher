@@ -1,7 +1,7 @@
 From a03decd211f34e2fe8f8a1b31a9e4dd53ef9bf3b Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 3 Dec 2020 18:54:14 -0800
-Subject: [PATCH 09/19] [Q_asb_2021-03] SDP: Only start discovery once
+Subject: [PATCH 09/21] [Q_asb_2021-03] SDP: Only start discovery once
 
 Bug: 174052148
 Test: pair with headphones
@@ -15,7 +15,7 @@ Merged-In: I1d014a7b793bb1b66e26652f6696499ea36a6510
  1 file changed, 7 insertions(+)
 
 diff --git a/bta/ag/bta_ag_sdp.cc b/bta/ag/bta_ag_sdp.cc
-index 5e9c07077..04401f04e 100644
+index 5e9c070779..04401f04e0 100644
 --- a/bta/ag/bta_ag_sdp.cc
 +++ b/bta/ag/bta_ag_sdp.cc
 @@ -33,6 +33,7 @@
@@ -40,5 +40,5 @@ index 5e9c07077..04401f04e 100644
    p_scb->p_disc_db = (tSDP_DISCOVERY_DB*)osi_malloc(BTA_AG_DISC_BUF_SIZE);
    /* set up service discovery database; attr happens to be attr_list len */
 -- 
-2.34.1
+2.35.1
 

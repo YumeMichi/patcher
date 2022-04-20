@@ -1,7 +1,7 @@
 From 7147bbec9661400dc35cf162f06b08668000968e Mon Sep 17 00:00:00 2001
 From: Marcus Meissner <marcus@jet.franken.de>
 Date: Tue, 25 Jul 2017 23:44:44 +0200
-Subject: [PATCH 2/2] [Q_asb_2021-01] fixes some (not all) buffer overreads
+Subject: [PATCH 2/5] [Q_asb_2021-01] fixes some (not all) buffer overreads
  during decoding pentax makernote entries.
 
 This should fix:
@@ -67,5 +67,5 @@ index 7e97c2c..dcb1560 100644
 +	return val;
  }
 -- 
-2.34.1
+2.35.1
 

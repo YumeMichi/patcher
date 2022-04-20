@@ -1,7 +1,7 @@
 From d57839076e6116a7c5e684d6e8533f1757209672 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Wed, 3 Mar 2021 13:49:21 -0800
-Subject: [PATCH 18/23] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
+Subject: [PATCH 18/25] [Q_asb_2021-05] smp: Use SMP_TRACE_WARNING
 
 Bug: 174886838
 Test: pair an LE device
@@ -26,5 +26,5 @@ index fc5098db63..ba7cbce8a3 100644
      smp.status = SMP_PAIR_AUTH_FAIL;
      smp_sm_event(p_cb, SMP_AUTH_CMPL_EVT, &smp);
 -- 
-2.34.1
+2.35.1
 

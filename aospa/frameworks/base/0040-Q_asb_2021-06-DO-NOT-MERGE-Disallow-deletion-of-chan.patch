@@ -1,7 +1,7 @@
 From 6895e5c38db180b7df5aaadbf5a4bfd451cda1bc Mon Sep 17 00:00:00 2001
 From: Christopher Tate <ctate@google.com>
 Date: Wed, 18 Nov 2020 17:22:45 -0800
-Subject: [PATCH 40/72] [Q_asb_2021-06] DO NOT MERGE - Disallow deletion of
+Subject: [PATCH 40/73] [Q_asb_2021-06] DO NOT MERGE - Disallow deletion of
  channels with FGS notifications
 
 Bug: 156090809

@@ -1,7 +1,7 @@
 From 8c3340be28d0fd211acc7ea133140cbd84cc2e45 Mon Sep 17 00:00:00 2001
 From: Ted Wang <tedwang@google.com>
 Date: Tue, 6 Oct 2020 20:20:16 +0800
-Subject: [PATCH 07/19] [Q_asb_2021-01] Fix potential OOB write in libbluetooth
+Subject: [PATCH 07/21] [Q_asb_2021-01] Fix potential OOB write in libbluetooth
 
 Check event id if of register notification command from remote to avoid
 OOB write.
@@ -19,7 +19,7 @@ Signed-off-by: Kevin F. Haggerty <haggertk@lineageos.org>
  1 file changed, 7 insertions(+)
 
 diff --git a/stack/avrc/avrc_pars_tg.cc b/stack/avrc/avrc_pars_tg.cc
-index 3341771ee..e1930735d 100644
+index 3341771ee7..e1930735d3 100644
 --- a/stack/avrc/avrc_pars_tg.cc
 +++ b/stack/avrc/avrc_pars_tg.cc
 @@ -310,6 +310,13 @@ static tAVRC_STS avrc_pars_vendor_cmd(tAVRC_MSG_VENDOR* p_msg,
@@ -37,5 +37,5 @@ index 3341771ee..e1930735d 100644
        }
        break;
 -- 
-2.34.1
+2.35.1
 

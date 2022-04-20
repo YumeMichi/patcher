@@ -1,7 +1,7 @@
 From 2f9fc96af94f647b3c87d8845f224e3d397486ab Mon Sep 17 00:00:00 2001
 From: Hugh Chen <hughchen@google.com>
 Date: Thu, 3 Jun 2021 16:38:24 +0800
-Subject: [PATCH 16/18] [Q_asb_2021-09] RESTRICT AUTOMERGE Fix phishing attacks
+Subject: [PATCH 16/19] [Q_asb_2021-09] RESTRICT AUTOMERGE Fix phishing attacks
  over Bluetooth due to unclear warning message
 
 This CL add more prompts presented for users to avoid phishing attacks.

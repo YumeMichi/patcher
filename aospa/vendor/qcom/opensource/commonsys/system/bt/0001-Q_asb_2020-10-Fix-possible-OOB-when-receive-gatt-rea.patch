@@ -1,7 +1,7 @@
 From aeb1b3ff1451ce972dc3afb623e206e531ed5ab7 Mon Sep 17 00:00:00 2001
 From: weichinweng <weichinweng@google.com>
 Date: Tue, 28 Jul 2020 16:56:33 +0800
-Subject: [PATCH 01/19] [Q_asb_2020-10] Fix possible OOB when receive gatt read
+Subject: [PATCH 01/21] [Q_asb_2020-10] Fix possible OOB when receive gatt read
  type response data
 
 Bug: 158833854
@@ -16,7 +16,7 @@ Change-Id: I1bd8713eecebc2bc3d919402b035987e06a2d4d3
  1 file changed, 12 insertions(+)
 
 diff --git a/stack/gatt/gatt_cl.cc b/stack/gatt/gatt_cl.cc
-index f256c85e7..73a338b6d 100644
+index f256c85e7a..73a338b6df 100644
 --- a/stack/gatt/gatt_cl.cc
 +++ b/stack/gatt/gatt_cl.cc
 @@ -773,6 +773,12 @@ void gatt_process_read_by_type_rsp(tGATT_TCB& tcb, tGATT_CLCB* p_clcb,
@@ -46,5 +46,5 @@ index f256c85e7..73a338b6d 100644
        STREAM_TO_UINT16(record_value.dclr_value.val_handle, p);
        if (!GATT_HANDLE_IS_VALID(record_value.dclr_value.val_handle)) {
 -- 
-2.34.1
+2.35.1
 

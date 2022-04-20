@@ -1,7 +1,7 @@
 From f7f63c2e86dab9e015f847eee1982ced0a83e936 Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Mon, 7 Dec 2020 13:11:10 -0800
-Subject: [PATCH 11/23] [Q_asb_2021-04] Legacy pairing: Reject device with same
+Subject: [PATCH 11/25] [Q_asb_2021-04] Legacy pairing: Reject device with same
  BD_ADDR
 
 Change-Id: If3daec91c3d108a4e7e988608e0600c79ea5f053
@@ -32,5 +32,5 @@ index 32e4b4e82a..7e05495cd0 100644
      if ((p_bda == btm_cb.pairing_bda) &&
          (btm_cb.pairing_state == BTM_PAIR_STATE_WAIT_AUTH_COMPLETE)) {
 -- 
-2.34.1
+2.35.1
 

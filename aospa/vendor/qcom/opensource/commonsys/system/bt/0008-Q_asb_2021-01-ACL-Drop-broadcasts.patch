@@ -1,7 +1,7 @@
 From c8b1bdd9c43e4d3ad744bf3011bf2485b5d33506 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 29 Oct 2020 13:05:21 -0700
-Subject: [PATCH 08/19] [Q_asb_2021-01] ACL: Drop broadcasts
+Subject: [PATCH 08/21] [Q_asb_2021-01] ACL: Drop broadcasts
 
 Bug: 169327567
 Test: compiles
@@ -14,7 +14,7 @@ Merged-In: Id4231fd7a142d630a2ada0f41a90e01afc011045
  1 file changed, 10 insertions(+)
 
 diff --git a/hci/src/packet_fragmenter.cc b/hci/src/packet_fragmenter.cc
-index 43bd15431..13ac17d0b 100644
+index 43bd15431f..13ac17d0b6 100644
 --- a/hci/src/packet_fragmenter.cc
 +++ b/hci/src/packet_fragmenter.cc
 @@ -35,10 +35,12 @@
@@ -48,5 +48,5 @@ index 43bd15431..13ac17d0b 100644
        auto map_iter = partial_packets.find(handle);
        if (map_iter != partial_packets.end()) {
 -- 
-2.34.1
+2.35.1
 

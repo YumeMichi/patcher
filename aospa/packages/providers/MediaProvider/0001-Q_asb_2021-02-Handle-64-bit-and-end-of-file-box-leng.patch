@@ -1,8 +1,8 @@
 From d904e557cc7a17ddc41c21c160cc1c25f54d2ac3 Mon Sep 17 00:00:00 2001
 From: Anton Hansson <hansson@google.com>
 Date: Wed, 17 Jun 2020 16:58:24 +0100
-Subject: [PATCH] [Q_asb_2021-02] Handle 64-bit and end-of-file box lengths in
- IsoInterface
+Subject: [PATCH 1/2] [Q_asb_2021-02] Handle 64-bit and end-of-file box lengths
+ in IsoInterface
 
 The previous code didn't recognize the special cases of
 - length 0 => the box extends to the end of file
@@ -21,7 +21,7 @@ Merged-In: Idad81e161bb998c933ac8a81a3ebf12f59391a16
  1 file changed, 40 insertions(+), 13 deletions(-)
 
 diff --git a/src/com/android/providers/media/util/IsoInterface.java b/src/com/android/providers/media/util/IsoInterface.java
-index 6843021b..35825acd 100644
+index 6843021ba..35825acd9 100644
 --- a/src/com/android/providers/media/util/IsoInterface.java
 +++ b/src/com/android/providers/media/util/IsoInterface.java
 @@ -100,6 +100,7 @@ public class IsoInterface {
@@ -135,5 +135,5 @@ index 6843021b..35825acd 100644
              }
          }
 -- 
-2.34.1
+2.35.1
 

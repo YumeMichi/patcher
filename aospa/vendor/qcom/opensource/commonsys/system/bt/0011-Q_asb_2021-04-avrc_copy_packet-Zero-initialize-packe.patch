@@ -1,7 +1,7 @@
 From ea5ac2128a5a896619d42699be061e25ab49f586 Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Fri, 11 Dec 2020 11:56:15 -0800
-Subject: [PATCH 11/19] [Q_asb_2021-04] avrc_copy_packet: Zero initialize
+Subject: [PATCH 11/21] [Q_asb_2021-04] avrc_copy_packet: Zero initialize
  packet
 
 Bug: 174149901
@@ -15,7 +15,7 @@ Test: POC
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/stack/avrc/avrc_api.cc b/stack/avrc/avrc_api.cc
-index e09a9a279..d557782ff 100644
+index e09a9a279f..d557782ff3 100644
 --- a/stack/avrc/avrc_api.cc
 +++ b/stack/avrc/avrc_api.cc
 @@ -260,7 +260,7 @@ static uint8_t avrc_get_packet_type(BT_HDR *pp_pkt) {
@@ -28,5 +28,5 @@ index e09a9a279..d557782ff 100644
    /* Copy the packet header, set the new offset, and copy the payload */
    memcpy(p_pkt_copy, p_pkt, BT_HDR_SIZE);
 -- 
-2.34.1
+2.35.1
 

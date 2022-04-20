@@ -1,7 +1,7 @@
 From 0e356333dc0d35b17c6f582617ee56ffba52089c Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Sun, 21 Mar 2021 15:51:18 -0700
-Subject: [PATCH 17/19] [Q_asb_2021-06] RESTRICT AUTOMERGE Contain
+Subject: [PATCH 17/21] [Q_asb_2021-06] RESTRICT AUTOMERGE Contain
  avrc_ctrl_pars_vendor_cmd OOB write
 
 Bug: 181860042
@@ -18,7 +18,7 @@ Change-Id: I5d8d4051a1439ee9f1f04af3dfe6da6d8016e546
  create mode 100644 stack/test/stack_avrcp_test.cc
 
 diff --git a/stack/avrc/avrc_pars_tg.cc b/stack/avrc/avrc_pars_tg.cc
-index e1930735d..a321eda6f 100644
+index e1930735d3..a321eda6f9 100644
 --- a/stack/avrc/avrc_pars_tg.cc
 +++ b/stack/avrc/avrc_pars_tg.cc
 @@ -74,6 +74,12 @@ static tAVRC_STS avrc_ctrl_pars_vendor_cmd(tAVRC_MSG_VENDOR* p_msg,
@@ -36,7 +36,7 @@ index e1930735d..a321eda6f 100644
        status = AVRC_STS_BAD_CMD;
 diff --git a/stack/test/stack_avrcp_test.cc b/stack/test/stack_avrcp_test.cc
 new file mode 100644
-index 000000000..d3a51658d
+index 0000000000..d3a51658db
 --- /dev/null
 +++ b/stack/test/stack_avrcp_test.cc
 @@ -0,0 +1,159 @@
@@ -201,5 +201,5 @@ index 000000000..d3a51658d
 +}
 \ No newline at end of file
 -- 
-2.34.1
+2.35.1
 

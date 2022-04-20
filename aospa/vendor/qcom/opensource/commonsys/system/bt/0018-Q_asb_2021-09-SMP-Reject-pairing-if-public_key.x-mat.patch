@@ -1,7 +1,7 @@
 From 808d91df1537b8b782d038309580fc30d270bffc Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Mon, 7 Jun 2021 11:06:17 -0700
-Subject: [PATCH 18/19] [Q_asb_2021-09] SMP: Reject pairing if public_key.x
+Subject: [PATCH 18/21] [Q_asb_2021-09] SMP: Reject pairing if public_key.x
  match
 
 Bug: 189329824
@@ -15,7 +15,7 @@ Tag: #security
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
-index 0e15cc647..d5fbd93d6 100755
+index 0e15cc647d..d5fbd93d60 100755
 --- a/stack/smp/smp_act.cc
 +++ b/stack/smp/smp_act.cc
 @@ -694,8 +694,7 @@ void smp_process_pairing_public_key(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
@@ -29,5 +29,5 @@ index 0e15cc647..d5fbd93d6 100755
      SMP_TRACE_WARNING("Remote and local public keys can't match");
      tSMP_INT_DATA smp;
 -- 
-2.34.1
+2.35.1
 

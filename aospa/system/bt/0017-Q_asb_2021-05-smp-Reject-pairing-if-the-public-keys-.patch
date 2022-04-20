@@ -1,7 +1,7 @@
 From 1ab0b7ba5acbe05ceb95b752d71b138fcd024d4d Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Mon, 8 Feb 2021 14:38:57 -0800
-Subject: [PATCH 17/23] [Q_asb_2021-05] smp: Reject pairing if the public keys
+Subject: [PATCH 17/25] [Q_asb_2021-05] smp: Reject pairing if the public keys
  match
 
 Bug: 174886838
@@ -36,5 +36,5 @@ index bfce7cbce2..fc5098db63 100644
      android_errorWriteLog(0x534e4554, "72377774");
      tSMP_INT_DATA smp;
 -- 
-2.34.1
+2.35.1
 

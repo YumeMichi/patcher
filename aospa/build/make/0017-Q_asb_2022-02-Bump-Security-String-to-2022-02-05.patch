@@ -1,0 +1,54 @@
+From 01191f579cf90a3d564b7bb233a6c59bf082e622 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Thu, 10 Feb 2022 06:51:07 -0700
+Subject: [PATCH 17/17] [Q_asb_2022-02] Bump Security String to 2022-02-05
+
+Implemented:
+============
+CVE:            References:    Type:  Severity:  Updated AOSP versions:
+CVE-2020-13112  A-194342672    EoP    High       10, 11
+CVE-2020-13113  A-196085005    EoP    High       10, 11
+CVE-2021-0706   A-193444889    DoS    High       10, 11
+CVE-2021-39631  A-193890833    ID     High       10, 11, 12
+CVE-2021-39663  A-200682135    EoP    High       10
+CVE-2021-39674  A-201083442    EoP    High       10, 11, 12
+
+Not Implemented:
+================
+None
+
+Not Applicable (platform source):
+=================================
+CVE:            References:    Type:  Severity:  Updated AOSP versions:
+CVE-2021-39619  A-197399948    EoP    High       11, 12
+CVE-2021-39662  A-197302116    EoP    High       11, 12
+CVE-2021-39664  A-203938029    ID     High       12
+CVE-2021-39665  A-204077881    ID     High       12
+CVE-2021-39666  A-204445255    ID     High       11, 12
+CVE-2021-39668  A-193445603    EoP    High       11, 12
+CVE-2021-39669  A-196969991    EoP    High       11, 12
+CVE-2021-39671  A-206718630    EoP    High       12
+CVE-2021-39675  A-205729183    EoP    Critical   12
+CVE-2021-39676  A-197228210    EoP    High       11
+
+Change-Id: I1788fbaf6349ef529b4a04968dd5fd259a179b5a
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index 42e9790beb..69d63b9712 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -256,7 +256,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-      PLATFORM_SECURITY_PATCH := 2022-01-05
++      PLATFORM_SECURITY_PATCH := 2022-02-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.35.1
+

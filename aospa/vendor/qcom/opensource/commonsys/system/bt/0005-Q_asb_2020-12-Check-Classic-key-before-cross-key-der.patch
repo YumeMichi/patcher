@@ -1,7 +1,7 @@
 From ec7d939feef0bf84f8bbc853bc59849c8eb4b3ed Mon Sep 17 00:00:00 2001
 From: Chen Chen <cncn@google.com>
 Date: Wed, 23 Sep 2020 17:02:58 -0700
-Subject: [PATCH 05/19] [Q_asb_2020-12] Check Classic key before cross-key
+Subject: [PATCH 05/21] [Q_asb_2020-12] Check Classic key before cross-key
  derivation
 
 Bug: 158854097
@@ -16,7 +16,7 @@ Change-Id: Id88241324e9fb89ef14e50b52eb459a0d81c492b
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
-index 5b73f0656..0c61c070f 100755
+index 5b73f06562..0c61c070f6 100755
 --- a/stack/smp/smp_act.cc
 +++ b/stack/smp/smp_act.cc
 @@ -1264,7 +1264,17 @@ void smp_key_distribution(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
@@ -39,5 +39,5 @@ index 5b73f0656..0c61c070f 100755
        }
  
 -- 
-2.34.1
+2.35.1
 

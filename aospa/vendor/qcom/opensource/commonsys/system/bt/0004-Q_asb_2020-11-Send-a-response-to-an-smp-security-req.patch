@@ -1,7 +1,7 @@
 From e724ba76842a5ef18344f2def0e6a4058d5f8b7a Mon Sep 17 00:00:00 2001
 From: Rahul Sabnis <rahulsabnis@google.com>
 Date: Mon, 24 Aug 2020 16:36:36 -0700
-Subject: [PATCH 04/19] [Q_asb_2020-11] Send a response to an smp security
+Subject: [PATCH 04/21] [Q_asb_2020-11] Send a response to an smp security
  request depending on the callback event
 
 Tag: #feature
@@ -15,7 +15,7 @@ Change-Id: Iadeb25a43b46f615b55a0dfb6e7723e5d1204351
  1 file changed, 35 insertions(+), 30 deletions(-)
 
 diff --git a/stack/smp/smp_api.cc b/stack/smp/smp_api.cc
-index c37767331..f712856d3 100644
+index c377673316..f712856d3d 100644
 --- a/stack/smp/smp_api.cc
 +++ b/stack/smp/smp_api.cc
 @@ -294,37 +294,42 @@ bool SMP_PairCancel(const RawAddress& bd_addr) {
@@ -92,5 +92,5 @@ index c37767331..f712856d3 100644
  
    if (smp_cb.smp_over_br) {
 -- 
-2.34.1
+2.35.1
 

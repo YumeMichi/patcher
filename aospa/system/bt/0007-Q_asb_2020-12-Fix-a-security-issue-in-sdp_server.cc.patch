@@ -1,7 +1,7 @@
 From f596fc15cf66b6378a6c440aa90879ec527c43f6 Mon Sep 17 00:00:00 2001
 From: Hansong Zhang <hsz@google.com>
 Date: Tue, 6 Oct 2020 14:48:27 -0700
-Subject: [PATCH 07/23] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
+Subject: [PATCH 07/25] [Q_asb_2020-12] Fix a security issue in sdp_server.cc
 
 Bug: 169342531
 Test: POC
@@ -39,5 +39,5 @@ index c9949b789c..a457bb8fa2 100644
  
    BE_STREAM_TO_UINT16(param_len, p_req);
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 8618621cb98a9b4ddf7011430b6d9f6f1e710fee Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Mon, 8 Feb 2021 14:38:57 -0800
-Subject: [PATCH 15/19] [Q_asb_2021-05] smp: Reject pairing if the public keys
+Subject: [PATCH 15/21] [Q_asb_2021-05] smp: Reject pairing if the public keys
  match
 
 Bug: 174886838
@@ -15,7 +15,7 @@ Merged-In: I0902fdf6bb5c1c7d443fc73fc480d51226fb836b
  1 file changed, 10 insertions(+)
 
 diff --git a/stack/smp/smp_act.cc b/stack/smp/smp_act.cc
-index 0c61c070f..263d7e07e 100755
+index 0c61c070f6..263d7e07ee 100755
 --- a/stack/smp/smp_act.cc
 +++ b/stack/smp/smp_act.cc
 @@ -694,6 +694,16 @@ void smp_process_pairing_public_key(tSMP_CB* p_cb, tSMP_INT_DATA* p_data) {
@@ -36,5 +36,5 @@ index 0c61c070f..263d7e07e 100755
      android_errorWriteLog(0x534e4554, "72377774");
      tSMP_INT_DATA smp;
 -- 
-2.34.1
+2.35.1
 
