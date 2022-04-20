@@ -1,7 +1,7 @@
 From 9aca3de72972b2431e2689f3bffb31e0020f8ccb Mon Sep 17 00:00:00 2001
 From: Martin Brabham <optedoblivion@google.com>
 Date: Fri, 29 Oct 2021 21:27:27 +0000
-Subject: [PATCH 25/25] [Q_asb_2022-02] Reset the IRK after all devices are
+Subject: [PATCH 25/26] [Q_asb_2022-02] Reset the IRK after all devices are
  unpaired
 
 Bug: 204355134

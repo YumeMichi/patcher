@@ -1,7 +1,7 @@
 From 779a0c1545964bd976ed62e6848c43a9bded6694 Mon Sep 17 00:00:00 2001
 From: Julia Reynolds <juliacr@google.com>
 Date: Fri, 7 Jan 2022 16:28:52 -0500
-Subject: [PATCH 81/82] [Q_asb_2022-03] Check group channels for FGSes
+Subject: [PATCH 81/84] [Q_asb_2022-03] Check group channels for FGSes
 
 Before allowing the group to be deleted, by updating
 the current check to the method that populates the channel

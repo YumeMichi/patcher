@@ -1,7 +1,7 @@
 From d37aa7149d793d10b0775c8f05b2988aa7467312 Mon Sep 17 00:00:00 2001
 From: Chienyuan <chienyuanhuang@google.com>
 Date: Mon, 8 Feb 2021 17:27:17 +0800
-Subject: [PATCH 19/25] [Q_asb_2021-06] AVRCP: pass bdaddr by value when use
+Subject: [PATCH 19/26] [Q_asb_2021-06] AVRCP: pass bdaddr by value when use
  SdpCb
 
 TAG: #security

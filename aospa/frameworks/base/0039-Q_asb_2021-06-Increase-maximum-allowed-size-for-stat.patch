@@ -1,7 +1,7 @@
 From 649a317a47a5d7a3fbc869b2985f0375c5b7c517 Mon Sep 17 00:00:00 2001
 From: Beth Thibodeau <ethibodeau@google.com>
 Date: Thu, 25 Mar 2021 17:19:30 -0400
-Subject: [PATCH 39/82] [Q_asb_2021-06] Increase maximum allowed size for
+Subject: [PATCH 39/84] [Q_asb_2021-06] Increase maximum allowed size for
  status bar icons
 
 The previous size was causing some apps to crash which otherwise worked

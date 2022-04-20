@@ -1,7 +1,7 @@
 From fbeb9c5ad65465ba433cf447e9992778646189b3 Mon Sep 17 00:00:00 2001
 From: Marco Nelissen <marcone@google.com>
 Date: Mon, 2 Nov 2020 16:58:51 -0800
-Subject: [PATCH 03/31] [Q_asb_2021-01] Fix potential overflow in WAV extractor
+Subject: [PATCH 03/32] [Q_asb_2021-01] Fix potential overflow in WAV extractor
 
 Bug: 170583712
 Test: fuzzer poc, atest DecoderTest#testDecodeWav

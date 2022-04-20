@@ -1,7 +1,7 @@
 From ccb6bcadbff305703efcbae3218b8ef1d9ed69ea Mon Sep 17 00:00:00 2001
 From: Jakub Pawlowski <jpawlowski@google.com>
 Date: Thu, 19 Nov 2020 13:31:08 +0100
-Subject: [PATCH 04/22] [Q_asb_2021-02] Prevent overlay drawing on top of
+Subject: [PATCH 04/23] [Q_asb_2021-02] Prevent overlay drawing on top of
  Bluetooth activity dialog
 
 Bug: 168504491

@@ -1,7 +1,7 @@
 From 20018d272964c01af4349188ab2c0542c3f7782c Mon Sep 17 00:00:00 2001
 From: Chuangjie Xia <chuangjie.xia@mediatek.com>
 Date: Wed, 9 Oct 2019 13:55:16 +0800
-Subject: [PATCH 30/31] [Q_asb_2020-09] Delete an uninitialized object in
+Subject: [PATCH 30/32] [Q_asb_2020-09] Delete an uninitialized object in
  AACExtractor
 
 Due to some reason, for example bad file, readAt header fails

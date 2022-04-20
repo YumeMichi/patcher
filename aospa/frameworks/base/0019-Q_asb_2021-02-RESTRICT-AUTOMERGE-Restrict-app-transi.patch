@@ -1,7 +1,7 @@
 From 70a885a3ab34ff39b3c86b314f909fd4da80eb83 Mon Sep 17 00:00:00 2001
 From: lumark <lumark@google.com>
 Date: Mon, 10 Feb 2020 18:41:57 +0800
-Subject: [PATCH 19/82] [Q_asb_2021-02] [RESTRICT AUTOMERGE] Restrict app
+Subject: [PATCH 19/84] [Q_asb_2021-02] [RESTRICT AUTOMERGE] Restrict app
  transition maximum duration
 
 As WindowState#startAnimation for restricting window animation duration

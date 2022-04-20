@@ -1,7 +1,7 @@
 From f6fd0fa4b51805116ec308af533e5d3ab7374cb7 Mon Sep 17 00:00:00 2001
 From: "Kevin F. Haggerty" <haggertk@lineageos.org>
 Date: Mon, 13 Dec 2021 19:35:16 -0700
-Subject: [PATCH 66/82] [Q_asb_2021-12] Revert "Do not show the notification
+Subject: [PATCH 66/84] [Q_asb_2021-12] Revert "Do not show the notification
  footer until the user is set up."
 
 The noted change oddly results in a null object deref in

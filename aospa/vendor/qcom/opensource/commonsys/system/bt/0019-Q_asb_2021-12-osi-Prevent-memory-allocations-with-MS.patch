@@ -1,7 +1,7 @@
 From 31a014763d1ea1fdac77941887e603128175b5c3 Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Wed, 29 Sep 2021 17:49:25 -0700
-Subject: [PATCH 19/22] [Q_asb_2021-12] osi: Prevent memory allocations with
+Subject: [PATCH 19/23] [Q_asb_2021-12] osi: Prevent memory allocations with
  MSB set
 
 Limit allocations on 32bit to 2 GB

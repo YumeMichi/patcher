@@ -1,7 +1,7 @@
 From c2a35a4b3c1872fe6afd98a130d5cd17f0861a45 Mon Sep 17 00:00:00 2001
 From: Alisher Alikhodjaev <alisher@google.com>
 Date: Tue, 4 May 2021 15:35:51 -0700
-Subject: [PATCH 3/5] [Q_asb_2021-07] Potential out of bound in
+Subject: [PATCH 3/6] [Q_asb_2021-07] Potential out of bound in
  phNciNfc_RecvMfResp
 
 Bug: 181346550
@@ -40,5 +40,5 @@ index 77a0dc1b..06934331 100644
              wPldDataSize = ((RspBuffInfo->wLen) -
                              (PHNCINFC_EXTNID_SIZE + PHNCINFC_EXTNSTATUS_SIZE));
 -- 
-2.34.1
+2.35.1
 

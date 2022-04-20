@@ -1,7 +1,7 @@
 From 11b524da466024006aa2e081616996b2fadf9662 Mon Sep 17 00:00:00 2001
 From: Myles Watson <mylesgw@google.com>
 Date: Thu, 18 Jun 2020 14:35:53 -0700
-Subject: [PATCH 22/22] [Q_asb_2020-09] Remove pairing on incoming bond request
+Subject: [PATCH 22/23] [Q_asb_2020-09] Remove pairing on incoming bond request
 
 Bug: 150156492
 Tag: #security

@@ -1,7 +1,7 @@
 From a1136e36319a871d3998ced142be401ea50c3239 Mon Sep 17 00:00:00 2001
 From: Edgar Wang <edgarwang@google.com>
 Date: Thu, 6 Jan 2022 20:53:48 +0800
-Subject: [PATCH 21/22] [Q_asb_2022-03] Fix bypass CALL_PRIVILEGED permission
+Subject: [PATCH 21/23] [Q_asb_2022-03] Fix bypass CALL_PRIVILEGED permission
  in AppRestrictionsFragment
 
 In onReceive of AppRestrictionsFragment.java, there is a possible way to

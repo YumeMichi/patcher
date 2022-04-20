@@ -1,7 +1,7 @@
 From dd65588c5444fa4527cf9e33096bf14fb73d2b5a Mon Sep 17 00:00:00 2001
 From: Weng Su <wengsu@google.com>
 Date: Thu, 29 Apr 2021 18:08:56 +0800
-Subject: [PATCH 11/22] [Q_asb_2021-07] [DO NOT MERGE] Modify Wi-Fi details
+Subject: [PATCH 11/23] [Q_asb_2021-07] [DO NOT MERGE] Modify Wi-Fi details
  settings to restricted style
 
 - Show restricted text in guest mode

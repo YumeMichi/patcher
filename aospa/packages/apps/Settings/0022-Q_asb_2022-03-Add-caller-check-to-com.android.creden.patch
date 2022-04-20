@@ -1,7 +1,7 @@
 From cfb4c867263d0a2061ea8f0a9798513c94812378 Mon Sep 17 00:00:00 2001
 From: Alex Johnston <acjohnston@google.com>
 Date: Wed, 5 Jan 2022 22:19:29 +0000
-Subject: [PATCH 22/22] [Q_asb_2022-03] Add caller check to
+Subject: [PATCH 22/23] [Q_asb_2022-03] Add caller check to
  com.android.credentials.RESET
 
 * Only the Settings app can reset credentials

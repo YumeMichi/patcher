@@ -1,7 +1,7 @@
 From 5a5026ca1c25ae5cc8983ed47d948a2b38d9a6b0 Mon Sep 17 00:00:00 2001
 From: Alisher Alikhodjaev <alisher@google.com>
 Date: Thu, 17 Jun 2021 11:27:00 -0700
-Subject: [PATCH 5/5] [Q_asb_2021-09] Add HIDE_NON_SYSTEM_OVERLAY_WINDOWS
+Subject: [PATCH 5/6] [Q_asb_2021-09] Add HIDE_NON_SYSTEM_OVERLAY_WINDOWS
  permission to Nfc
 
 This permission is required for xx_FLAG_HIDE_NON_SYSTEM_OVERLAY_WINDOWS
@@ -28,5 +28,5 @@ index 2649328d..8abd8fbb 100755
      <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
      <uses-permission android:name="android.permission.VIBRATE" />
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 25e5bea89f4859d4e62c5170225e3ff0088a6401 Mon Sep 17 00:00:00 2001
 From: Ruchi Kandoi <kandoiruchi@google.com>
 Date: Thu, 3 Jan 2019 17:47:07 +0000
-Subject: [PATCH 1/5] [Q_asb_2021-07] Revert "Tag detection does not stop after
+Subject: [PATCH 1/6] [Q_asb_2021-07] Revert "Tag detection does not stop after
  screen off"
 
 This reverts commit 710575c54d9d35bc580757d91a46cf672d6fbda0.
@@ -31,5 +31,5 @@ index 65f006f6..0fd921f9 100644
          if (sReaderModeEnabled) {
            DLOG_IF(INFO, nfc_debug_enabled) << StringPrintf(
 -- 
-2.34.1
+2.35.1
 

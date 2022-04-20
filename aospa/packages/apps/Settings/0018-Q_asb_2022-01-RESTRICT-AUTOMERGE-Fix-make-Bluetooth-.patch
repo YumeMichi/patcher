@@ -1,7 +1,7 @@
 From 55f3d690bc7207b0943e390dd04878d37f2553e5 Mon Sep 17 00:00:00 2001
 From: Hugh Chen <hughchen@google.com>
 Date: Thu, 28 Oct 2021 06:21:37 +0000
-Subject: [PATCH 18/22] [Q_asb_2022-01] RESTRICT AUTOMERGE Fix make Bluetooth
+Subject: [PATCH 18/23] [Q_asb_2022-01] RESTRICT AUTOMERGE Fix make Bluetooth
  discoverable without additional permission
 
 - Only enable device can be discoverable when the user launch

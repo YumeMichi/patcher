@@ -1,7 +1,7 @@
 From c2d2ad37f8776d20932c7a24836269af6c097381 Mon Sep 17 00:00:00 2001
 From: Eugene Susla <eugenesusla@google.com>
 Date: Tue, 3 Nov 2020 14:22:42 -0800
-Subject: [PATCH 02/22] [Q_asb_2021-02] RESTRICT AUTOMERGE Prevent non-system
+Subject: [PATCH 02/23] [Q_asb_2021-02] RESTRICT AUTOMERGE Prevent non-system
  overlays from showing over notification listener consent dialog
 
 Bug: 170731783

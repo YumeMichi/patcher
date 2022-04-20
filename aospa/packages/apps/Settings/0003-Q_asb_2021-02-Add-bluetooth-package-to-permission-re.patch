@@ -1,7 +1,7 @@
 From a4efef4b220c190b329e014ddc2e5f803da2391d Mon Sep 17 00:00:00 2001
 From: Chris Manton <cmanton@google.com>
 Date: Tue, 10 Nov 2020 16:45:44 -0800
-Subject: [PATCH 03/22] [Q_asb_2021-02] Add bluetooth package to permission
+Subject: [PATCH 03/23] [Q_asb_2021-02] Add bluetooth package to permission
  request intent
 
 Limit the component that may resolve this intent to the

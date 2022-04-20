@@ -1,0 +1,61 @@
+From a730fd57cfad7303b50864e92528cac3559aa1c1 Mon Sep 17 00:00:00 2001
+From: Julia Reynolds <juliacr@google.com>
+Date: Wed, 12 Jan 2022 15:08:29 -0500
+Subject: [PATCH 83/84] [Q_asb_2022-04] DO NOT MERGE Prevent apps from creating
+ blocked channel groups
+
+setBlocked is a hidden API, so apps should not be calling
+the method, but fix up the data in case they do
+
+Test: PreferencesHelperTest; manual with ApiDemos FGS
+Bug: 209966086
+Change-Id: Icc709a6b0d0a8c5f2d9243959992f1b6764354db
+Merged-In: I8a27853c7ed05d9dfd38a3142fbbe185946c3992
+(cherry picked from commit b993531c0da0b2f2076bc83af7591c7df8bfb2cb)
+Merged-In: Icc709a6b0d0a8c5f2d9243959992f1b6764354db
+---
+ .../server/notification/PreferencesHelper.java      |  3 +++
+ .../server/notification/PreferencesHelperTest.java  | 13 +++++++++++++
+ 2 files changed, 16 insertions(+)
+
+diff --git a/services/core/java/com/android/server/notification/PreferencesHelper.java b/services/core/java/com/android/server/notification/PreferencesHelper.java
+index 4835c97f0bb7..4795d3d6ead1 100644
+--- a/services/core/java/com/android/server/notification/PreferencesHelper.java
++++ b/services/core/java/com/android/server/notification/PreferencesHelper.java
+@@ -601,6 +601,9 @@ public class PreferencesHelper implements RankingConfig {
+             if (r == null) {
+                 throw new IllegalArgumentException("Invalid package");
+             }
++            if (fromTargetApp) {
++                group.setBlocked(false);
++            }
+             final NotificationChannelGroup oldGroup = r.groups.get(group.getId());
+             if (!group.equals(oldGroup)) {
+                 // will log for new entries as well as name/description changes
+diff --git a/services/tests/uiservicestests/src/com/android/server/notification/PreferencesHelperTest.java b/services/tests/uiservicestests/src/com/android/server/notification/PreferencesHelperTest.java
+index 80439cf66387..2cede07de257 100644
+--- a/services/tests/uiservicestests/src/com/android/server/notification/PreferencesHelperTest.java
++++ b/services/tests/uiservicestests/src/com/android/server/notification/PreferencesHelperTest.java
+@@ -2009,6 +2009,19 @@ public class PreferencesHelperTest extends UiServiceTestCase {
+         assertTrue(mHelper.isGroupBlocked(PKG_N_MR1, UID_N_MR1, group.getId()));
+     }
+ 
++    @Test
++    public void testIsGroupBlocked_appCannotCreateAsBlocked() throws Exception {
++        NotificationChannelGroup group = new NotificationChannelGroup("id", "name");
++        group.setBlocked(true);
++        mHelper.createNotificationChannelGroup(PKG_N_MR1, UID_N_MR1, group, true);
++        assertFalse(mHelper.isGroupBlocked(PKG_N_MR1, UID_N_MR1, group.getId()));
++
++        NotificationChannelGroup group3 = group.clone();
++        group3.setBlocked(false);
++        mHelper.createNotificationChannelGroup(PKG_N_MR1, UID_N_MR1, group3, true);
++        assertFalse(mHelper.isGroupBlocked(PKG_N_MR1, UID_N_MR1, group.getId()));
++    }
++
+     @Test
+     public void testIsGroup_appCannotResetBlock() throws Exception {
+         NotificationChannelGroup group = new NotificationChannelGroup("id", "name");
+-- 
+2.35.1
+

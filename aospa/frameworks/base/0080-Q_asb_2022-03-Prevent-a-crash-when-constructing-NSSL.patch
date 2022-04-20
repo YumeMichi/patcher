@@ -1,7 +1,7 @@
 From af0f5b3f948968222f5560d1549d5fc4d6006755 Mon Sep 17 00:00:00 2001
 From: Jeff DeCew <jeffdq@google.com>
 Date: Tue, 11 Jan 2022 14:58:16 +0000
-Subject: [PATCH 80/82] [Q_asb_2022-03] Prevent a crash when constructing NSSL.
+Subject: [PATCH 80/84] [Q_asb_2022-03] Prevent a crash when constructing NSSL.
 
 The dependent change was validated on qt-dev and rvc-dev, but not explicitly on qt-qpr1-dev.
  - In qt-dev, we didn't have this check that the footer view was initialized, but hasActiveClearableNotifications did not call into the mDynamicPrivacyController (it didn't exist), so there was no initialization-time NPE.

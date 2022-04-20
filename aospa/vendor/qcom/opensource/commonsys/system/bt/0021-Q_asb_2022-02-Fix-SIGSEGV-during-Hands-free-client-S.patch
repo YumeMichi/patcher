@@ -1,7 +1,7 @@
 From 39d75f662aea48c969e5ea954910e6d105057085 Mon Sep 17 00:00:00 2001
 From: Rohon Das <rohodas@codeaurora.org>
 Date: Wed, 28 Jul 2021 11:11:49 +0530
-Subject: [PATCH 21/22] [Q_asb_2022-02] Fix SIGSEGV during Hands-free client
+Subject: [PATCH 21/23] [Q_asb_2022-02] Fix SIGSEGV during Hands-free client
  SDP
 
 Change-Id: I1a4c6cc1bbb22dfc31ee9ca5f7a252b208af627c
