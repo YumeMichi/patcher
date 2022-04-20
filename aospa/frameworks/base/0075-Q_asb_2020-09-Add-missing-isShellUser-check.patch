@@ -1,7 +1,7 @@
 From b256a37e20bf6b099e564dba445205817ed296f2 Mon Sep 17 00:00:00 2001
 From: John Reck <jreck@google.com>
 Date: Mon, 6 Jul 2020 16:10:49 -0700
-Subject: [PATCH 75/77] [Q_asb_2020-09] Add missing isShellUser check
+Subject: [PATCH 75/82] [Q_asb_2020-09] Add missing isShellUser check
 
 Bug: 160390416
 Test: verified command still works from shell

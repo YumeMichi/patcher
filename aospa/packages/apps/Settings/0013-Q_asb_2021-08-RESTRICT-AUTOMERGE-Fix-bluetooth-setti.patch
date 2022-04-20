@@ -1,7 +1,7 @@
 From 7bcf30acc4a6bc615fe0c73e01ec56a5820e5a94 Mon Sep 17 00:00:00 2001
 From: Hugh Chen <hughchen@google.com>
 Date: Fri, 12 Mar 2021 10:40:20 +0800
-Subject: [PATCH 13/20] [Q_asb_2021-08] RESTRICT AUTOMERGE Fix bluetooth
+Subject: [PATCH 13/22] [Q_asb_2021-08] RESTRICT AUTOMERGE Fix bluetooth
  settings will broadcast to anywhere when some cases
 
 BluetoothPermissionActivity and DevicePickerFragment will send

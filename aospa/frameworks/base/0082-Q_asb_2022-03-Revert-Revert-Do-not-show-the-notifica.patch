@@ -1,0 +1,175 @@
+From b9075931e2e1ec0ea4defb5082f6873a74e71224 Mon Sep 17 00:00:00 2001
+From: "Kevin F. Haggerty" <haggertk@lineageos.org>
+Date: Sat, 12 Mar 2022 12:10:59 -0700
+Subject: [PATCH 82/82] [Q_asb_2022-03] Revert "Revert "Do not show the
+ notification footer until the user is set up.""
+
+The original change officially shows up in the 2022-03 ASB, and the
+android10-security-release branch contains a fix
+(If6e99b5fbe3d2a9d9274223c35d23c30f5524229) to the issue that
+caused us to revert earlier.
+
+This reverts commit 338240eed7fa054f0911ce27151de555e2a2f74b.
+
+Change-Id: I35c7854ad9632bae71366a2fe722bc568f0bfef6
+---
+ .../stack/NotificationStackScrollLayout.java  | 38 +++++++++++++++++++
+ .../NotificationStackScrollLayoutTest.java    | 27 +++++++++++++
+ 2 files changed, 65 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+index 30ebf86734b8..e62312427e29 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+@@ -138,6 +138,8 @@ import com.android.systemui.statusbar.phone.ShadeController;
+ import com.android.systemui.statusbar.phone.StatusBar;
+ import com.android.systemui.statusbar.policy.ConfigurationController;
+ import com.android.systemui.statusbar.policy.ConfigurationController.ConfigurationListener;
++import com.android.systemui.statusbar.policy.DeviceProvisionedController;
++import com.android.systemui.statusbar.policy.DeviceProvisionedController.DeviceProvisionedListener;
+ import com.android.systemui.statusbar.policy.HeadsUpUtil;
+ import com.android.systemui.statusbar.policy.ScrollAdapter;
+ import com.android.systemui.tuner.TunerService;
+@@ -278,6 +280,7 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+     private boolean mExpandedInThisMotion;
+     private boolean mShouldShowShelfOnly;
+     protected boolean mScrollingEnabled;
++    private boolean mIsCurrentUserSetup;
+     protected FooterView mFooterView;
+     protected EmptyShadeView mEmptyShadeView;
+     private boolean mDismissAllInProgress;
+@@ -478,6 +481,8 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+     private final Rect mTmpRect = new Rect();
+     private final NotificationEntryManager mEntryManager =
+             Dependency.get(NotificationEntryManager.class);
++    private final DeviceProvisionedController mDeviceProvisionedController =
++            Dependency.get(DeviceProvisionedController.class);
+     private final IStatusBarService mBarService = IStatusBarService.Stub.asInterface(
+             ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+     @VisibleForTesting
+@@ -600,6 +605,28 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+             }
+         }, HIGH_PRIORITY, Settings.Secure.NOTIFICATION_DISMISS_RTL);
+ 
++        mDeviceProvisionedController.addCallback(
++                new DeviceProvisionedListener() {
++                    @Override
++                    public void onDeviceProvisionedChanged() {
++                        updateCurrentUserIsSetup();
++                    }
++
++                    @Override
++                    public void onUserSwitched() {
++                        updateCurrentUserIsSetup();
++                    }
++
++                    @Override
++                    public void onUserSetupChanged() {
++                        updateCurrentUserIsSetup();
++                    }
++
++                    private void updateCurrentUserIsSetup() {
++                        setCurrentUserSetup(mDeviceProvisionedController.isCurrentUserSetup());
++                    }
++                });
++
+         mEntryManager.addNotificationEntryListener(new NotificationEntryListener() {
+             @Override
+             public void onPostEntryUpdated(NotificationEntry entry) {
+@@ -695,6 +722,7 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+         boolean showDismissView = mClearAllEnabled && hasActiveClearableNotifications(ROWS_ALL);
+         boolean showFooterView = (showDismissView ||
+                 mEntryManager.getNotificationData().getActiveNotifications().size() != 0)
++                && mIsCurrentUserSetup  // see: b/193149550
+                 && mStatusBarState != StatusBarState.KEYGUARD
+                 && !mRemoteInputManager.getController().isRemoteInputActive();
+ 
+@@ -5766,6 +5794,16 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+         return MathUtils.smoothStep(0, totalDistance, dragDownAmount);
+     }
+ 
++    /**
++     * Sets whether the current user is set up, which is required to show the footer (b/193149550)
++     */
++    public void setCurrentUserSetup(boolean isCurrentUserSetup) {
++        if (mIsCurrentUserSetup != isCurrentUserSetup) {
++            mIsCurrentUserSetup = isCurrentUserSetup;
++            updateFooter();
++        }
++    }
++
+     /**
+      * A listener that is notified when the empty space below the notifications is clicked on
+      */
+diff --git a/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayoutTest.java b/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayoutTest.java
+index 59bd721c55e5..e8c1e8327f45 100644
+--- a/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayoutTest.java
++++ b/packages/SystemUI/tests/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayoutTest.java
+@@ -300,6 +300,7 @@ public class NotificationStackScrollLayoutTest extends SysuiTestCase {
+     @Test
+     public void testUpdateFooter_noNotifications() {
+         setBarStateForTest(StatusBarState.SHADE);
++        mStackScroller.setCurrentUserSetup(true);
+         assertEquals(0, mNotificationData.getActiveNotifications().size());
+ 
+         mStackScroller.updateFooter();
+@@ -309,6 +310,8 @@ public class NotificationStackScrollLayoutTest extends SysuiTestCase {
+     @Test
+     public void testUpdateFooter_remoteInput() {
+         setBarStateForTest(StatusBarState.SHADE);
++        mStackScroller.setCurrentUserSetup(true);
++
+         ArrayList<NotificationEntry> entries = new ArrayList<>();
+         entries.add(mock(NotificationEntry.class));
+         when(mNotificationData.getActiveNotifications()).thenReturn(entries);
+@@ -326,6 +329,8 @@ public class NotificationStackScrollLayoutTest extends SysuiTestCase {
+     @Test
+     public void testUpdateFooter_oneClearableNotification() {
+         setBarStateForTest(StatusBarState.SHADE);
++        mStackScroller.setCurrentUserSetup(true);
++
+         ArrayList<NotificationEntry> entries = new ArrayList<>();
+         entries.add(mock(NotificationEntry.class));
+         when(mNotificationData.getActiveNotifications()).thenReturn(entries);
+@@ -339,9 +344,29 @@ public class NotificationStackScrollLayoutTest extends SysuiTestCase {
+         verify(mStackScroller).updateFooterView(true, true);
+     }
+ 
++    @Test
++    public void testUpdateFooter_oneClearableNotification_beforeUserSetup() {
++        setBarStateForTest(StatusBarState.SHADE);
++        mStackScroller.setCurrentUserSetup(false);
++
++        ArrayList<NotificationEntry> entries = new ArrayList<>();
++        entries.add(mock(NotificationEntry.class));
++        when(mNotificationData.getActiveNotifications()).thenReturn(entries);
++
++        ExpandableNotificationRow row = mock(ExpandableNotificationRow.class);
++        when(row.canViewBeDismissed()).thenReturn(true);
++        when(mStackScroller.getChildCount()).thenReturn(1);
++        when(mStackScroller.getChildAt(anyInt())).thenReturn(row);
++
++        mStackScroller.updateFooter();
++        verify(mStackScroller).updateFooterView(false, true);
++    }
++
+     @Test
+     public void testUpdateFooter_oneNonClearableNotification() {
+         setBarStateForTest(StatusBarState.SHADE);
++        mStackScroller.setCurrentUserSetup(true);
++
+         ArrayList<NotificationEntry> entries = new ArrayList<>();
+         entries.add(mock(NotificationEntry.class));
+         when(mEntryManager.getNotificationData().getActiveNotifications()).thenReturn(entries);
+@@ -353,6 +378,8 @@ public class NotificationStackScrollLayoutTest extends SysuiTestCase {
+ 
+     @Test
+     public void testUpdateFooter_atEnd() {
++        mStackScroller.setCurrentUserSetup(true);
++
+         // add footer
+         mStackScroller.inflateFooterView();
+ 
+-- 
+2.35.1
+

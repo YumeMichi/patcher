@@ -40,6 +40,7 @@ REPOSITORIES=(
     'packages/apps/Dialer'
     'packages/apps/FMRadio'
     'packages/apps/KeyChain'
+    'packages/apps/ManagedProvisioning'
     'packages/apps/Nfc'
     'packages/apps/ParanoidLauncher'
     'packages/apps/PermissionController'

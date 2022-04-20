@@ -1,7 +1,7 @@
 From c295452c4d48313cacc884745d2c95070e0a00d6 Mon Sep 17 00:00:00 2001
 From: Siarhei Vishniakou <svv@google.com>
 Date: Mon, 21 Jun 2021 22:30:51 +0000
-Subject: [PATCH 6/7] [Q_asb_2021-09] Do not modify vector after getting
+Subject: [PATCH 6/8] [Q_asb_2021-09] Do not modify vector after getting
  references
 
 We used to obtain a reference to a specific element inside a vector. We
@@ -188,5 +188,5 @@ index 5a3bc5a2b1..ea9ba5734f 100644
      void reportEventForStatistics(nsecs_t evdevTime);
  
 -- 
-2.34.1
+2.35.1
 

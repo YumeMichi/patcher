@@ -1,7 +1,7 @@
 From ecb06ab341741e0f1a026a3ed49a96223a6ebcbd Mon Sep 17 00:00:00 2001
 From: Patrick Baumann <patb@google.com>
 Date: Fri, 6 Mar 2020 10:34:17 -0800
-Subject: [PATCH 74/77] [Q_asb_2020-09] Do not set referrerUri on SessionInfo
+Subject: [PATCH 74/82] [Q_asb_2020-09] Do not set referrerUri on SessionInfo
  for non-owners
 
 This change leaves the referrerUri field null when the caller leading to

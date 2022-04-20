@@ -1,7 +1,7 @@
 From 768213965b0cccda625207a103856eac26d0d820 Mon Sep 17 00:00:00 2001
 From: Eugene Susla <eugenesusla@google.com>
 Date: Mon, 12 Oct 2020 16:23:15 -0700
-Subject: [PATCH 12/77] [Q_asb_2021-01] RESTRICT AUTOMERGE Fix CDM package
+Subject: [PATCH 12/82] [Q_asb_2021-01] RESTRICT AUTOMERGE Fix CDM package
  check
 
 CDM was using a pckage check that returns a value intead of throwing,

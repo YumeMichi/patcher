@@ -1,7 +1,7 @@
 From 6f5fcf6b8c9754b5e9e650c7017ef5a77446687e Mon Sep 17 00:00:00 2001
 From: Dave Mankoff <mankoff@google.com>
 Date: Mon, 15 Nov 2021 19:21:44 +0000
-Subject: [PATCH 73/77] [Q_asb_2022-02] RESTRICT AUTOMERGE Remove line of code
+Subject: [PATCH 73/82] [Q_asb_2022-02] RESTRICT AUTOMERGE Remove line of code
  that was mistakently left in.
 
 This line was removed in O, S, & P, but somehow survived in the Q and R branches.

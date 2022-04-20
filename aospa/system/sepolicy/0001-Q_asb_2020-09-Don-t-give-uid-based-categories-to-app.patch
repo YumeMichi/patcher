@@ -1,8 +1,8 @@
 From c5c2273b5308cf6161f7b1fcd9a1a7cc9cbc808b Mon Sep 17 00:00:00 2001
 From: Martijn Coenen <maco@google.com>
 Date: Mon, 8 Jun 2020 20:31:33 +0200
-Subject: [PATCH] [Q_asb_2020-09] Don't give uid-based categories to app_zygote
- and isolated processes.
+Subject: [PATCH 1/2] [Q_asb_2020-09] Don't give uid-based categories to
+ app_zygote and isolated processes.
 
 The mapping of UIDs to categories can only take 16 bits, yet isolated
 processes start at UID 90000. Additionally, the main purpose of these

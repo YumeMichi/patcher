@@ -1,7 +1,7 @@
 From 63d04f5a2fb38b15167542db01e86a4c27935bf0 Mon Sep 17 00:00:00 2001
 From: Sunny Shao <sunnyshao@google.com>
 Date: Wed, 1 Jul 2020 16:59:27 +0800
-Subject: [PATCH 20/20] [Q_asb_2020-09] Enable the filterTouchesWhenObscured in
+Subject: [PATCH 20/22] [Q_asb_2020-09] Enable the filterTouchesWhenObscured in
  Special app access
 
 - Enable the filterTouchesWhenObscured attribute on all toggle

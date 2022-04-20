@@ -1,7 +1,7 @@
 From edea82c23ce7ca71d4535dbd5ec1eb70e4f69ffd Mon Sep 17 00:00:00 2001
 From: Jayant Chowdhary <jchowdhary@google.com>
 Date: Wed, 9 Jun 2021 14:34:54 -0700
-Subject: [PATCH 58/77] [Q_asb_2021-11] camera2: Fix exception swallowing in
+Subject: [PATCH 58/82] [Q_asb_2021-11] camera2: Fix exception swallowing in
  params classes createFromParcel
 
 Do not catch exceptions when we attempt to create the following classes

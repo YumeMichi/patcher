@@ -1,7 +1,7 @@
 From ddf4ac73b62eaa7817475fe318777873abd4436b Mon Sep 17 00:00:00 2001
 From: Yu-Han Yang <yuhany@google.com>
 Date: Mon, 8 Jun 2020 14:59:23 -0700
-Subject: [PATCH 76/77] [Q_asb_2020-09] DO NOT MERGE: Remove unused intent in
+Subject: [PATCH 76/82] [Q_asb_2020-09] DO NOT MERGE: Remove unused intent in
  NiNotification
 
 Bug: 154319182

@@ -1,0 +1,182 @@
+From 7776def78215448a26d611e6054b614ef10058d5 Mon Sep 17 00:00:00 2001
+From: Mohammad Samiul Islam <samiul@google.com>
+Date: Thu, 23 Apr 2020 16:23:21 +0100
+Subject: [PATCH 79/82] [Q_asb_2022-03] Persist destroyed staged sessions until
+ they are cleaned up
+
+Currently, when we abandon a staged session we mark it as destroyed and
+then immediately clean it up. Cleaning up a staged session immediately
+causes racing condition with pre-reboot verification.
+
+In order to avoid the racing condition, we want to delay cleanup of
+staged session until it is safe to do so. This means, the system will
+be carrying around destroyed staged sessions internally.
+
+Since there is now a gap between when a session is destroyed and when it
+is cleaned up, the user can reboot in this window. As such, we need to
+persist the mDestroyed field of session so that we know session is
+destroyed after reboot and act accordingly.
+
+Also, once a session is destroyed, theoretically it doesn't exist.
+Carrying it around internally is an implementation details which
+shouldn't be exposed externally. As such, we filter out destroyed
+sessions before surfacing them to users.
+
+Bug: 145925842
+Bug: 67862680
+Test: atest PackageInstallerSessionTest
+Test: atest StagedInstallTest
+Change-Id: I4ede6b7a4b5d861e5c73f13884c7aa86cf7633a2
+Merged-In: I4ede6b7a4b5d861e5c73f13884c7aa86cf7633a2
+(cherry picked from commit 731bd965fb5e0f62dc703d05983baef8e0a0f4e7)
+(cherry picked from commit 6151941007e9d85fc9279d46af20d8dc6b09744f)
+Merged-In: I4ede6b7a4b5d861e5c73f13884c7aa86cf7633a2
+---
+ .../server/pm/PackageInstallerService.java    |  7 ++++---
+ .../server/pm/PackageInstallerSession.java    | 21 ++++++++++++++-----
+ .../com/android/server/pm/StagingManager.java |  3 +++
+ .../pm/PackageInstallerSessionTest.java       |  1 +
+ 4 files changed, 24 insertions(+), 8 deletions(-)
+
+diff --git a/services/core/java/com/android/server/pm/PackageInstallerService.java b/services/core/java/com/android/server/pm/PackageInstallerService.java
+index 0259d48bf488..b3bc2ee1d649 100644
+--- a/services/core/java/com/android/server/pm/PackageInstallerService.java
++++ b/services/core/java/com/android/server/pm/PackageInstallerService.java
+@@ -667,7 +667,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+         session = new PackageInstallerSession(mInternalCallback, mContext, mPm, this,
+                 mInstallThread.getLooper(), mStagingManager, sessionId, userId,
+                 installerPackageName, callingUid, params, createdMillis, stageDir, stageCid, false,
+-                false, false, null, SessionInfo.INVALID_ID, false, false, false,
++                false, false, false, null, SessionInfo.INVALID_ID, false, false, false,
+                 SessionInfo.STAGED_SESSION_NO_ERROR, "");
+ 
+         synchronized (mSessions) {
+@@ -817,7 +817,7 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+         synchronized (mSessions) {
+             final PackageInstallerSession session = mSessions.get(sessionId);
+ 
+-            return session != null
++            return (session != null && !(session.isStaged() && session.isDestroyed()))
+                     ? session.generateInfoForCaller(true /*withIcon*/, Binder.getCallingUid())
+                     : null;
+         }
+@@ -838,7 +838,8 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+         synchronized (mSessions) {
+             for (int i = 0; i < mSessions.size(); i++) {
+                 final PackageInstallerSession session = mSessions.valueAt(i);
+-                if (session.userId == userId && !session.hasParentSessionId()) {
++                if (session.userId == userId && !session.hasParentSessionId()
++                        && !(session.isStaged() && session.isDestroyed())) {
+                     result.add(session.generateInfoForCaller(false, callingUid));
+                 }
+             }
+diff --git a/services/core/java/com/android/server/pm/PackageInstallerSession.java b/services/core/java/com/android/server/pm/PackageInstallerSession.java
+index d9b307846a50..644282882b25 100755
+--- a/services/core/java/com/android/server/pm/PackageInstallerSession.java
++++ b/services/core/java/com/android/server/pm/PackageInstallerSession.java
+@@ -152,6 +152,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+     private static final String ATTR_SESSION_STAGE_CID = "sessionStageCid";
+     private static final String ATTR_PREPARED = "prepared";
+     private static final String ATTR_COMMITTED = "committed";
++    private static final String ATTR_DESTROYED = "destroyed";
+     private static final String ATTR_SEALED = "sealed";
+     private static final String ATTR_MULTI_PACKAGE = "multiPackage";
+     private static final String ATTR_PARENT_SESSION_ID = "parentSessionId";
+@@ -421,8 +422,8 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+             PackageSessionProvider sessionProvider, Looper looper, StagingManager stagingManager,
+             int sessionId, int userId,
+             String installerPackageName, int installerUid, SessionParams params, long createdMillis,
+-            File stageDir, String stageCid, boolean prepared, boolean committed, boolean sealed,
+-            @Nullable int[] childSessionIds, int parentSessionId, boolean isReady,
++            File stageDir, String stageCid, boolean prepared, boolean committed, boolean destroyed,
++            boolean sealed, @Nullable int[] childSessionIds, int parentSessionId, boolean isReady,
+             boolean isFailed, boolean isApplied, int stagedSessionErrorCode,
+             String stagedSessionErrorMessage) {
+         mCallback = callback;
+@@ -457,6 +458,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+ 
+         mPrepared = prepared;
+         mCommitted = committed;
++        mDestroyed = destroyed;
+         mStagedSessionReady = isReady;
+         mStagedSessionFailed = isFailed;
+         mStagedSessionApplied = isApplied;
+@@ -567,6 +569,13 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+         }
+     }
+ 
++    /** {@hide} */
++    boolean isDestroyed() {
++        synchronized (mLock) {
++            return mDestroyed;
++        }
++    }
++
+     /** Returns true if a staged session has reached a final state and can be forgotten about  */
+     public boolean isStagedAndInTerminalState() {
+         synchronized (mLock) {
+@@ -2447,7 +2456,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+      */
+     void write(@NonNull XmlSerializer out, @NonNull File sessionsDir) throws IOException {
+         synchronized (mLock) {
+-            if (mDestroyed) {
++            if (mDestroyed && !params.isStaged) {
+                 return;
+             }
+ 
+@@ -2469,6 +2478,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+             }
+             writeBooleanAttribute(out, ATTR_PREPARED, isPrepared());
+             writeBooleanAttribute(out, ATTR_COMMITTED, isCommitted());
++            writeBooleanAttribute(out, ATTR_DESTROYED, isDestroyed());
+             writeBooleanAttribute(out, ATTR_SEALED, isSealed());
+ 
+             writeBooleanAttribute(out, ATTR_MULTI_PACKAGE, params.isMultiPackage);
+@@ -2570,6 +2580,7 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+         final String stageCid = readStringAttribute(in, ATTR_SESSION_STAGE_CID);
+         final boolean prepared = readBooleanAttribute(in, ATTR_PREPARED, true);
+         final boolean committed = readBooleanAttribute(in, ATTR_COMMITTED);
++        final boolean destroyed = readBooleanAttribute(in, ATTR_DESTROYED);
+         final boolean sealed = readBooleanAttribute(in, ATTR_SEALED);
+         final int parentSessionId = readIntAttribute(in, ATTR_PARENT_SESSION_ID,
+                 SessionInfo.INVALID_ID);
+@@ -2657,8 +2668,8 @@ public class PackageInstallerSession extends IPackageInstallerSession.Stub {
+         return new PackageInstallerSession(callback, context, pm, sessionProvider,
+                 installerThread, stagingManager, sessionId, userId, installerPackageName,
+                 installerUid, params, createdMillis, stageDir, stageCid, prepared, committed,
+-                sealed, childSessionIdsArray, parentSessionId, isReady, isFailed, isApplied,
+-                stagedSessionErrorCode, stagedSessionErrorMessage);
++                destroyed, sealed, childSessionIdsArray, parentSessionId, isReady, isFailed,
++                isApplied, stagedSessionErrorCode, stagedSessionErrorMessage);
+     }
+ 
+     /**
+diff --git a/services/core/java/com/android/server/pm/StagingManager.java b/services/core/java/com/android/server/pm/StagingManager.java
+index dd7133121b21..fea44c634909 100644
+--- a/services/core/java/com/android/server/pm/StagingManager.java
++++ b/services/core/java/com/android/server/pm/StagingManager.java
+@@ -100,6 +100,9 @@ public class StagingManager {
+         synchronized (mStagedSessions) {
+             for (int i = 0; i < mStagedSessions.size(); i++) {
+                 final PackageInstallerSession stagedSession = mStagedSessions.valueAt(i);
++                if (stagedSession.isDestroyed()) {
++                    continue;
++                }
+                 result.add(stagedSession.generateInfoForCaller(false /*icon*/, callingUid));
+             }
+         }
+diff --git a/services/tests/servicestests/src/com/android/server/pm/PackageInstallerSessionTest.java b/services/tests/servicestests/src/com/android/server/pm/PackageInstallerSessionTest.java
+index d3f33a152734..3dd56bc48aa1 100644
+--- a/services/tests/servicestests/src/com/android/server/pm/PackageInstallerSessionTest.java
++++ b/services/tests/servicestests/src/com/android/server/pm/PackageInstallerSessionTest.java
+@@ -168,6 +168,7 @@ public class PackageInstallerSessionTest {
+                 /* stageCid */ null,
+                 /* prepared */ true,
+                 /* committed */ true,
++                /* destroyed */ staged ? true : false,
+                 /* sealed */ false,  // Setting to true would trigger some PM logic.
+                 /* childSessionIds */ childSessionIds != null ? childSessionIds : new int[0],
+                 /* parentSessionId */ parentSessionId,
+-- 
+2.35.1
+

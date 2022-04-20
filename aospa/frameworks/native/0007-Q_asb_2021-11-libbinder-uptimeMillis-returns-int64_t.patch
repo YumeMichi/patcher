@@ -1,7 +1,7 @@
 From f1c881114913a2f120dc57dba0a945cc87edf273 Mon Sep 17 00:00:00 2001
 From: Steven Moreland <smoreland@google.com>
 Date: Mon, 30 Aug 2021 15:41:44 -0700
-Subject: [PATCH 7/7] [Q_asb_2021-11] libbinder: uptimeMillis returns int64_t!
+Subject: [PATCH 7/8] [Q_asb_2021-11] libbinder: uptimeMillis returns int64_t!
 
 This was limiting device uptime to ~1 month. Certainly, devices should
 update more frequently, but that decision should not be because of
@@ -43,5 +43,5 @@ index 4ba6c2a923..8cd2d45c92 100644
              ALOGI("Waiting for service '%s' on '%s'...", String8(name).string(),
                  ProcessState::self()->getDriverName().c_str());
 -- 
-2.34.1
+2.35.1
 

@@ -1,7 +1,7 @@
 From 634eef7f64734b4ef6d8cfbebe9472fd75c6eb4f Mon Sep 17 00:00:00 2001
 From: Jeff DeCew <jeffdq@google.com>
 Date: Fri, 17 Sep 2021 16:32:58 -0400
-Subject: [PATCH 64/77] [Q_asb_2021-12] Do not show the notification footer
+Subject: [PATCH 64/82] [Q_asb_2021-12] Do not show the notification footer
  until the user is set up.
 
 Bug: 193149550

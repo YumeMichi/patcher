@@ -1,7 +1,7 @@
 From 41e8a821686db699e6b9e95a9741d60b675129a1 Mon Sep 17 00:00:00 2001
 From: Steve Elliott <steell@google.com>
 Date: Mon, 3 Aug 2020 13:45:44 -0400
-Subject: [PATCH 77/77] [Q_asb_2020-09] Mark implicit PendingIntents as
+Subject: [PATCH 77/82] [Q_asb_2020-09] Mark implicit PendingIntents as
  immutable
 
 Bug: 156020795

@@ -1,0 +1,38 @@
+From af0f5b3f948968222f5560d1549d5fc4d6006755 Mon Sep 17 00:00:00 2001
+From: Jeff DeCew <jeffdq@google.com>
+Date: Tue, 11 Jan 2022 14:58:16 +0000
+Subject: [PATCH 80/82] [Q_asb_2022-03] Prevent a crash when constructing NSSL.
+
+The dependent change was validated on qt-dev and rvc-dev, but not explicitly on qt-qpr1-dev.
+ - In qt-dev, we didn't have this check that the footer view was initialized, but hasActiveClearableNotifications did not call into the mDynamicPrivacyController (it didn't exist), so there was no initialization-time NPE.
+ - In rvc-dev this footer view check existed, so updateFooter never did any work until setFooterView was called, which is strictly after mDynamicPrivacyController is initialized, so there was no crash.
+ - In qt-qpr1-dev, mDynamicPrivacyController was added and is checked within updateFooter, but updateFooter didn't have the view check to short circuit before doing that on initialization.
+
+Bug: 193149550
+Fixes: 206344625
+Test: manually run qt-qpr1-dev with and without fix
+Depends-On: I49e2b8bcec7b2ce0a9776ff30a64c07f24949da7
+Change-Id: If6e99b5fbe3d2a9d9274223c35d23c30f5524229
+(cherry picked from commit 4ac20f1255fb30e94e1d29e56579f1409922763c)
+Merged-In: If6e99b5fbe3d2a9d9274223c35d23c30f5524229
+---
+ .../notification/stack/NotificationStackScrollLayout.java      | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+index ddaeca0fa8a4..30ebf86734b8 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/notification/stack/NotificationStackScrollLayout.java
+@@ -689,6 +689,9 @@ public class NotificationStackScrollLayout extends ViewGroup implements ScrollAd
+     @VisibleForTesting
+     @ShadeViewRefactor(RefactorComponent.SHADE_VIEW)
+     public void updateFooter() {
++        if (mFooterView == null) {
++            return;
++        }
+         boolean showDismissView = mClearAllEnabled && hasActiveClearableNotifications(ROWS_ALL);
+         boolean showFooterView = (showDismissView ||
+                 mEntryManager.getNotificationData().getActiveNotifications().size() != 0)
+-- 
+2.35.1
+
