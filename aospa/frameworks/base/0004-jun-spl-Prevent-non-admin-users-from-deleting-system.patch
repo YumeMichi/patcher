@@ -1,7 +1,7 @@
 From c844a7ac7f7be5af3c741352ddbeaec63514d90a Mon Sep 17 00:00:00 2001
 From: Oli Lan <olilan@google.com>
 Date: Fri, 25 Mar 2022 18:24:39 +0000
-Subject: [PATCH 4/9] [jun-spl] Prevent non-admin users from deleting system
+Subject: [PATCH 04/14] [jun-spl] Prevent non-admin users from deleting system
  apps.
 
 This addresses a security issue where the guest user can remove updates

@@ -1,7 +1,7 @@
 From 63fbcc0cfbd23f785330178d6bc31d2ac3811b10 Mon Sep 17 00:00:00 2001
 From: David Christie <dnchrist@google.com>
 Date: Fri, 11 Mar 2022 01:13:31 +0000
-Subject: [PATCH 6/9] [jun-spl] Update GeofenceHardwareRequestParcelable to
+Subject: [PATCH 06/14] [jun-spl] Update GeofenceHardwareRequestParcelable to
  match parcel/unparcel format.
 
 Test: manual

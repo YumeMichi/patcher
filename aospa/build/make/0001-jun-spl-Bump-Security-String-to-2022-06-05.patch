@@ -1,0 +1,61 @@
+From 5a682a71b2114318702e2f077a99da342011b7ba Mon Sep 17 00:00:00 2001
+From: Yuan Si <do4suki@gmail.com>
+Date: Sat, 11 Jun 2022 11:57:30 +0800
+Subject: [PATCH] [jun-spl] Bump Security String to 2022-06-05
+
+Implemented:
+============
+CVE:            References:    Type:  Severity:  Updated AOSP versions:
+CVE-2021-39624  A-67862680     DoS    High       10, 11, 12, 12L
+CVE-2022-20006  A-151095871    EoP    High       10, 11, 12, 12L
+CVE-2022-20123  A-221852424    ID     High       10, 11, 12, 12L
+CVE-2022-20124  A-170646036    EoP    High       10, 11, 12, 12L
+CVE-2022-20126  A-203431023    EoP    High       10, 11, 12, 12L
+CVE-2022-20127  A-221862119    RCE    Critical   10, 11, 12, 12L
+CVE-2022-20129  A-217934478    DoS    High       10, 11, 12, 12L
+CVE-2022-20130  A-224314979    RCE    Critical   10, 11, 12, 12L
+CVE-2022-20131  A-221856662    ID     High       10, 11, 12, 12L
+CVE-2022-20133  A-206807679    EoP    High       10, 11, 12, 12L
+CVE-2022-20134  A-218341397    EoP    High       10, 11, 12, 12L
+CVE-2022-20135  A-220303465    EoP    High       10, 11, 12, 12L
+CVE-2022-20137  A-206986392    EoP    High       12, 12L
+CVE-2022-20138  A-210469972    EoP    High       10, 11, 12, 12L
+CVE-2022-20140  A-227618988    EoP    Critical   12, 12L
+CVE-2022-20142  A-216631962    EoP    High       10, 11, 12, 12L
+CVE-2022-20143  A-220735360    DoS    High       10, 11, 12, 12L
+CVE-2022-20144  A-187702830    EoP    High       10, 11, 12, 12L
+CVE-2022-20147  A-221216105    EoP    High       10, 11, 12, 12L
+
+Unknown:
+========
+CVE:            References:    Type:  Severity:  Updated AOSP versions:
+CVE-2022-20125  A-194402515    EoP    High       10, 11, 12, 12L
+
+Not Applicable (platform source):
+=================================
+CVE:            References:    Type:  Severity:  Updated AOSP versions:
+CVE-2022-20145  A-201660636    EoP    Critical   11
+CVE-2021-39691  A-157929241    EoP    High       10, 11, 12
+
+Signed-off-by: Yuan Si <do4suki@gmail.com>
+Change-Id: I60c94b2048d64ac01e7a22bf33e4d026947d9113
+---
+ core/version_defaults.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/core/version_defaults.mk b/core/version_defaults.mk
+index fca8b0f3b9..cab994b097 100644
+--- a/core/version_defaults.mk
++++ b/core/version_defaults.mk
+@@ -246,7 +246,7 @@ ifndef PLATFORM_SECURITY_PATCH
+     #  It must be of the form "YYYY-MM-DD" on production devices.
+     #  It must match one of the Android Security Patch Level strings of the Public Security Bulletins.
+     #  If there is no $PLATFORM_SECURITY_PATCH set, keep it empty.
+-    PLATFORM_SECURITY_PATCH := 2022-05-05
++    PLATFORM_SECURITY_PATCH := 2022-06-05
+ endif
+ .KATI_READONLY := PLATFORM_SECURITY_PATCH
+ 
+-- 
+2.36.1
+

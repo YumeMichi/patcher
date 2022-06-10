@@ -1,0 +1,259 @@
+From 69464fc58532e46aba2ac0fef1b536172acd22b3 Mon Sep 17 00:00:00 2001
+From: Anay Wadhera <awadhera@berkeley.edu>
+Date: Tue, 7 Jun 2022 10:16:46 -0700
+Subject: [PATCH 10/14] SystemUI: match Google resource class
+
+* Allow direct extraction from SystemUIGoogle
+
+Change-Id: Iafcaba0593f05ae4b20c9abefcd1f70570747754
+Reviewed-on: https://review.statixos.com/c/android_packages_apps_Statix_SystemUI/+/7890
+Tested-by: Sourajit Karmakar <sourajit@live.com>
+Reviewed-by: Sourajit Karmakar <sourajit@live.com>
+---
+ packages/SystemUI/Android.bp                       |  2 +-
+ packages/SystemUI/bcsmartspace/Android.bp          | 14 ++++++++++++++
+ packages/SystemUI/bcsmartspace/AndroidManifest.xml |  5 +++++
+ .../res}/drawable/bg_image_generic.xml             |  0
+ .../res}/drawable/bg_smartspace_card_secondary.xml |  0
+ .../bg_smartspace_combination_sub_card.xml         |  0
+ .../res}/drawable/bg_smartspace_media_item.xml     |  0
+ .../res}/drawable/page_indicator_dot.xml           |  0
+ .../res}/layout/smartspace_card.xml                |  0
+ .../res}/layout/smartspace_card_at_store.xml       |  0
+ .../res}/layout/smartspace_card_combination.xml    |  0
+ .../smartspace_card_combination_at_store.xml       |  0
+ .../res}/layout/smartspace_card_date.xml           |  0
+ .../res}/layout/smartspace_card_doorbell.xml       |  0
+ .../res}/layout/smartspace_card_flight.xml         |  0
+ .../smartspace_card_generic_image_with_bg.xml      |  0
+ .../smartspace_card_generic_landscape_image.xml    |  0
+ .../smartspace_card_generic_portrait_image.xml     |  0
+ .../res}/layout/smartspace_card_loyalty.xml        |  0
+ .../res}/layout/smartspace_card_shopping_list.xml  |  0
+ .../res}/layout/smartspace_card_sports.xml         |  0
+ .../layout/smartspace_card_weather_forecast.xml    |  0
+ .../smartspace_card_weather_forecast_column.xml    |  0
+ .../layout/smartspace_combination_sub_card.xml     |  0
+ .../res}/layout/smartspace_enhanced.xml            |  0
+ .../res}/layout/smartspace_extras.xml              |  0
+ .../res}/layout/smartspace_subtitle_pane.xml       |  0
+ .../res}/layout/smartspace_title_subtile_pane.xml  |  0
+ .../res}/values/colors.xml                         |  0
+ .../res}/values/dimens.xml                         |  0
+ .../res}/values/ids.xml                            |  0
+ .../res}/values/plurals.xml                        |  0
+ .../res}/values/strings.xml                        |  0
+ .../res}/values/styles.xml                         |  0
+ 34 files changed, 20 insertions(+), 1 deletion(-)
+ create mode 100644 packages/SystemUI/bcsmartspace/Android.bp
+ create mode 100644 packages/SystemUI/bcsmartspace/AndroidManifest.xml
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/drawable/bg_image_generic.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/drawable/bg_smartspace_card_secondary.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/drawable/bg_smartspace_combination_sub_card.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/drawable/bg_smartspace_media_item.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/drawable/page_indicator_dot.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_at_store.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_combination.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_combination_at_store.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_date.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_doorbell.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_flight.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_generic_image_with_bg.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_generic_landscape_image.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_generic_portrait_image.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_loyalty.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_shopping_list.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_sports.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_weather_forecast.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_card_weather_forecast_column.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_combination_sub_card.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_enhanced.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_extras.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_subtitle_pane.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/layout/smartspace_title_subtile_pane.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/colors.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/dimens.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/ids.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/plurals.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/strings.xml (100%)
+ rename packages/SystemUI/{res-smartspace => bcsmartspace/res}/values/styles.xml (100%)
+
+diff --git a/packages/SystemUI/Android.bp b/packages/SystemUI/Android.bp
+index 9e3eac9b7303..1a1d29153569 100644
+--- a/packages/SystemUI/Android.bp
++++ b/packages/SystemUI/Android.bp
+@@ -84,7 +84,6 @@ android_library {
+         "res",
+         "res-product",
+         "res-keyguard",
+-        "res-smartspace",
+         "res-columbus",
+         "res-assist",
+         "res-elmyra",
+@@ -124,6 +123,7 @@ android_library {
+         "jsr330",
+         "lottie",
+         "assistmanager-google",
++        "bcsmartspace-res",
+         "backgesture-google",
+         "columbus-sysui-google",
+         "elmyra-sysui-google",
+diff --git a/packages/SystemUI/bcsmartspace/Android.bp b/packages/SystemUI/bcsmartspace/Android.bp
+new file mode 100644
+index 000000000000..1e7c08f31710
+--- /dev/null
++++ b/packages/SystemUI/bcsmartspace/Android.bp
+@@ -0,0 +1,14 @@
++android_library {
++    name: "bcsmartspace-res",
++
++    static_libs: [
++        "androidx.cardview_cardview",
++        "androidx-constraintlayout_constraintlayout",
++    ],
++
++    optimize: {
++        enabled: false,
++    },
++
++    resource_dirs: ["res"],
++}
+diff --git a/packages/SystemUI/bcsmartspace/AndroidManifest.xml b/packages/SystemUI/bcsmartspace/AndroidManifest.xml
+new file mode 100644
+index 000000000000..b6d117af09fd
+--- /dev/null
++++ b/packages/SystemUI/bcsmartspace/AndroidManifest.xml
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++          package="com.android.systemui.bcsmartspace">
++
++</manifest>
+diff --git a/packages/SystemUI/res-smartspace/drawable/bg_image_generic.xml b/packages/SystemUI/bcsmartspace/res/drawable/bg_image_generic.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/drawable/bg_image_generic.xml
+rename to packages/SystemUI/bcsmartspace/res/drawable/bg_image_generic.xml
+diff --git a/packages/SystemUI/res-smartspace/drawable/bg_smartspace_card_secondary.xml b/packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_card_secondary.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/drawable/bg_smartspace_card_secondary.xml
+rename to packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_card_secondary.xml
+diff --git a/packages/SystemUI/res-smartspace/drawable/bg_smartspace_combination_sub_card.xml b/packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_combination_sub_card.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/drawable/bg_smartspace_combination_sub_card.xml
+rename to packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_combination_sub_card.xml
+diff --git a/packages/SystemUI/res-smartspace/drawable/bg_smartspace_media_item.xml b/packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_media_item.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/drawable/bg_smartspace_media_item.xml
+rename to packages/SystemUI/bcsmartspace/res/drawable/bg_smartspace_media_item.xml
+diff --git a/packages/SystemUI/res-smartspace/drawable/page_indicator_dot.xml b/packages/SystemUI/bcsmartspace/res/drawable/page_indicator_dot.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/drawable/page_indicator_dot.xml
+rename to packages/SystemUI/bcsmartspace/res/drawable/page_indicator_dot.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_at_store.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_at_store.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_at_store.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_at_store.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_combination.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_combination.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_combination.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_combination.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_combination_at_store.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_combination_at_store.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_combination_at_store.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_combination_at_store.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_date.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_date.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_date.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_date.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_doorbell.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_doorbell.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_doorbell.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_doorbell.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_flight.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_flight.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_generic_image_with_bg.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_image_with_bg.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_generic_image_with_bg.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_image_with_bg.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_generic_landscape_image.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_landscape_image.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_generic_landscape_image.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_landscape_image.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_generic_portrait_image.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_portrait_image.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_generic_portrait_image.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_generic_portrait_image.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_loyalty.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_loyalty.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_shopping_list.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_shopping_list.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_sports.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_sports.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_weather_forecast.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_weather_forecast.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_card_weather_forecast_column.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_card_weather_forecast_column.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_combination_sub_card.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_combination_sub_card.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_enhanced.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_enhanced.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_enhanced.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_enhanced.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_extras.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_extras.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_extras.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_extras.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_subtitle_pane.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_subtitle_pane.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_subtitle_pane.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_subtitle_pane.xml
+diff --git a/packages/SystemUI/res-smartspace/layout/smartspace_title_subtile_pane.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_title_subtile_pane.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/layout/smartspace_title_subtile_pane.xml
+rename to packages/SystemUI/bcsmartspace/res/layout/smartspace_title_subtile_pane.xml
+diff --git a/packages/SystemUI/res-smartspace/values/colors.xml b/packages/SystemUI/bcsmartspace/res/values/colors.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/colors.xml
+rename to packages/SystemUI/bcsmartspace/res/values/colors.xml
+diff --git a/packages/SystemUI/res-smartspace/values/dimens.xml b/packages/SystemUI/bcsmartspace/res/values/dimens.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/dimens.xml
+rename to packages/SystemUI/bcsmartspace/res/values/dimens.xml
+diff --git a/packages/SystemUI/res-smartspace/values/ids.xml b/packages/SystemUI/bcsmartspace/res/values/ids.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/ids.xml
+rename to packages/SystemUI/bcsmartspace/res/values/ids.xml
+diff --git a/packages/SystemUI/res-smartspace/values/plurals.xml b/packages/SystemUI/bcsmartspace/res/values/plurals.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/plurals.xml
+rename to packages/SystemUI/bcsmartspace/res/values/plurals.xml
+diff --git a/packages/SystemUI/res-smartspace/values/strings.xml b/packages/SystemUI/bcsmartspace/res/values/strings.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/strings.xml
+rename to packages/SystemUI/bcsmartspace/res/values/strings.xml
+diff --git a/packages/SystemUI/res-smartspace/values/styles.xml b/packages/SystemUI/bcsmartspace/res/values/styles.xml
+similarity index 100%
+rename from packages/SystemUI/res-smartspace/values/styles.xml
+rename to packages/SystemUI/bcsmartspace/res/values/styles.xml
+-- 
+2.36.1
+

@@ -1,7 +1,7 @@
 From f615c68341fd991f95406f35405d283a54f7eadb Mon Sep 17 00:00:00 2001
 From: Thomas Stuart <tjstuart@google.com>
 Date: Mon, 31 Jan 2022 20:31:42 +0000
-Subject: [PATCH 8/9] [jun-spl] limit TelecomManager#registerPhoneAccount to
+Subject: [PATCH 08/14] [jun-spl] limit TelecomManager#registerPhoneAccount to
  10; api doc update
 
 bug: 209814693

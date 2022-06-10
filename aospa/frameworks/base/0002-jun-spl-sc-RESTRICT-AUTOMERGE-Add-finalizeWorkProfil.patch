@@ -1,7 +1,7 @@
 From 0dac3c563ba660fe55b9e988770b759be5065fb1 Mon Sep 17 00:00:00 2001
 From: Jonathan Scott <scottjonathan@google.com>
 Date: Mon, 4 Apr 2022 12:52:09 +0000
-Subject: [PATCH 2/9] [jun-spl] [sc] RESTRICT AUTOMERGE Add
+Subject: [PATCH 02/14] [jun-spl] [sc] RESTRICT AUTOMERGE Add
  finalizeWorkProfileProvisioning.
 
 Test: atest android.devicepolicy.cts.DevicePolicyManagerTest

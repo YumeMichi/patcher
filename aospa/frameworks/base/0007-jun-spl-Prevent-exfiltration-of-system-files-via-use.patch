@@ -1,7 +1,7 @@
 From 599c8c80540a65760e30a3b8d5c6eaf548c5c265 Mon Sep 17 00:00:00 2001
 From: Oli Lan <olilan@google.com>
 Date: Thu, 3 Mar 2022 16:56:18 +0000
-Subject: [PATCH 7/9] [jun-spl] Prevent exfiltration of system files via user
+Subject: [PATCH 07/14] [jun-spl] Prevent exfiltration of system files via user
  image settings.
 
 This is a backport of ag/17005706.

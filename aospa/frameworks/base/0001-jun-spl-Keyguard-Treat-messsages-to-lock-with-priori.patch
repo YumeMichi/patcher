@@ -1,7 +1,7 @@
 From 000438be86ada29eea6c88bd01d3dc306fb6a8c8 Mon Sep 17 00:00:00 2001
 From: Matt Pietal <mpietal@google.com>
 Date: Fri, 1 Oct 2021 11:03:16 -0400
-Subject: [PATCH 1/9] [jun-spl] Keyguard - Treat messsages to lock with
+Subject: [PATCH 01/14] [jun-spl] Keyguard - Treat messsages to lock with
  priority
 
 When switching users and attempting to lock the device, the sysui main

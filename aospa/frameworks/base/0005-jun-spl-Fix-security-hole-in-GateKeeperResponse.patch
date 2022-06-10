@@ -1,7 +1,7 @@
 From a78855d85d2c268d67660f3171ece651249731a2 Mon Sep 17 00:00:00 2001
 From: Ayush Sharma <ayushsha@google.com>
 Date: Wed, 16 Mar 2022 10:32:23 +0000
-Subject: [PATCH 5/9] [jun-spl] Fix security hole in GateKeeperResponse
+Subject: [PATCH 05/14] [jun-spl] Fix security hole in GateKeeperResponse
 
 GateKeeperResponse has inconsistent writeToParcel() and
 createFromParcel() methods, making it possible for a malicious app to

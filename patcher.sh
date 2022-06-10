@@ -2,6 +2,7 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
+    'build/make'
     'external/aac'
     'frameworks/base'
     # 'packages/apps/Bluetooth'

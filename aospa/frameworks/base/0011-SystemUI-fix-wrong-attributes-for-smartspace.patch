@@ -1,0 +1,168 @@
+From f6019024c871d68b576bac70ca2afa055fec97af Mon Sep 17 00:00:00 2001
+From: Anay Wadhera <anay1018@gmail.com>
+Date: Wed, 8 Jun 2022 05:05:10 +0900
+Subject: [PATCH 11/14] SystemUI: fix wrong attributes for smartspace
+
+Change-Id: Ia6c1f9f65dc1f3602a0e5b359166ba8109856bb6
+Reviewed-on: https://review.statixos.com/c/android_packages_apps_Statix_SystemUI/+/7891
+Tested-by: Sourajit Karmakar <sourajit@live.com>
+Reviewed-by: Sourajit Karmakar <sourajit@live.com>
+---
+ .../res/layout/smartspace_card_flight.xml     | 10 ++---
+ .../res/layout/smartspace_card_loyalty.xml    |  4 +-
+ .../layout/smartspace_card_shopping_list.xml  | 10 ++---
+ .../res/layout/smartspace_card_sports.xml     |  6 +--
+ ...martspace_card_weather_forecast_column.xml |  4 +-
+ .../smartspace_combination_sub_card.xml       |  2 +-
+ .../SystemUI/bcsmartspace/res/values/ids.xml  | 43 -------------------
+ 7 files changed, 18 insertions(+), 61 deletions(-)
+ delete mode 100644 packages/SystemUI/bcsmartspace/res/values/ids.xml
+
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml
+index c4656809ff5d..dfb96daf946a 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_flight.xml
+@@ -1,12 +1,12 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <com.google.android.systemui.smartspace.BcSmartspaceCardFlight xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:background="@drawable/bg_smartspace_card_secondary" android:padding="8dp" android:layout_width="match_parent" android:layout_height="match_parent">
+     <ImageView android:id="@+id/card_prompt_logo" android:layout_width="32dp" android:layout_height="32dp" android:layout_margin="4dp" app:layout_constraintBottom_toTopOf="@+id/card_prompt" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed"/>
+-    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/toLeft" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="4dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/card_prompt_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/textColorOnAccent" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="4dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/card_prompt_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
+     <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/boarding_pass_ui" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingStart="8dp" android:paddingEnd="8dp">
+-        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/gate_title" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/smartspace_flight_card_gate_header" android:fontFamily="google-sans-text-medium" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toTopOf="@+id/seat_title" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed" style="@style/EnhancedSmartspaceTextTitle"/>
+-        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/gate_value" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:alpha="0.7" android:fontFamily="google-sans-text-medium" android:layout_marginStart="4dp" android:layout_marginEnd="10dp" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="@+id/gate_title" app:layout_constraintStart_toEndOf="@+id/title_barrier" app:layout_constraintTop_toTopOf="@+id/gate_title" style="@style/EnhancedSmartspaceTextSubtitle"/>
+-        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/seat_title" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15dp" android:text="@string/smartspace_flight_card_seat_header" android:fontFamily="google-sans-text-medium" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/gate_title" style="@style/EnhancedSmartspaceTextTitle"/>
+-        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/seat_value" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:alpha="0.7" android:fontFamily="google-sans-text-medium" android:layout_marginStart="4dp" android:layout_marginEnd="10dp" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="@+id/seat_title" app:layout_constraintStart_toEndOf="@+id/title_barrier" app:layout_constraintTop_toTopOf="@+id/seat_title" style="@style/EnhancedSmartspaceTextSubtitle"/>
++        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/gate_title" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/smartspace_flight_card_gate_header" android:fontFamily="google-sans-text-medium" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toTopOf="@+id/seat_title" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed" style="@style/EnhancedSmartspaceTextTitle"/>
++        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/gate_value" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:alpha="0.7" android:fontFamily="google-sans-text-medium" android:layout_marginStart="4dp" android:layout_marginEnd="10dp" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="@+id/gate_title" app:layout_constraintStart_toEndOf="@+id/title_barrier" app:layout_constraintTop_toTopOf="@+id/gate_title" style="@style/EnhancedSmartspaceTextSubtitle"/>
++        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/seat_title" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="15dp" android:text="@string/smartspace_flight_card_seat_header" android:fontFamily="google-sans-text-medium" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/gate_title" style="@style/EnhancedSmartspaceTextTitle"/>
++        <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/seat_value" android:clipChildren="false" android:clipToPadding="false" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:alpha="0.7" android:fontFamily="google-sans-text-medium" android:layout_marginStart="4dp" android:layout_marginEnd="10dp" android:letterSpacing="0.025" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="@+id/seat_title" app:layout_constraintStart_toEndOf="@+id/title_barrier" app:layout_constraintTop_toTopOf="@+id/seat_title" style="@style/EnhancedSmartspaceTextSubtitle"/>
+         <androidx.constraintlayout.widget.Barrier android:id="@+id/title_barrier" android:layout_width="wrap_content" android:layout_height="wrap_content" app:barrierDirection="end" app:constraint_referenced_ids="gate_title,seat_title"/>
+         <androidx.constraintlayout.widget.Barrier android:id="@+id/value_barrier" android:layout_width="wrap_content" android:layout_height="wrap_content" app:barrierDirection="end" app:constraint_referenced_ids="gate_value,seat_value"/>
+         <ImageView android:id="@+id/flight_qr_code" android:background="@drawable/bg_image_generic" android:padding="4dp" android:layout_width="60dp" android:layout_height="60dp" android:layout_marginStart="10dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/value_barrier" app:layout_constraintTop_toTopOf="parent"/>
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml
+index c7de243dc977..2ec5b74206b4 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_loyalty.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <com.google.android.systemui.smartspace.BcSmartspaceCardLoyalty xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:background="@drawable/bg_smartspace_card_secondary" android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="match_parent">
+     <ImageView android:id="@+id/image_view" android:layout_width="32dp" android:layout_height="32dp" android:layout_margin="4dp" app:layout_constraintBottom_toTopOf="@+id/card_prompt" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed"/>
+-    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/toLeft" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:maxLines="2" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/image_view" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/textColorOnAccent" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:maxLines="2" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/image_view" style="@style/EnhancedSmartspaceTextSubtitle"/>
+     <ImageView android:id="@+id/loyalty_program_logo" android:layout_width="32dp" android:layout_height="32dp" android:layout_margin="4dp" app:layout_constraintBottom_toTopOf="@+id/loyalty_program_name" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed"/>
+-    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/toLeft" android:gravity="center_horizontal" android:id="@+id/loyalty_program_name" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:maxLines="1" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/loyalty_program_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/textColorOnAccent" android:gravity="center_horizontal" android:id="@+id/loyalty_program_name" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="4dp" android:maxLines="1" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/loyalty_program_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
+ </com.google.android.systemui.smartspace.BcSmartspaceCardLoyalty>
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml
+index 7d9a253e8b34..d73555e8c9b3 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_shopping_list.xml
+@@ -1,10 +1,10 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <com.google.android.systemui.smartspace.BcSmartspaceCardShoppingList xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:background="@drawable/bg_smartspace_card_secondary" android:padding="12dp" android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingStart="16dp">
+     <ImageView android:id="@+id/card_prompt_icon" android:layout_width="32dp" android:layout_height="32dp" android:layout_margin="3dp" app:layout_constraintBottom_toTopOf="@+id/card_prompt" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed"/>
+-    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/toLeft" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="3dp" android:maxLines="2" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/card_prompt_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/textColorOnAccent" android:gravity="center_horizontal" android:id="@+id/card_prompt" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_margin="3dp" android:maxLines="2" android:lineHeight="20dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/card_prompt_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
+     <ImageView android:id="@+id/list_icon" android:layout_width="20dp" android:layout_height="20dp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/empty_list_message" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="4" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0" style="@style/EnhancedSmartspaceTextSubtitle"/>
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/list_item_1" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toTopOf="@+id/list_item_2" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed" style="@style/EnhancedSmartspaceTextSubtitle"/>
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/list_item_2" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toTopOf="@+id/list_item_3" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/list_item_1" style="@style/EnhancedSmartspaceTextSubtitle"/>
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/list_item_3" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/list_item_2" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/empty_list_message" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="4" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_bias="0" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/list_item_1" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toTopOf="@+id/list_item_2" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="packed" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/list_item_2" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toTopOf="@+id/list_item_3" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/list_item_1" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/list_item_3" android:layout_width="0dp" android:layout_height="wrap_content" android:maxLines="1" android:fontFamily="google-sans-medium" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/list_icon" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/list_item_2" style="@style/EnhancedSmartspaceTextSubtitle"/>
+ </com.google.android.systemui.smartspace.BcSmartspaceCardShoppingList>
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml
+index d4d33189db13..1bdebcc5de74 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_sports.xml
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <com.google.android.systemui.smartspace.BcSmartspaceCardSports xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:background="@drawable/bg_smartspace_card_secondary" android:paddingTop="12dp" android:paddingBottom="20dp" android:clipChildren="false" android:clipToPadding="false" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingStart="12dp" android:paddingEnd="12dp">
+-    <TextView android:textColor="?androidprv:attr/toLeft" android:id="@+id/match_time_summary" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/match_time_summary" android:layout_width="wrap_content" android:layout_height="wrap_content" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" style="@style/EnhancedSmartspaceTextSubtitle"/>
+     <ImageView android:id="@+id/first_competitor_logo" android:layout_width="0dp" android:layout_height="0dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintDimensionRatio="1:1" app:layout_constraintEnd_toStartOf="@+id/first_competitor_score" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/match_time_summary" app:tint="?android:attr/textColorPrimary"/>
+     <ImageView android:id="@+id/second_competitor_logo" android:layout_width="0dp" android:layout_height="0dp" app:layout_constraintBottom_toBottomOf="@+id/first_competitor_logo" app:layout_constraintDimensionRatio="1:1" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toEndOf="@+id/second_competitor_score" app:layout_constraintTop_toTopOf="@+id/first_competitor_logo" app:tint="?android:attr/textColorPrimary"/>
+-    <TextView android:textColor="?androidprv:attr/toLeft" android:id="@+id/first_competitor_score" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:layout_constraintBottom_toBottomOf="@+id/first_competitor_logo" app:layout_constraintEnd_toStartOf="@+id/second_competitor_score" app:layout_constraintStart_toEndOf="@+id/first_competitor_logo" app:layout_constraintTop_toTopOf="@+id/first_competitor_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
+-    <TextView android:textColor="?androidprv:attr/toLeft" android:id="@+id/second_competitor_score" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:layout_marginEnd="4dp" app:layout_constraintBottom_toBottomOf="@+id/second_competitor_logo" app:layout_constraintEnd_toStartOf="@+id/second_competitor_logo" app:layout_constraintStart_toEndOf="@+id/first_competitor_score" app:layout_constraintTop_toTopOf="@+id/second_competitor_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/first_competitor_score" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="4dp" app:layout_constraintBottom_toBottomOf="@+id/first_competitor_logo" app:layout_constraintEnd_toStartOf="@+id/second_competitor_score" app:layout_constraintStart_toEndOf="@+id/first_competitor_logo" app:layout_constraintTop_toTopOf="@+id/first_competitor_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/second_competitor_score" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:layout_marginEnd="4dp" app:layout_constraintBottom_toBottomOf="@+id/second_competitor_logo" app:layout_constraintEnd_toStartOf="@+id/second_competitor_logo" app:layout_constraintStart_toEndOf="@+id/first_competitor_score" app:layout_constraintTop_toTopOf="@+id/second_competitor_logo" style="@style/EnhancedSmartspaceTextSubtitle"/>
+ </com.google.android.systemui.smartspace.BcSmartspaceCardSports>
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml
+index 39ce3e05f2b3..c16d386bab50 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_card_weather_forecast_column.xml
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <androidx.constraintlayout.widget.ConstraintLayout xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="wrap_content" android:layout_height="0dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_chainStyle="spread_inside" app:layout_constraintTop_toTopOf="parent">
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/temperature_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:layout_constraintBottom_toTopOf="@+id/weather_icon" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="spread_inside" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/temperature_value" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:layout_constraintBottom_toTopOf="@+id/weather_icon" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" app:layout_constraintVertical_chainStyle="spread_inside" style="@style/EnhancedSmartspaceTextSubtitle"/>
+     <ImageView android:id="@+id/weather_icon" android:layout_width="wrap_content" android:layout_height="wrap_content" android:scaleType="centerInside" app:layout_constraintBottom_toTopOf="@+id/timestamp" app:layout_constraintDimensionRatio="1:1" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/temperature_value"/>
+-    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/toLeft" android:id="@+id/timestamp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/weather_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="12sp" android:textColor="?androidprv:attr/textColorOnAccent" android:id="@+id/timestamp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/weather_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
+ </androidx.constraintlayout.widget.ConstraintLayout>
+diff --git a/packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml b/packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml
+index 9c6208063b99..a687491030fd 100644
+--- a/packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml
++++ b/packages/SystemUI/bcsmartspace/res/layout/smartspace_combination_sub_card.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <androidx.constraintlayout.widget.ConstraintLayout xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/first_sub_card" android:background="@drawable/bg_smartspace_combination_sub_card" android:padding="8dp" android:layout_width="0dp" android:layout_height="match_parent">
+     <ImageView android:id="@+id/sub_card_icon" android:layout_width="22dp" android:layout_height="22dp" android:layout_margin="2dp" app:layout_constraintBottom_toTopOf="@+id/sub_card_text" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+-    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/toLeft" android:ellipsize="end" android:gravity="center_horizontal" android:id="@+id/sub_card_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:maxLines="2" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/sub_card_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
++    <TextView android:textSize="14sp" android:textColor="?androidprv:attr/textColorOnAccent" android:ellipsize="end" android:gravity="center_horizontal" android:id="@+id/sub_card_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="2dp" android:maxLines="2" app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/sub_card_icon" style="@style/EnhancedSmartspaceTextSubtitle"/>
+ </androidx.constraintlayout.widget.ConstraintLayout>
+diff --git a/packages/SystemUI/bcsmartspace/res/values/ids.xml b/packages/SystemUI/bcsmartspace/res/values/ids.xml
+deleted file mode 100644
+index fc305663c080..000000000000
+--- a/packages/SystemUI/bcsmartspace/res/values/ids.xml
++++ /dev/null
+@@ -1,43 +0,0 @@
+-<resources>
+-    <item type="id" name="alarm_icon"/>
+-    <item type="id" name="alarm_text"/>
+-    <item type="id" name="base_action_icon_subtitle"/>
+-    <item type="id" name="bc_smartspace_view"/>
+-    <item type="id" name="boarding_pass_ui"/>
+-    <item type="id" name="card_prompt"/>
+-    <item type="id" name="card_prompt_icon"/>
+-    <item type="id" name="card_prompt_logo"/>
+-    <item type="id" name="empty_list_message"/>
+-    <item type="id" name="first_competitor_logo"/>
+-    <item type="id" name="first_competitor_score"/>
+-    <item type="id" name="first_sub_card"/>
+-    <item type="id" name="flight_qr_code"/>
+-    <item type="id" name="gate_title"/>
+-    <item type="id" name="gate_value"/>
+-    <item type="id" name="image_view"/>
+-    <item type="id" name="match_time_summary"/>
+-    <item type="id" name="list_icon"/>
+-    <item type="id" name="list_item_1"/>
+-    <item type="id" name="list_item_2"/>
+-    <item type="id" name="list_item_3"/>
+-    <item type="id" name="loyalty_program_logo"/>
+-    <item type="id" name="loyalty_program_name"/>
+-    <item type="id" name="seat_title"/>
+-    <item type="id" name="seat_value"/>
+-    <item type="id" name="second_competitor_logo"/>
+-    <item type="id" name="second_competitor_score"/>
+-    <item type="id" name="second_sub_card"/>
+-    <item type="id" name="smartspace_card_pager"/>
+-    <item type="id" name="smartspace_extras_group"/>
+-    <item type="id" name="smartspace_page_indicator"/>
+-    <item type="id" name="spacer_dot"/>
+-    <item type="id" name="sub_card_icon"/>
+-    <item type="id" name="sub_card_text"/>
+-    <item type="id" name="subtitle_text"/>
+-    <item type="id" name="temperature_value"/>
+-    <item type="id" name="timestamp"/>
+-    <item type="id" name="title_barrier"/>
+-    <item type="id" name="top_padding"/>
+-    <item type="id" name="weather_icon"/>
+-    <item type="id" name="value_barrier"/>
+-</resources>
+-- 
+2.36.1
+
