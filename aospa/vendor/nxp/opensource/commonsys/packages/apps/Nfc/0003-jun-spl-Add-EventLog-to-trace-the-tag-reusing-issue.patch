@@ -1,0 +1,38 @@
+From f3e0095e2ed43c9c952f3d8f97e1a7ca1bda1ecc Mon Sep 17 00:00:00 2001
+From: chloedai <chloedai@google.com>
+Date: Mon, 21 Feb 2022 20:16:06 +0800
+Subject: [PATCH 3/4] [jun-spl] Add EventLog to trace the tag reusing issue
+
+Bug: 199291025
+Test: Test pass
+Change-Id: Icb268a99da92d9c2cb1fc1341d6a79b3fb9abf6a
+Merged-In: Icb268a99da92d9c2cb1fc1341d6a79b3fb9abf6a
+(cherry picked from commit 7a71b93f270aa74cea01187094f0b2d302ab38c6)
+---
+ src/com/android/nfc/NfcService.java | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/com/android/nfc/NfcService.java b/src/com/android/nfc/NfcService.java
+index 57b379bc..ec409aab 100644
+--- a/src/com/android/nfc/NfcService.java
++++ b/src/com/android/nfc/NfcService.java
+@@ -86,6 +86,7 @@ import android.se.omapi.ISecureElementService;
+ import android.service.vr.IVrManager;
+ import android.service.vr.IVrStateCallbacks;
+ import android.text.TextUtils;
++import android.util.EventLog;
+ import android.util.Log;
+ import android.util.proto.ProtoOutputStream;
+ import android.widget.Toast;
+@@ -2936,6 +2937,8 @@ public class NfcService implements DeviceHostListener {
+             }
+ 
+             if (DBG) Log.d(TAG, "Tag " + Long.toString(cookie) + " is out of date");
++            EventLog.writeEvent(0x534e4554, "199291025", -1,
++                    "The obsolete tag was attempted to be accessed");
+             return false;
+         }
+     }
+-- 
+2.36.1
+

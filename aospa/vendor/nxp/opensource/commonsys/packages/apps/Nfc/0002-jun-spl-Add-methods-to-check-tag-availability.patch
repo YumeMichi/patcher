@@ -1,0 +1,63 @@
+From c8f5636cceb6af37d84fe1e721e964e0aae67115 Mon Sep 17 00:00:00 2001
+From: chloedai <chloedai@google.com>
+Date: Tue, 11 Jan 2022 04:24:35 +0000
+Subject: [PATCH 2/4] [jun-spl] Add methods to check tag availability
+
+setTagUpToDate:
+    record the new tag's cookie while creating a tag object, the value
+    could be used to check the tag availability
+
+isTagUpToDate:
+    compare the latest cookie to the tag's cookie, which generated
+    when it was created, to check whether the tag object is the
+    latest or not
+
+Bug: 199291025
+Test: test with some reader apps, test pass
+Merged-In: Ia1e21a95605020b6af8cceda0869f982048568ba
+Change-Id: Ia1e21a95605020b6af8cceda0869f982048568ba
+---
+ src/com/android/nfc/NfcService.java | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/src/com/android/nfc/NfcService.java b/src/com/android/nfc/NfcService.java
+index f32c4ed2..57b379bc 100644
+--- a/src/com/android/nfc/NfcService.java
++++ b/src/com/android/nfc/NfcService.java
+@@ -487,6 +487,9 @@ public class NfcService implements DeviceHostListener {
+     boolean mNotifyDispatchFailed;
+     boolean mNotifyReadFailed;
+ 
++    // for recording the latest Tag object cookie
++    long mCookieUpToDate = 0;
++
+     private NfcDispatcher mNfcDispatcher;
+     private PowerManager mPowerManager;
+     private KeyguardManager mKeyguard;
+@@ -2918,6 +2921,23 @@ public class NfcService implements DeviceHostListener {
+         public boolean getExtendedLengthApdusSupported() throws RemoteException {
+             return mDeviceHost.getExtendedLengthApdusSupported();
+         }
++
++        @Override
++        public void setTagUpToDate(long cookie) throws RemoteException {
++            if (DBG) Log.d(TAG, "Register Tag " + Long.toString(cookie) + " as the latest");
++            mCookieUpToDate = cookie;
++        }
++
++        @Override
++        public boolean isTagUpToDate(long cookie) throws RemoteException {
++            if (mCookieUpToDate == cookie) {
++                if (DBG) Log.d(TAG, "Tag " + Long.toString(cookie) + " is up to date");
++                return true;
++            }
++
++            if (DBG) Log.d(TAG, "Tag " + Long.toString(cookie) + " is out of date");
++            return false;
++        }
+     }
+ 
+     final class NfcDtaService extends INfcDta.Stub {
+-- 
+2.36.1
+

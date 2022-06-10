@@ -1,0 +1,50 @@
+From 3fce854d06119bbcb19e51daff979b749c739c3d Mon Sep 17 00:00:00 2001
+From: Alisher Alikhodjaev <alisher@google.com>
+Date: Mon, 21 Mar 2022 19:31:28 -0700
+Subject: [PATCH 3/3] [jun-spl] OOBR in nfc_ncif_proc_ee_discover_req()
+
+Bug: 221856662
+Test: build ok
+Change-Id: If4b4872e4101fc65172596b4f7579b259b6f6b63
+(cherry picked from commit 1c6ab25b3d76c2ced764dc649bec6cf05aecd198)
+Merged-In: If4b4872e4101fc65172596b4f7579b259b6f6b63
+---
+ SN100x/src/nfc/nfc/nfc_ncif.cc | 5 +++++
+ src/nfc/nfc/nfc_ncif.cc        | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/SN100x/src/nfc/nfc/nfc_ncif.cc b/SN100x/src/nfc/nfc/nfc_ncif.cc
+index 9c4ccdad..99e84940 100644
+--- a/SN100x/src/nfc/nfc/nfc_ncif.cc
++++ b/SN100x/src/nfc/nfc/nfc_ncif.cc
+@@ -1705,6 +1705,11 @@ void nfc_ncif_proc_ee_discover_req(uint8_t* p, uint16_t plen) {
+   DLOG_IF(INFO, nfc_debug_enabled)
+       << StringPrintf("nfc_ncif_proc_ee_discover_req %d len:%d", *p, plen);
+ 
++  if (!plen) {
++    android_errorWriteLog(0x534e4554, "221856662");
++    return;
++  }
++
+   if (*p > NFC_MAX_EE_DISC_ENTRIES) {
+     android_errorWriteLog(0x534e4554, "122361874");
+     LOG(ERROR) << __func__ << "Exceed NFC_MAX_EE_DISC_ENTRIES";
+diff --git a/src/nfc/nfc/nfc_ncif.cc b/src/nfc/nfc/nfc_ncif.cc
+index 52674988..d11ff619 100644
+--- a/src/nfc/nfc/nfc_ncif.cc
++++ b/src/nfc/nfc/nfc_ncif.cc
+@@ -2223,6 +2223,11 @@ void nfc_ncif_proc_ee_discover_req(uint8_t* p, uint16_t plen) {
+ 
+   DLOG_IF(INFO, nfc_debug_enabled) << StringPrintf("nfc_ncif_proc_ee_discover_req %d len:%d", *p, plen);
+ 
++  if (!plen) {
++    android_errorWriteLog(0x534e4554, "221856662");
++    return;
++  }
++
+   if (*p > NFC_MAX_EE_DISC_ENTRIES) {
+     android_errorWriteLog(0x534e4554, "122361874");
+     LOG(ERROR) << __func__ << "Exceed NFC_MAX_EE_DISC_ENTRIES";
+-- 
+2.36.1
+

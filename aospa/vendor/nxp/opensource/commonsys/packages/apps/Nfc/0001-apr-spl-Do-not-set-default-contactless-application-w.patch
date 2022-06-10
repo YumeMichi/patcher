@@ -1,8 +1,8 @@
 From 72d655b815367f20604085c7585815ca6ba2aed7 Mon Sep 17 00:00:00 2001
 From: Jack Yu <jackcwyu@google.com>
 Date: Thu, 13 Jan 2022 16:27:22 +0800
-Subject: [PATCH] [apr-spl] Do not set default contactless application without
- user interaction
+Subject: [PATCH 1/4] [apr-spl] Do not set default contactless application
+ without user interaction
 
 Keep the default contactless apllication "not set" if user does not
 select one from the Settings page.

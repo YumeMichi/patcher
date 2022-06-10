@@ -1,0 +1,38 @@
+From b6cce571c87f5351d037d5b9439e6e53f0347278 Mon Sep 17 00:00:00 2001
+From: JW Wang <wangchun@google.com>
+Date: Thu, 31 Mar 2022 10:06:06 +0800
+Subject: [PATCH 3/9] [jun-spl] Fix NPE
+
+NPE happens when there is an orphaned session which we've
+tried to prevent in all cases.
+
+Log an error message if this situation happens.
+
+Bug: 227342978
+Test: atest CtsRootPackageInstallerHostTestCases
+Change-Id: Ia21323926bd9db1a6f05461904deb45b4c3dd0bc
+(cherry picked from commit 07e31dfb1efabc8110d64819f26a06e12a35e020)
+Merged-In: Ia21323926bd9db1a6f05461904deb45b4c3dd0bc
+---
+ .../java/com/android/server/pm/PackageInstallerService.java  | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/pm/PackageInstallerService.java b/services/core/java/com/android/server/pm/PackageInstallerService.java
+index d07907671703..37d5736633d2 100644
+--- a/services/core/java/com/android/server/pm/PackageInstallerService.java
++++ b/services/core/java/com/android/server/pm/PackageInstallerService.java
+@@ -390,7 +390,10 @@ public class PackageInstallerService extends IPackageInstaller.Stub implements
+                     // Their staging dirs will be removed too
+                     PackageInstallerSession root = !session.hasParentSessionId()
+                             ? session : mSessions.get(session.getParentSessionId());
+-                    if (!root.isDestroyed()) {
++                    if (root == null) {
++                        Slog.e(TAG, "freeStageDirs: found an orphaned session: "
++                                + session.sessionId + " parent=" + session.getParentSessionId());
++                    } else if (!root.isDestroyed()) {
+                         root.abandon();
+                     }
+                 } else {
+-- 
+2.36.1
+
